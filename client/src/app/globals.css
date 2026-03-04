@@ -1,0 +1,416 @@
+@import "tailwindcss";
+
+/* Light Theme */
+:root {
+  /* Glass surfaces */
+  --glass-surface: rgba(255, 255, 255, 0.1);
+  --glass-surface-light: rgba(255, 255, 255, 0.2);
+  --glass-surface-lighter: rgba(255, 255, 255, 0.09);
+  --glass-surface-heavy: rgba(255, 255, 255, 0.3);
+
+  /* Borders */
+  --glass-border: rgba(255, 255, 255, 0.8);
+  --glass-border-subtle: rgba(255, 255, 255, 0.4);
+  --glass-border-bright: rgba(255, 255, 255, 0.95);
+
+  /* Shadows */
+  --glass-shadow: rgba(0, 0, 0, 0.1);
+  --glass-shadow-medium: rgba(0, 0, 0, 0.15);
+  --glass-shadow-heavy: rgba(0, 0, 0, 0.2);
+
+  /* Text colors */
+  --glass-text-primary: rgba(0, 0, 0, 0.9);
+  --glass-text-secondary: rgba(0, 0, 0, 0.7);
+  --glass-text-tertiary: rgba(0, 0, 0, 0.5);
+
+  /* Accent overlays */
+  --glass-accent-blue: rgba(59, 130, 246, 0.15);
+  --glass-accent-purple: rgba(139, 92, 246, 0.15);
+  --glass-accent-pink: rgba(236, 72, 153, 0.15);
+  --glass-accent-cyan: rgba(6, 182, 212, 0.15);
+  --glass-accent-green: rgba(34, 197, 94, 0.15);
+
+  /* Accent bright overlays */
+  --glass-accent-blue-bright: rgba(96, 165, 250);
+  --glass-accent-purple-bright: rgba(168, 85, 247);
+  --glass-accent-pink-bright: rgba(244, 114, 182);
+  --glass-accent-cyan-bright: rgba(34, 211, 238);
+  --glass-accent-green-bright: rgba(3, 141, 60);
+
+  /* 🚨 Warning (Yellow) */
+  --glass-warning: rgba(255, 213, 79, 0.25);
+  --glass-warning-border: rgba(255, 193, 7, 0.4);
+  --glass-warning-text: rgba(102, 75, 0, 0.8);
+
+  /* ❌ Error (Red) */
+  --glass-error: rgba(244, 67, 54, 0.25);
+  --glass-error-border: rgba(229, 57, 53, 0.4);
+  --glass-error-text: rgba(120, 20, 20, 0.85);
+
+  /* ✅ Success (Green) */
+  --glass-success: rgba(76, 175, 80, 0.25);
+  --glass-success-border: rgba(67, 160, 71, 0.4);
+  --glass-success-text: rgba(30, 70, 32, 0.85);
+
+  /* ℹ️ Info (Blue) */
+  --glass-info: rgba(33, 150, 243, 0.25);
+  --glass-info-border: rgba(30, 136, 229, 0.4);
+  --glass-info-text: rgba(144, 202, 249, 1);
+
+  font-family: Poppins, Inter, system-ui, Helvetica, Arial, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Dark Theme */
+.dark {
+  /* Glass surfaces */
+  --glass-surface: rgba(255, 255, 255, 0.1);
+  --glass-surface-light: rgba(255, 255, 255, 0.05);
+  --glass-surface-lighter: rgba(255, 255, 255, 0.03);
+  --glass-surface-heavy: rgba(255, 255, 255, 0.15);
+
+  /* Borders */
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-border-subtle: rgba(255, 255, 255, 0.1);
+  --glass-border-bright: rgba(255, 255, 255, 0.3);
+
+  /* Shadows */
+  --glass-shadow: rgba(0, 0, 0, 0.3);
+  --glass-shadow-medium: rgba(0, 0, 0, 0.5);
+  --glass-shadow-heavy: rgba(0, 0, 0, 0.7);
+
+  /* Text colors */
+  --glass-text-primary: rgba(255, 255, 255, 0.95);
+  --glass-text-secondary: rgba(255, 255, 255, 0.75);
+  --glass-text-tertiary: rgba(255, 255, 255, 0.5);
+
+  /* Accent overlays */
+  --glass-accent-blue: rgba(96, 165, 250, 0.2);
+  --glass-accent-purple: rgba(168, 85, 247, 0.2);
+  --glass-accent-pink: rgba(244, 114, 182, 0.2);
+  --glass-accent-cyan: rgba(34, 211, 238, 0.2);
+  --glass-accent-green: rgba(74, 222, 128, 0.2);
+
+  /* Accent bright overlays */
+  --glass-accent-blue-bright: rgba(96, 165, 250);
+  --glass-accent-purple-bright: rgba(168, 85, 247);
+  --glass-accent-pink-bright: rgba(244, 114, 182);
+  --glass-accent-cyan-bright: rgba(34, 211, 238);
+  --glass-accent-green-bright: rgba(3, 141, 60);
+
+  /* 🚨 Warning (Yellow) */
+  --glass-warning: rgba(255, 193, 7, 0.15);
+  --glass-warning-border: rgba(255, 214, 10, 0.35);
+  --glass-warning-text: rgba(255, 214, 10, 0.85);
+
+  /* ❌ Error (Red) */
+  --glass-error: rgba(255, 40, 40, 0.18);
+  --glass-error-border: rgba(255, 40, 40, 0.45);
+  --glass-error-text: rgba(255, 220, 220, 1);
+
+  /* ✅ Success (Green) */
+  --glass-success: rgba(76, 175, 80, 0.15);
+  --glass-success-border: rgba(129, 199, 132, 0.35);
+  --glass-success-text: rgba(185, 246, 202, 0.85);
+
+  /* ℹ️ Info (Blue) */
+  --glass-info: rgba(33, 150, 243, 0.25);
+  --glass-info-border: rgba(30, 136, 229, 0.4);
+  --glass-info-text: rgba(144, 202, 249, 1);
+}
+
+/* Enable dark theme by default */
+html:not(.light) {
+  color-scheme: dark;
+}
+
+@layer base {
+  * {
+    border-color: var(--glass-border);
+    outline-color: color-mix(
+      in srgb,
+      var(--glass-border-subtle) 50%,
+      transparent
+    );
+  }
+
+  body {
+    background-color: var(--glass-surface);
+    color: var(--glass-text-primary);
+  }
+}
+
+@theme {
+  --font-alkatra: var(--font-alkatra);
+  --font-arima: var(--font-arima);
+  --font-inter: var(--font-inter);
+  --font-poppins: var(--font-poppins);
+  --font-tourney: var(--font-tourney);
+
+  /* Glass surfaces */
+  --color-glass-surface: var(--glass-surface);
+  --color-glass-surface-light: var(--glass-surface-light);
+  --color-glass-surface-lighter: var(--glass-surface-lighter);
+  --color-glass-surface-heavy: var(--glass-surface-heavy);
+
+  /* Borders */
+  --color-glass-border: var(--glass-border);
+  --color-glass-border-subtle: var(--glass-border-subtle);
+  --color-glass-border-bright: var(--glass-border-bright);
+
+  /* Shadows */
+  --color-glass-shadow: var(--glass-shadow);
+  --color-glass-shadow-medium: var(--glass-shadow-medium);
+  --color-glass-shadow-heavy: var(--glass-shadow-heavy);
+
+  /* Text colors */
+  --color-glass-text-primary: var(--glass-text-primary);
+  --color-glass-text-secondary: var(--glass-text-secondary);
+  --color-glass-text-tertiary: var(--glass-text-tertiary);
+
+  /* Accent overlays */
+  --color-glass-accent-blue: var(--glass-accent-blue);
+  --color-glass-accent-purple: var(--glass-accent-purple);
+  --color-glass-accent-pink: var(--glass-accent-pink);
+  --color-glass-accent-cyan: var(--glass-accent-cyan);
+  --color-glass-accent-green: var(--glass-accent-green);
+
+  /* Accent bright overlays */
+  --color-glass-accent-blue-bright: var(--glass-accent-blue-bright);
+  --color-glass-accent-purple-bright: var(--glass-accent-purple-bright);
+  --color-glass-accent-pink-bright: var(--glass-accent-pink-bright);
+  --color-glass-accent-cyan-bright: var(--glass-accent-cyan-bright);
+  --color-glass-accent-green-bright: var(--glass-accent-green-bright);
+
+  /* 🚨 Warning (Yellow) */
+  --color-glass-warning: var(--glass-warning);
+  --color-glass-warning-border: var(--glass-warning-border);
+  --color-glass-warning-text: var(--glass-warning-text);
+
+  /* ❌ Error (Red) */
+  --color-glass-error: var(--glass-error);
+  --color-glass-error-border: var(--glass-error-border);
+  --color-glass-error-text: var(--glass-error-text);
+
+  /* ✅ Success (Green) */
+  --color-glass-success: var(--glass-success);
+  --color-glass-success-border: var(--glass-success-border);
+  --color-glass-success-text: var(--glass-success-text);
+
+  /* ℹ️ Info (Blue) */
+  --color-glass-info: var(--glass-info);
+  --color-glass-info-border: var(--glass-info-border);
+  --color-glass-info-text: var(--glass-info-text);
+}
+
+button[popovertarget="notifications-dropdown"] {
+  anchor-name: --notifications-dropdown;
+}
+
+button[popovertarget="account-options-dropdown"] {
+  anchor-name: --account-options-dropdown;
+}
+
+button[popovertarget="update-profile-photo-dropdown"] {
+  anchor-name: --update-profile-photo-dropdown;
+}
+
+button[popovertarget="update-profile-cover-dropdown"] {
+  anchor-name: --update-profile-cover-dropdown;
+}
+
+.dropdown-menu {
+  opacity: 0;
+  top: anchor(bottom);
+  left: anchor(left);
+  opacity: 0;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition:
+    opacity 300ms,
+    transform 300ms,
+    overlay 300ms allow-discrete,
+    display 300ms allow-discrete;
+  position-try-fallbacks:
+    --bottom-left, --bottom-right, --top-right, --top-left;
+}
+
+#notifications-dropdown {
+  position-anchor: --notifications-dropdown;
+}
+
+#account-options-dropdown {
+  position-anchor: --account-options-dropdown;
+}
+
+#update-profile-photo-dropdown {
+  position-anchor: --update-profile-photo-dropdown;
+}
+
+#update-profile-cover-dropdown {
+  position-anchor: --update-profile-cover-dropdown;
+}
+
+#update-age-dropdown {
+  position-anchor: --update-age-dropdown;
+}
+
+#update-experience-dropdown {
+  position-anchor: --update-experience-dropdown;
+}
+
+.dropdown-menu:popover-open {
+  display: flex;
+  flex-direction: column;
+  opacity: 1;
+  transform: scaleY(1);
+
+  @starting-style {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+}
+
+@position-try --bottom-left {
+  inset: unset;
+  top: anchor(bottom);
+  right: anchor(right);
+}
+
+@position-try --bottom-right {
+  inset: unset;
+  top: anchor(bottom);
+  left: anchor(left);
+}
+
+@position-try --top-left {
+  inset: unset;
+  bottom: anchor(top);
+  right: anchor(right);
+}
+
+@position-try --top-right {
+  inset: unset;
+  bottom: anchor(top);
+  left: anchor(left);
+}
+
+/* --- Animations --- */
+@keyframes fillLeftToRight {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes dots {
+  0%,
+  20% {
+    content: ".";
+  }
+  40% {
+    content: "..";
+  }
+  60%,
+  100% {
+    content: "...";
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(50%);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(50%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-50%);
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes spinBlob {
+  0% {
+    transform: rotate(0deg) scale(2);
+  }
+  100% {
+    transform: rotate(1turn) scale(2);
+  }
+}
+
+@keyframes floatingSquares {
+  0%,
+  100% {
+    transform: translateY(-2.5rem);
+  }
+
+  50% {
+    transform: translateY(2.5rem);
+  }
+}
+
+@keyframes dropdownOpen {
+  from {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}

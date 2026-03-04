@@ -1,0 +1,10 @@
+# Environment
+NEXT_PUBLIC_MODE_ENV=development
+
+# Ports
+NEXT_PUBLIC_HOST_PORT=5000
+NEXT_PUBLIC_CLIENT_PORT=3000
+
+# URLs
+NEXT_PUBLIC_HOST_URL=http://localhost:5000
+NEXT_PUBLIC_CLIENT_URL=http://localhost:3000

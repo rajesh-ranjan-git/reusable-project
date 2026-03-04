@@ -1,0 +1,35 @@
+{
+  "name": "your-app-backend-name",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Your application's backend description.",
+  "keywords": [
+    "keywords"
+  ],
+  "license": "ISC",
+  "author": "Rajesh Ranjan",
+  "main": "src/server.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "cross-env NODE_ENV=development nodemon src/server.js",
+    "start": "cross-env NODE_ENV=production node src/server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "boxen": "^8.0.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "figlet": "^1.10.0",
+    "gradient-string": "^3.0.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.2.1",
+    "socket.io": "^4.8.3"
+  },
+  "devDependencies": {
+    "cross-env": "^10.1.0",
+    "nodemon": "^3.1.13"
+  }
+}
