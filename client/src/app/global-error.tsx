@@ -23,10 +23,10 @@ export default function GlobalError() {
         <ToastProvider>
           <ThemeManager />
           <DefaultAnimatedBackground />
-          <div className="flex flex-col justify-center items-center">
+          <div className="flex flex-col justify-center items-center p-2">
             <div className="relative flex justify-center items-center w-full h-dvh overflow-hidden font-arima">
-              <div className="flex flex-col justify-center items-center gap-16 bg-glass-error p-2 border border-glass-error-border rounded-xl w-full max-w-7xl h-[95%] text-glass-error-text">
-                <h2 className="font-bold text-4xl">
+              <div className="flex flex-col justify-center items-center gap-8 bg-glass-error p-2 border border-glass-error-border rounded-xl w-full max-w-7xl h-[95%] text-glass-error-text">
+                <h2 className="font-bold text-2xl text-center">
                   {errorsConfig.internalServerError.message}
                 </h2>
                 <button
