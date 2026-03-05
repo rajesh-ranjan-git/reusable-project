@@ -1,5 +1,5 @@
 import { userProperties, errorsConfig } from "../config/config.js";
-import User from "../models/user.js";
+import Model from "../models/model.js";
 import {
   AuthenticationError,
   DatabaseError,
@@ -40,7 +40,7 @@ const auth = asyncHandler(async (req, res, next) => {
     });
   }
 
-  const loggedInUser = await User.findById(
+  const loggedInUser = await Model.findById(
     decodedUserId,
     Object.values(userProperties),
   );

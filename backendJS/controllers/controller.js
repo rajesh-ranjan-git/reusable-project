@@ -1,10 +1,9 @@
 import {
-  privateProfileProperties,
-  publicProfileProperties,
+  userProperties,
   errorsConfig,
   successConfig,
 } from "../config/config.js";
-import User from "../models/user.js";
+import Model from "../models/model.js";
 import { throwError, DatabaseError } from "../lib/errors/CustomError.js";
 import {
   asyncHandler,
@@ -13,7 +12,7 @@ import {
 } from "../lib/utils/utils.js";
 import { isValidMongoDbObjectId } from "../lib/utils/authUtils.js";
 
-export const view = asyncHandler(async (req, res) => {
+export const controller = asyncHandler(async (req, res) => {
   const { id } = await req?.data?.data;
   const params = await req?.data?.params;
 
@@ -27,13 +26,13 @@ export const view = asyncHandler(async (req, res) => {
     });
   }
 
-  const user = await User.findById(
+  const user = await Model.findById(
     params?.id ? params?.id : id,
     !params?.id
-      ? Object.values(privateProfileProperties)
+      ? Object.values(userProperties)
       : params?.id === id
-        ? Object.values(privateProfileProperties)
-        : Object.values(publicProfileProperties),
+        ? Object.values(userProperties)
+        : Object.values(userProperties),
   );
 
   if (!user) {

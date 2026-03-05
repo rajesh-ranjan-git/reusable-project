@@ -210,7 +210,7 @@ errorManager.configure({
   logLevel: "error",
   onError: (error) => {
     if (process.env.MODE_ENV === "development") {
-      logger.error("❌ ERROR LOG =>", {
+      console.error("❌ ERROR LOG\n", {
         statusCode: error?.status,
         type: error?.type,
         status: error?.name,
@@ -220,7 +220,7 @@ errorManager.configure({
         timestamp: error?.timestamp,
       });
 
-      logger.error("❌ STACK TRACE =>", error?.stack);
+      console.error("❌ STACK TRACE |", error?.stack);
     }
   },
 });

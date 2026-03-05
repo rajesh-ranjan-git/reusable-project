@@ -4,9 +4,9 @@ import { getTransformedDate } from "@/lib/utils/utils";
 const isServer = typeof window === "undefined";
 
 const css = {
-  info: "color:#3b82f6;font-weight:bold;",
+  info: "color:#38bdf8;font-weight:bold;", // sky blue (lighter)
   log: "color:#22c55e;font-weight:bold;",
-  debug: "color:#a855f7;font-weight:bold;",
+  debug: "color:#d8b4fe;font-weight:bold;", // light purple (distinct from error)
   warn: "color:#f59e0b;font-weight:bold;",
   error: "color:#ef4444;font-weight:bold;",
 };
@@ -35,14 +35,14 @@ export const logger = {
       serverPrint(
         "info",
         ansiConfig.blue,
-        `📢 INFO | ⏰ [${getTransformedDate(new Date())}] `,
+        `📢 INFO | ⏰ [${getTransformedDate(new Date())}]`,
         args,
       );
     else
       browserPrint(
         "info",
         css.info,
-        `📢 INFO | ⏰ [${getTransformedDate(new Date())}] `,
+        `📢 INFO | ⏰ [${getTransformedDate(new Date())}]`,
         args,
       );
   },
@@ -52,14 +52,14 @@ export const logger = {
       serverPrint(
         "log",
         ansiConfig.green,
-        `✅ SUCCESS | ⏰ [${getTransformedDate(new Date())}] `,
+        `✅ SUCCESS | ⏰ [${getTransformedDate(new Date())}]`,
         args,
       );
     else
       browserPrint(
         "log",
         css.log,
-        `✅ SUCCESS | ⏰ [${getTransformedDate(new Date())}] `,
+        `✅ SUCCESS | ⏰ [${getTransformedDate(new Date())}]`,
         args,
       );
   },
@@ -69,14 +69,14 @@ export const logger = {
       serverPrint(
         "log",
         ansiConfig.green,
-        `📝 LOG | ⏰ [${getTransformedDate(new Date())}] `,
+        `📝 LOG | ⏰ [${getTransformedDate(new Date())}]`,
         args,
       );
     else
       browserPrint(
         "log",
         css.log,
-        `📝 LOG | ⏰ [${getTransformedDate(new Date())}] `,
+        `📝 LOG | ⏰ [${getTransformedDate(new Date())}]`,
         args,
       );
   },
@@ -86,14 +86,14 @@ export const logger = {
       serverPrint(
         "debug",
         ansiConfig.magenta,
-        `🐞 DEBUG | ⏰ [${getTransformedDate(new Date())}] `,
+        `🐞 DEBUG | ⏰ [${getTransformedDate(new Date())}]`,
         args,
       );
     else
       browserPrint(
         "log",
         css.debug,
-        `🐞 DEBUG | ⏰ [${getTransformedDate(new Date())}] `,
+        `🐞 DEBUG | ⏰ [${getTransformedDate(new Date())}]`,
         args,
       );
   },
@@ -103,14 +103,14 @@ export const logger = {
       serverPrint(
         "warn",
         ansiConfig.yellow,
-        `🚨 WARNING | ⏰ [${getTransformedDate(new Date())}] `,
+        `🚨 WARNING | ⏰ [${getTransformedDate(new Date())}]`,
         args,
       );
     else
       browserPrint(
         "warn",
         css.warn,
-        `🚨 WARNING | ⏰ [${getTransformedDate(new Date())}] `,
+        `🚨 WARNING | ⏰ [${getTransformedDate(new Date())}]`,
         args,
       );
   },
@@ -120,14 +120,14 @@ export const logger = {
       serverPrint(
         "error",
         ansiConfig.red,
-        `❌ ERROR | ⏰ [${getTransformedDate(new Date())}] `,
+        `❌ ERROR | ⏰ [${getTransformedDate(new Date())}]`,
         args,
       );
     else
       browserPrint(
         "error",
         css.error,
-        `❌ ERROR | ⏰ [${getTransformedDate(new Date())}] `,
+        `❌ ERROR | ⏰ [${getTransformedDate(new Date())}]`,
         args,
       );
   },

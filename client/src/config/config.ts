@@ -83,11 +83,11 @@ export const bannerFontsConfig = {
 };
 
 export const ansiConfig = {
-  blue: "\x1b[34m",
+  blue: "\x1b[38;2;56;248;248m",
   green: "\x1b[32m",
   yellow: "\x1b[33m",
   red: "\x1b[31m",
-  magenta: "\x1b[35m",
+  magenta: "\x1b[38;2;255;150;255m",
 };
 
 export const bannerThemesConfig = [

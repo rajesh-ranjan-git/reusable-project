@@ -1,5 +1,5 @@
 import { ansiConfig } from "../../config/config.js";
-import { getTransformedDate } from "../../utils/utils.js";
+import { getTransformedDate } from "../utils/utils.js";
 
 const print = (method = "log", color, label, args) => {
   console[method](`${color}${label}`, ...args);
@@ -10,7 +10,7 @@ export const logger = {
     print(
       "info",
       ansiConfig.blue,
-      `📢 INFO\t:: ⏰ [${getTransformedDate(Date.now())}] `,
+      `📢 INFO | ⏰ [${getTransformedDate(Date.now())}]`,
       args,
     );
   },
@@ -19,7 +19,7 @@ export const logger = {
     print(
       "log",
       ansiConfig.green,
-      `✅ SUCCESS\t:: ⏰ [${getTransformedDate(Date.now())}] `,
+      `✅ SUCCESS | ⏰ [${getTransformedDate(Date.now())}]`,
       args,
     );
   },
@@ -28,7 +28,7 @@ export const logger = {
     print(
       "log",
       ansiConfig.green,
-      `📝 LOG\t:: ⏰ [${getTransformedDate(Date.now())}] `,
+      `📝 LOG | ⏰ [${getTransformedDate(Date.now())}]`,
       args,
     );
   },
@@ -37,7 +37,7 @@ export const logger = {
     print(
       "debug",
       ansiConfig.magenta,
-      `🐞 DEBUG\t:: ⏰ [${getTransformedDate(Date.now())}] `,
+      `🐞 DEBUG | ⏰ [${getTransformedDate(Date.now())}]`,
       args,
     );
   },
@@ -46,7 +46,7 @@ export const logger = {
     print(
       "warn",
       ansiConfig.yellow,
-      `🚨 WARNING\t:: ⏰ [${getTransformedDate(Date.now())}] `,
+      `🚨 WARNING | ⏰ [${getTransformedDate(Date.now())}]`,
       args,
     );
   },
@@ -55,7 +55,7 @@ export const logger = {
     print(
       "error",
       ansiConfig.red,
-      `❌ ERROR\t:: ⏰ [${getTransformedDate(Date.now())}] `,
+      `❌ ERROR | ⏰ [${getTransformedDate(Date.now())}]`,
       args,
     );
   },

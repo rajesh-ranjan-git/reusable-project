@@ -11,7 +11,7 @@ import {
   getRandomItem,
   getTransformedDate,
   toTitleCase,
-} from "../../utils/utils.js";
+} from "../utils/utils.js";
 
 const systemInfo = (port = process.env.PORT) => {
   const env = process.env.MODE_ENV;
