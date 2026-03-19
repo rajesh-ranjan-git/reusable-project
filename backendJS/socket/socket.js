@@ -1,19 +1,15 @@
 import { Server } from "socket.io";
-import Model from "../models/model.js";
-import { HOST_URL, CLIENT_URL } from "../config/constants.js";
-import { errorsConfig } from "../config/config.js";
-import { getSecretRoomId } from "../lib/utils/utils.js";
-import { verifyJwtToken } from "../lib/utils/authUtils.js";
-import {
-  throwError,
-  AuthenticationError,
-  AuthorizationError,
-} from "../lib/errors/CustomError.js";
+import User from "../models/auth/user.model.js";
+import { BACKEND_URL, CLIENT_URL } from "../constants/common.constants.js";
+import { httpStatusConfig } from "../config/common.config.js";
+import AppError from "../errors/app.error.js";
+import { generateRoomId } from "./socket.utils.js";
+import { verifyJwtToken } from "../utils/auth.utils.js";
 
 export const initializeSocket = (server) => {
   const io = new Server(server, {
     cors: {
-      origin: [HOST_URL, CLIENT_URL],
+      origin: [BACKEND_URL, CLIENT_URL],
       credentials: true,
     },
   });
@@ -25,28 +21,22 @@ export const initializeSocket = (server) => {
     const token = socket.handshake.auth?.token;
 
     if (!token)
-      return next(
-        throwError(AuthenticationError, {
-          status: errorsConfig.unauthorizedUserError.statusCode,
-          name: errorsConfig.unauthorizedUserError.title,
-          message: errorsConfig.unauthorizedUserError.message,
-          data: { token },
-        }),
-      );
+      throw AppError.unauthorized({
+        message: "You are not authorized to access this resource!",
+        details: { token },
+      });
 
     try {
       const payload = verifyJwtToken(token);
       socket.data.user = payload;
       next();
     } catch {
-      next(
-        throwError(AuthorizationError, {
-          status: errorsConfig.invalidTokenError.statusCode,
-          name: errorsConfig.invalidTokenError.title,
-          message: errorsConfig.invalidTokenError.message,
-          data: { token },
-        }),
-      );
+      throw new AppError({
+        message: "The provided token is invalid!",
+        code: "INVALID TOKEN",
+        statusCode: httpStatusConfig.unauthorized.statusCode,
+        details: { token },
+      });
     }
   });
 
@@ -60,31 +50,31 @@ export const initializeSocket = (server) => {
     }
 
     socket.on("join-chat", ({ targetUserId }) => {
-      const roomId = getSecretRoomId([userId, targetUserId]);
+      const roomId = generateRoomId([userId, targetUserId]);
 
       socket.join(roomId);
     });
 
     socket.on("send-message", ({ targetUserId, message }) => {
-      const roomId = getSecretRoomId([userId, targetUserId]);
+      const roomId = generateRoomId([userId, targetUserId]);
 
       io.to(roomId).emit("received-message", message);
     });
 
     socket.on("edit-message", ({ targetUserId, messageId, newMessage }) => {
-      const roomId = getSecretRoomId([userId, targetUserId]);
+      const roomId = generateRoomId([userId, targetUserId]);
 
       io.to(roomId).emit("message-edited", { messageId, newMessage });
     });
 
     socket.on("delete-message", ({ targetUserId, messageId }) => {
-      const roomId = getSecretRoomId([userId, targetUserId]);
+      const roomId = generateRoomId([userId, targetUserId]);
 
       io.to(roomId).emit("message-deleted", { messageId });
     });
 
     socket.on("message-delivered", ({ targetUserId, messageId }) => {
-      const roomId = getSecretRoomId([userId, targetUserId]);
+      const roomId = generateRoomId([userId, targetUserId]);
 
       socket
         .to(roomId)
@@ -92,13 +82,13 @@ export const initializeSocket = (server) => {
     });
 
     socket.on("message-seen", ({ targetUserId, messageId }) => {
-      const roomId = getSecretRoomId([userId, targetUserId]);
+      const roomId = generateRoomId([userId, targetUserId]);
 
       socket.to(roomId).emit("message-seen", { messageId, seenBy: userId });
     });
 
     socket.on("forward-message", ({ targetUserId, message }) => {
-      const roomId = getSecretRoomId([userId, targetUserId]);
+      const roomId = generateRoomId([userId, targetUserId]);
 
       io.to(roomId).emit("received-message", message);
     });
@@ -148,13 +138,13 @@ export const initializeSocket = (server) => {
     });
 
     socket.on("typing", ({ userId, targetUserId }) => {
-      const roomId = getSecretRoomId([userId, targetUserId]);
+      const roomId = generateRoomId([userId, targetUserId]);
 
       socket.to(roomId).emit("user-typing", { userId });
     });
 
     socket.on("stop-typing", ({ userId, targetUserId }) => {
-      const roomId = getSecretRoomId([userId, targetUserId]);
+      const roomId = generateRoomId([userId, targetUserId]);
 
       socket.to(roomId).emit("user-stopped-typing", { userId });
     });
@@ -182,7 +172,7 @@ export const initializeSocket = (server) => {
 
     socket.on("disconnect", async () => {
       if (userId) {
-        await Model.findByIdAndUpdate(userId, { lastSeen: new Date() }).catch(
+        await User.findByIdAndUpdate(userId, { lastSeen: new Date() }).catch(
           () => {},
         );
       }

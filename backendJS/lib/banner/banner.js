@@ -1,27 +1,21 @@
 import figlet from "figlet";
 import gradient from "gradient-string";
 import boxen from "boxen";
-
+import { BACKEND_PORT, MODE } from "../../constants/common.constants.js";
 import {
   appConfig,
   bannerFontsConfig,
   bannerThemesConfig,
-  errorsConfig,
-} from "../../config/config.js";
-import {
-  getRandomItem,
-  getTransformedDate,
-  toTitleCase,
-} from "../utils/utils.js";
+} from "../../config/common.config.js";
+import { getDateToShow } from "../../utils/date.utils.js";
+import { getRandomItem, toTitleCase } from "../../utils/common.utils.js";
 
-const systemInfo = (port = process.env.PORT) => {
-  const env = process.env.MODE_ENV;
-
+const systemInfo = (port = BACKEND_PORT) => {
   const info = `
     Node: ${process.version}
     Port: ${port}
-    Mode: ${toTitleCase(env)}
-    Time: ${getTransformedDate(new Date())}
+    Mode: ${toTitleCase(MODE)}
+    Time: ${getDateToShow(new Date())}
   `;
 
   return boxen(info, {
@@ -31,7 +25,7 @@ const systemInfo = (port = process.env.PORT) => {
   });
 };
 
-export const showBanner = async (port = process.env.PORT) => {
+export const showBanner = async (port = BACKEND_PORT) => {
   try {
     const banner = getRandomItem(bannerThemesConfig);
     const bannerGradient = gradient(banner.gradient);
@@ -50,10 +44,7 @@ export const showBanner = async (port = process.env.PORT) => {
       },
     );
   } catch (error) {
-    logger.warn(
-      `🚨 ${errorsConfig.bannerError.title} - ${errorsConfig.bannerError.message} : `,
-      error,
-    );
+    logger.warn(`🚨 [BANNER_FAILED] Unable to show banner:`, error);
     return;
   }
 };

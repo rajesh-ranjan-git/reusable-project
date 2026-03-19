@@ -1,68 +1,333 @@
-import { ansiConfig } from "../../config/config.js";
-import { getTransformedDate } from "../utils/utils.js";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import { MODE } from "../../constants/common.constants.js";
+import { getDateToShow, getDateToStore } from "../../utils/date.utils.js";
+import { ansiConfig } from "../../config/common.config.js";
 
-const print = (method = "log", color, label, args) => {
-  console[method](`${color}${label}`, ...args);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const mode = MODE.toLowerCase();
+const LOG_DIR = path.resolve(
+  process.env.LOG_DIR ?? path.join(__dirname, "../../logs"),
+);
+const LOG_LEVEL = (process.env.LOG_LEVEL ?? "info").toLowerCase();
+
+const resolveTargets = () => {
+  const explicit = (process.env.LOG_TARGET ?? "").toLowerCase();
+
+  if (explicit === "file") return { file: true, db: false };
+  if (explicit === "db") return { file: false, db: true };
+  if (explicit === "both") return { file: true, db: true };
+
+  if (mode === "production") return { file: true, db: true };
+  if (mode === "test") return { file: false, db: false };
+  return { file: true, db: false };
 };
 
-export const logger = {
+const TARGETS = resolveTargets();
+
+const LEVELS = { error: 0, warn: 1, info: 2, debug: 3 };
+
+const shouldLog = (level) => {
+  return (LEVELS[level] ?? 99) <= (LEVELS[LOG_LEVEL] ?? 2);
+};
+
+if (TARGETS.file) {
+  fs.mkdirSync(LOG_DIR, { recursive: true });
+}
+
+const logFilePath = (level) => {
+  const date = new Date().toISOString().split("T")[0];
+  return path.join(LOG_DIR, `${date}-${level}.log`);
+};
+
+const writeToFile = (level, entry) => {
+  if (!TARGETS.file) return;
+  try {
+    const line = JSON.stringify(entry) + "\n";
+    fs.appendFileSync(logFilePath(level), line, "utf8");
+    fs.appendFileSync(path.join(LOG_DIR, "combined.log"), line, "utf8");
+  } catch (ioErr) {
+    process.stderr.write(`[logger] File write failed: ${ioErr.message}\n`);
+  }
+};
+
+let _dbAdapter = null;
+
+export const setDbAdapter = (fn) => {
+  if (typeof fn !== "function")
+    throw new TypeError("DB adapter must be a function");
+  _dbAdapter = fn;
+};
+
+const writeToDB = async (entry) => {
+  if (!TARGETS.db) return;
+  if (!_dbAdapter) {
+    process.stderr.write(
+      "[logger] DB target enabled but no adapter registered. " +
+        "Call setDbAdapter(fn) to register one.\n",
+    );
+    return;
+  }
+  try {
+    await _dbAdapter(entry);
+  } catch (dbErr) {
+    process.stderr.write(`[logger] DB write failed: ${dbErr.message}\n`);
+  }
+};
+
+const buildEntry = (level, args, context = {}) => {
+  const message = args
+    .map((a) => (typeof a === "object" ? JSON.stringify(a) : String(a)))
+    .join(" ");
+
+  return {
+    timestamp: getDateToStore(new Date()),
+    level,
+    mode,
+    message,
+    code: context.code ?? "LOG",
+    statusCode: context.statusCode ?? undefined,
+    details: context.details ?? undefined,
+    path: context.path ?? undefined,
+    requestId: context.requestId ?? undefined,
+    isOperational: context.isOperational ?? undefined,
+    stack:
+      mode === "development" || context.isOperational === false
+        ? (context.stack ?? undefined)
+        : undefined,
+    originalStack: context.originalStack ?? undefined,
+    meta: context.meta ?? undefined,
+  };
+};
+
+const runSinks = async (level, args, context = {}) => {
+  if (mode === "test" || !shouldLog(level)) return;
+  const entry = buildEntry(level, args, context);
+  writeToFile(level, entry);
+  await writeToDB(entry);
+};
+
+const print = (method = "log", color, label, args) => {
+  console[method](`${color}${label}${ansiConfig.reset}`, ...args);
+};
+
+const logger = {
   info: (...args) => {
     print(
       "info",
       ansiConfig.blue,
-      `⏰ [${getTransformedDate(Date.now())}] 📢 [ INFO ]`,
+      `⏰ [${getDateToShow(Date.now())}] 📢 [ INFO ]`,
       args,
     );
+
+    runSinks("info", args, { code: "INFO" });
   },
 
   success: (...args) => {
     print(
-      "log",
+      "info",
       ansiConfig.green,
-      `⏰ [${getTransformedDate(Date.now())}] ✅ [ SUCCESS ]`,
+      `⏰ [${getDateToShow(Date.now())}] ✅ [ SUCCESS ]`,
       args,
     );
+
+    runSinks("info", args, { code: "SUCCESS" });
   },
 
   log: (...args) => {
     print(
       "log",
       ansiConfig.green,
-      `⏰ [${getTransformedDate(Date.now())}] 📝 [ LOG ]`,
+      `⏰ [${getDateToShow(Date.now())}] 📝 [ LOG ]`,
       args,
     );
+
+    runSinks("log", args, { code: "LOG" });
   },
 
   debug: (...args) => {
     print(
       "debug",
       ansiConfig.magenta,
-      `⏰ [${getTransformedDate(Date.now())}] 🐞 [ DEBUG ]`,
+      `⏰ [${getDateToShow(Date.now())}] 🐞 [ DEBUG ]`,
       args,
     );
+
+    runSinks("debug", args, { code: "DEBUG" });
   },
 
   warn: (...args) => {
+    if (args[0].appError && args[0].metadata) {
+      const argsToPrint = [
+        args[0].appError.metadata.method || args[0].metadata.metadata.method
+          ? `[ ${args[0].appError.metadata.method || args[0].metadata.metadata.method} ]`
+          : null,
+        args[0].appError.statusCode || args[0].metadata.statusCode
+          ? `( ${args[0].appError.statusCode || args[0].metadata.statusCode} )`
+          : null,
+        args[0].appError.name ||
+        args[0].appError.status ||
+        args[0].metadata.status
+          ? `[ ${args[0].appError.name || args[0].appError.status || args[0].metadata.status} ]`
+          : null,
+        args[0].appError.code || args[0].metadata.appError.code
+          ? `[ ${args[0].appError.code || args[0].metadata.appError.code} ]`
+          : null,
+        args[0].appError.message ?? "An unknown warning has occurred!",
+        Object.keys(args[0].appError.details).length > 0 ||
+        Object.keys(args[0].metadata.details).length > 0
+          ? `\nError Details: ${JSON.stringify(
+              Object.keys(args[0].appError.details).length > 0
+                ? args[0].appError.details
+                : args[0].metadata.details,
+              null,
+              2,
+            )}`
+          : null,
+        Object.keys(args[0].appError.metadata).length > 0 ||
+        Object.keys(args[0].metadata.metadata).length > 0
+          ? `\nError Metadata: ${JSON.stringify(
+              {
+                path:
+                  args[0].appError.metadata.path ||
+                  args[0].metadata.metadata.path,
+                requestId:
+                  args[0].appError.metadata.requestId ||
+                  args[0].metadata.metadata.requestId,
+                isOperational:
+                  args[0].appError.metadata.isOperational ||
+                  args[0].metadata.metadata.isOperational,
+              },
+              null,
+              2,
+            )}`
+          : null,
+      ];
+
+      print(
+        "warn",
+        ansiConfig.yellow,
+        `⏰ [${getDateToShow(Date.now())}] 🚨 [ WARNING ]`,
+        argsToPrint.filter((v) => v != null),
+      );
+
+      runSinks(
+        "warn",
+        [args[0].appError.message ?? "An unknown warning has occurred!"],
+        {
+          ...args[0].metadata,
+          ...args[0].metadata.metadata,
+        },
+      );
+
+      return;
+    }
+
     print(
       "warn",
       ansiConfig.yellow,
-      `⏰ [${getTransformedDate(Date.now())}] 🚨 [ WARNING ]`,
+      `⏰ [${getDateToShow(Date.now())}] 🚨 [ WARNING ]`,
       args,
     );
+
+    runSinks("warn", args, { code: "WARNING" });
   },
 
   error: (...args) => {
+    if (args[0].appError && args[0].metadata) {
+      const argsToPrint = [
+        args[0].appError.metadata.method || args[0].metadata.metadata.method
+          ? `[ ${args[0].appError.metadata.method || args[0].metadata.metadata.method} ]`
+          : null,
+        args[0].appError.statusCode || args[0].metadata.statusCode
+          ? `( ${args[0].appError.statusCode || args[0].metadata.statusCode} )`
+          : null,
+        args[0].appError.name ||
+        args[0].appError.status ||
+        args[0].metadata.status
+          ? `[ ${args[0].appError.name || args[0].appError.status || args[0].metadata.status} ]`
+          : null,
+        args[0].appError.code || args[0].metadata.appError.code
+          ? `[ ${args[0].appError.code || args[0].metadata.appError.code} ]`
+          : null,
+        args[0].appError.message ?? "An unknown warning has occurred!",
+        Object.keys(args[0].appError.details).length > 0 ||
+        Object.keys(args[0].metadata.details).length > 0
+          ? `\nError Details: ${JSON.stringify(
+              Object.keys(args[0].appError.details).length > 0
+                ? args[0].appError.details
+                : args[0].metadata.details,
+              null,
+              2,
+            )}`
+          : null,
+        Object.keys(args[0].appError.metadata).length > 0 ||
+        Object.keys(args[0].metadata.metadata).length > 0
+          ? `\nError Metadata: ${JSON.stringify(
+              {
+                path:
+                  args[0].appError.metadata.path ||
+                  args[0].metadata.metadata.path,
+                requestId:
+                  args[0].appError.metadata.requestId ||
+                  args[0].metadata.metadata.requestId,
+                isOperational:
+                  args[0].appError.metadata.isOperational ||
+                  args[0].metadata.metadata.isOperational,
+              },
+              null,
+              2,
+            )}`
+          : null,
+      ];
+
+      print(
+        "error",
+        ansiConfig.red,
+        `⏰ [${getDateToShow(Date.now())}] 🚨 [ ERROR ]`,
+        argsToPrint.filter((v) => v != null),
+      );
+
+      runSinks(
+        "error",
+        [args[0].appError.message ?? "An unknown error has occurred!"],
+        {
+          ...args[0].metadata,
+          ...args[0].metadata.metadata,
+          stack: args[0].appError.stack,
+        },
+      );
+
+      return;
+    }
+
     print(
       "error",
       ansiConfig.red,
-      `⏰ [${getTransformedDate(Date.now())}] ❌ [ ERROR ]`,
+      `⏰ [${getDateToShow(Date.now())}] ❌ [ ERROR ]`,
       args,
     );
+
+    runSinks("error", args, { code: "ERROR" });
   },
+
+  logAppError(appError, metadata) {
+    const level =
+      (appError.statusCode || metadata.statusCode) >= 500 ? "error" : "warn";
+
+    this[level]({ appError, metadata });
+  },
+
+  config: Object.freeze({ mode, TARGETS, LOG_DIR, LOG_LEVEL }),
 };
 
 if (!globalThis.logger) {
   globalThis.logger = logger;
 }
+
+export default logger;
 
 // NOTE: Use logger directly as it is available with global variable

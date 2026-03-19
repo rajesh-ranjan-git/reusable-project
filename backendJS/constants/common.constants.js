@@ -1,0 +1,44 @@
+export const BACKEND_PORT = process.env.BACKEND_PORT || 5000;
+export const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:5000";
+export const CLIENT_PORT = process.env.CLIENT_PORT || 3000;
+export const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
+
+export const MODE = process.env.MODE_ENV || "development";
+
+export const EMAIL_FROM_ADDRESS = process.env.SMTP_FROM || "noreply@myapp.com";
+export const SMTP_HOST = process.env.SMTP_HOST;
+export const SMTP_PORT = process.env.SMTP_PORT;
+export const SMTP_SECURE = process.env.SMTP_SECURE;
+export const SMTP_USER = process.env.SMTP_USER;
+export const SMTP_PASS = process.env.SMTP_PASS;
+
+export const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
+export const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
+export const ACCESS_TOKEN_EXPIRY = process.env.ACCESS_TOKEN_EXPIRY || "15m";
+export const REFRESH_TOKEN_EXPIRY = process.env.REFRESH_TOKEN_EXPIRY || "7d";
+export const JWT_ISSUER = process.env.JWT_ISSUER || "backend";
+export const JWT_AUDIENCE = process.env.JWT_AUDIENCE || "client";
+
+export const NAME_REGEX = /^[A-Za-z]+$/;
+export const USERNAME_REGEX = /^[A-Za-z0-9!@#$%&_]{4,}$/;
+export const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+export const PASSWORD_REGEX =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%&_]).{6,}$/;
+export const UPPER_CASE_REGEX = /[A-Z]/;
+export const LOWER_CASE_REGEX = /[a-z]/;
+export const NUMBER_REGEX = /\d/;
+export const ALLOWED_SPECIAL_CHARACTERS_REGEX = /[@#$%&]/;
+export const PHONE_REGEX = /^\d{10}$/;
+export const PHOTO_URL_REGEX =
+  /^(https?:\/\/)([a-zA-Z0-9\-._~%]+@)?([a-zA-Z0-9\-._~%]+\.)+[a-zA-Z]{2,}(\/[^\s?#]*)*(\.(jpg|jpeg|png|gif|webp|svg))?(\?[^\s]*)?$/i;
+
+export const COUNTRY_CODE_REGEX = /^\d{1,3}$/;
+export const PIN_CODE_REGEX = /^\d{6}$/;
+
+export const MAX_LOGIN_ATTEMPTS = 5;
+export const ACCOUNT_LOCK_TIME = 2 * 60 * 60 * 1000;
+export const SALT_ROUNDS = 12;
+export const LOCK_TIME = 2 * 60 * 60 * 1000;
+export const DEFAULT_PAGE_SIZE = 20;
+export const MAX_PAGE_SIZE = 100;
+export const MAX_ADDRESSES = 5;
