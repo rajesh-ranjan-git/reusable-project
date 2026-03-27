@@ -1,125 +1,77 @@
 @import "tailwindcss";
 
-/* Light Theme */
 :root {
-  /* Glass surfaces */
-  --glass-surface: rgba(255, 255, 255, 0.1);
-  --glass-surface-light: rgba(255, 255, 255, 0.2);
-  --glass-surface-lighter: rgba(255, 255, 255, 0.09);
-  --glass-surface-heavy: rgba(255, 255, 255, 0.3);
+  --app-bg: #eef2f7;
+  --app-surface: #ffffff;
+  --app-primary: #4f46e5;
+  --app-accent: #7c3aed;
+  --app-text-primary: #0f172a;
+  --app-text-secondary: #475569;
+  --app-border: #e2e8f0;
 
-  /* Borders */
-  --glass-border: rgba(255, 255, 255, 0.8);
-  --glass-border-subtle: rgba(255, 255, 255, 0.4);
-  --glass-border-bright: rgba(255, 255, 255, 0.95);
+  /* Success */
+  --app-success-bg: #ecfdf5;
+  --app-success-surface: #d1fae5;
+  --app-success-primary: #10b981;
+  --app-success-accent: #059669;
+  --app-success-text-primary: #064e3b;
+  --app-success-text-secondary: #047857;
+  --app-success-border: #a7f3d0;
 
-  /* Shadows */
-  --glass-shadow: rgba(0, 0, 0, 0.1);
-  --glass-shadow-medium: rgba(0, 0, 0, 0.15);
-  --glass-shadow-heavy: rgba(0, 0, 0, 0.2);
+  /* Warning */
+  --app-warning-bg: #fffbeb;
+  --app-warning-surface: #fef3c7;
+  --app-warning-primary: #f59e0b;
+  --app-warning-accent: #d97706;
+  --app-warning-text-primary: #78350f;
+  --app-warning-text-secondary: #92400e;
+  --app-warning-border: #fde68a;
 
-  /* Text colors */
-  --glass-text-primary: rgba(0, 0, 0, 0.9);
-  --glass-text-secondary: rgba(0, 0, 0, 0.7);
-  --glass-text-tertiary: rgba(0, 0, 0, 0.5);
-
-  /* Accent overlays */
-  --glass-accent-blue: rgba(59, 130, 246, 0.15);
-  --glass-accent-purple: rgba(139, 92, 246, 0.15);
-  --glass-accent-pink: rgba(236, 72, 153, 0.15);
-  --glass-accent-cyan: rgba(6, 182, 212, 0.15);
-  --glass-accent-green: rgba(34, 197, 94, 0.15);
-
-  /* Accent bright overlays */
-  --glass-accent-blue-bright: rgba(96, 165, 250);
-  --glass-accent-purple-bright: rgba(168, 85, 247);
-  --glass-accent-pink-bright: rgba(244, 114, 182);
-  --glass-accent-cyan-bright: rgba(34, 211, 238);
-  --glass-accent-green-bright: rgba(3, 141, 60);
-
-  /* 🚨 Warning (Yellow) */
-  --glass-warning: rgba(255, 213, 79, 0.25);
-  --glass-warning-border: rgba(255, 193, 7, 0.4);
-  --glass-warning-text: rgba(102, 75, 0, 0.8);
-
-  /* ❌ Error (Red) */
-  --glass-error: rgba(244, 67, 54, 0.25);
-  --glass-error-border: rgba(229, 57, 53, 0.4);
-  --glass-error-text: rgba(120, 20, 20, 0.85);
-
-  /* ✅ Success (Green) */
-  --glass-success: rgba(76, 175, 80, 0.25);
-  --glass-success-border: rgba(67, 160, 71, 0.4);
-  --glass-success-text: rgba(30, 70, 32, 0.85);
-
-  /* ℹ️ Info (Blue) */
-  --glass-info: rgba(33, 150, 243, 0.25);
-  --glass-info-border: rgba(30, 136, 229, 0.4);
-  --glass-info-text: rgba(144, 202, 249, 1);
-
-  font-family: Poppins, Inter, system-ui, Helvetica, Arial, sans-serif;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* Error */
+  --app-error-bg: #fef2f2;
+  --app-error-surface: #fee2e2;
+  --app-error-primary: #ef4444;
+  --app-error-accent: #dc2626;
+  --app-error-text-primary: #7f1d1d;
+  --app-error-text-secondary: #991b1b;
+  --app-error-border: #fecaca;
 }
 
-/* Dark Theme */
 .dark {
-  /* Glass surfaces */
-  --glass-surface: rgba(255, 255, 255, 0.1);
-  --glass-surface-light: rgba(255, 255, 255, 0.05);
-  --glass-surface-lighter: rgba(255, 255, 255, 0.03);
-  --glass-surface-heavy: rgba(255, 255, 255, 0.15);
+  --app-bg: #0b0f1a;
+  --app-surface: #151a2a;
+  --app-primary: #4f46e5;
+  --app-accent: #8b5cf6;
+  --app-text-primary: #f1f5f9;
+  --app-text-secondary: #94a3b8;
+  --app-border: rgba(148, 163, 184, 0.12);
 
-  /* Borders */
-  --glass-border: rgba(255, 255, 255, 0.2);
-  --glass-border-subtle: rgba(255, 255, 255, 0.1);
-  --glass-border-bright: rgba(255, 255, 255, 0.3);
+  /* Success */
+  --app-success-bg: rgba(16, 185, 129, 0.08);
+  --app-success-surface: rgba(16, 185, 129, 0.12);
+  --app-success-primary: #34d399;
+  --app-success-accent: #10b981;
+  --app-success-text-primary: #d1fae5;
+  --app-success-text-secondary: #6ee7b7;
+  --app-success-border: rgba(52, 211, 153, 0.25);
 
-  /* Shadows */
-  --glass-shadow: rgba(0, 0, 0, 0.3);
-  --glass-shadow-medium: rgba(0, 0, 0, 0.5);
-  --glass-shadow-heavy: rgba(0, 0, 0, 0.7);
+  /* Warning */
+  --app-warning-bg: rgba(245, 158, 11, 0.08);
+  --app-warning-surface: rgba(245, 158, 11, 0.12);
+  --app-warning-primary: #fbbf24;
+  --app-warning-accent: #f59e0b;
+  --app-warning-text-primary: #fef3c7;
+  --app-warning-text-secondary: #fcd34d;
+  --app-warning-border: rgba(251, 191, 36, 0.25);
 
-  /* Text colors */
-  --glass-text-primary: rgba(255, 255, 255, 0.95);
-  --glass-text-secondary: rgba(255, 255, 255, 0.75);
-  --glass-text-tertiary: rgba(255, 255, 255, 0.5);
-
-  /* Accent overlays */
-  --glass-accent-blue: rgba(96, 165, 250, 0.2);
-  --glass-accent-purple: rgba(168, 85, 247, 0.2);
-  --glass-accent-pink: rgba(244, 114, 182, 0.2);
-  --glass-accent-cyan: rgba(34, 211, 238, 0.2);
-  --glass-accent-green: rgba(74, 222, 128, 0.2);
-
-  /* Accent bright overlays */
-  --glass-accent-blue-bright: rgba(96, 165, 250);
-  --glass-accent-purple-bright: rgba(168, 85, 247);
-  --glass-accent-pink-bright: rgba(244, 114, 182);
-  --glass-accent-cyan-bright: rgba(34, 211, 238);
-  --glass-accent-green-bright: rgba(3, 141, 60);
-
-  /* 🚨 Warning (Yellow) */
-  --glass-warning: rgba(255, 193, 7, 0.15);
-  --glass-warning-border: rgba(255, 214, 10, 0.35);
-  --glass-warning-text: rgba(255, 214, 10, 0.85);
-
-  /* ❌ Error (Red) */
-  --glass-error: rgba(255, 40, 40, 0.18);
-  --glass-error-border: rgba(255, 40, 40, 0.45);
-  --glass-error-text: rgba(255, 220, 220, 1);
-
-  /* ✅ Success (Green) */
-  --glass-success: rgba(76, 175, 80, 0.15);
-  --glass-success-border: rgba(129, 199, 132, 0.35);
-  --glass-success-text: rgba(185, 246, 202, 0.85);
-
-  /* ℹ️ Info (Blue) */
-  --glass-info: rgba(33, 150, 243, 0.25);
-  --glass-info-border: rgba(30, 136, 229, 0.4);
-  --glass-info-text: rgba(144, 202, 249, 1);
+  /* Error */
+  --app-error-bg: rgba(239, 68, 68, 0.08);
+  --app-error-surface: rgba(239, 68, 68, 0.12);
+  --app-error-primary: #f87171;
+  --app-error-accent: #ef4444;
+  --app-error-text-primary: #fee2e2;
+  --app-error-text-secondary: #fca5a5;
+  --app-error-border: rgba(248, 113, 113, 0.25);
 }
 
 /* Enable dark theme by default */
@@ -128,174 +80,89 @@ html:not(.light) {
 }
 
 @layer base {
-  * {
-    border-color: var(--glass-border);
-    outline-color: color-mix(
-      in srgb,
-      var(--glass-border-subtle) 50%,
-      transparent
-    );
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text-primary);
+    font-family: "Inter", system-ui, sans-serif;
   }
 
-  body {
-    background-color: var(--glass-surface);
-    color: var(--glass-text-primary);
+  .card {
+    background: var(--color-surface);
+    border: 1px solid var(--app-border);
+    border-radius: 12px;
+    box-shadow: var(--app-shadow);
   }
 }
 
 @theme {
+  /* Fonts */
   --font-alkatra: var(--font-alkatra);
   --font-arima: var(--font-arima);
   --font-inter: var(--font-inter);
   --font-poppins: var(--font-poppins);
   --font-tourney: var(--font-tourney);
 
-  /* Glass surfaces */
-  --color-glass-surface: var(--glass-surface);
-  --color-glass-surface-light: var(--glass-surface-light);
-  --color-glass-surface-lighter: var(--glass-surface-lighter);
-  --color-glass-surface-heavy: var(--glass-surface-heavy);
+  /* Base */
+  --color-bg: var(--app-bg);
+  --color-surface: var(--app-surface);
+  --color-primary: var(--app-primary);
+  --color-accent: var(--app-accent);
+  --color-text-primary: var(--app-text-primary);
+  --color-text-secondary: var(--app-text-secondary);
+  --color-border: var(--app-border);
 
-  /* Borders */
-  --color-glass-border: var(--glass-border);
-  --color-glass-border-subtle: var(--glass-border-subtle);
-  --color-glass-border-bright: var(--glass-border-bright);
+  /* SUCCESS */
+  --color-success-bg: var(--app-success-bg);
+  --color-success-surface: var(--app-success-surface);
+  --color-success-primary: var(--app-success-primary);
+  --color-success-accent: var(--app-success-accent);
+  --color-success-text-primary: var(--app-success-text-primary);
+  --color-success-text-secondary: var(--app-success-text-secondary);
+  --color-success-border: var(--app-success-border);
 
-  /* Shadows */
-  --color-glass-shadow: var(--glass-shadow);
-  --color-glass-shadow-medium: var(--glass-shadow-medium);
-  --color-glass-shadow-heavy: var(--glass-shadow-heavy);
+  /* WARNING */
+  --color-warning-bg: var(--app-warning-bg);
+  --color-warning-surface: var(--app-warning-surface);
+  --color-warning-primary: var(--app-warning-primary);
+  --color-warning-accent: var(--app-warning-accent);
+  --color-warning-text-primary: var(--app-warning-text-primary);
+  --color-warning-text-secondary: var(--app-warning-text-secondary);
+  --color-warning-border: var(--app-warning-border);
 
-  /* Text colors */
-  --color-glass-text-primary: var(--glass-text-primary);
-  --color-glass-text-secondary: var(--glass-text-secondary);
-  --color-glass-text-tertiary: var(--glass-text-tertiary);
-
-  /* Accent overlays */
-  --color-glass-accent-blue: var(--glass-accent-blue);
-  --color-glass-accent-purple: var(--glass-accent-purple);
-  --color-glass-accent-pink: var(--glass-accent-pink);
-  --color-glass-accent-cyan: var(--glass-accent-cyan);
-  --color-glass-accent-green: var(--glass-accent-green);
-
-  /* Accent bright overlays */
-  --color-glass-accent-blue-bright: var(--glass-accent-blue-bright);
-  --color-glass-accent-purple-bright: var(--glass-accent-purple-bright);
-  --color-glass-accent-pink-bright: var(--glass-accent-pink-bright);
-  --color-glass-accent-cyan-bright: var(--glass-accent-cyan-bright);
-  --color-glass-accent-green-bright: var(--glass-accent-green-bright);
-
-  /* 🚨 Warning (Yellow) */
-  --color-glass-warning: var(--glass-warning);
-  --color-glass-warning-border: var(--glass-warning-border);
-  --color-glass-warning-text: var(--glass-warning-text);
-
-  /* ❌ Error (Red) */
-  --color-glass-error: var(--glass-error);
-  --color-glass-error-border: var(--glass-error-border);
-  --color-glass-error-text: var(--glass-error-text);
-
-  /* ✅ Success (Green) */
-  --color-glass-success: var(--glass-success);
-  --color-glass-success-border: var(--glass-success-border);
-  --color-glass-success-text: var(--glass-success-text);
-
-  /* ℹ️ Info (Blue) */
-  --color-glass-info: var(--glass-info);
-  --color-glass-info-border: var(--glass-info-border);
-  --color-glass-info-text: var(--glass-info-text);
+  /* ERROR */
+  --color-error-bg: var(--app-error-bg);
+  --color-error-surface: var(--app-error-surface);
+  --color-error-primary: var(--app-error-primary);
+  --color-error-accent: var(--app-error-accent);
+  --color-error-text-primary: var(--app-error-text-primary);
+  --color-error-text-secondary: var(--app-error-text-secondary);
+  --color-error-border: var(--app-error-border);
 }
 
-button[popovertarget="notifications-dropdown"] {
-  anchor-name: --notifications-dropdown;
+/* --- Scrollbar --- */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
 }
 
-button[popovertarget="account-options-dropdown"] {
-  anchor-name: --account-options-dropdown;
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-button[popovertarget="update-profile-photo-dropdown"] {
-  anchor-name: --update-profile-photo-dropdown;
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
 }
 
-button[popovertarget="update-profile-cover-dropdown"] {
-  anchor-name: --update-profile-cover-dropdown;
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
 }
 
-.dropdown-menu {
-  opacity: 0;
-  top: anchor(bottom);
-  left: anchor(left);
-  opacity: 0;
-  transform: scaleY(0);
-  transform-origin: top;
-  transition:
-    opacity 300ms,
-    transform 300ms,
-    overlay 300ms allow-discrete,
-    display 300ms allow-discrete;
-  position-try-fallbacks:
-    --bottom-left, --bottom-right, --top-right, --top-left;
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
 }
 
-#notifications-dropdown {
-  position-anchor: --notifications-dropdown;
-}
-
-#account-options-dropdown {
-  position-anchor: --account-options-dropdown;
-}
-
-#update-profile-photo-dropdown {
-  position-anchor: --update-profile-photo-dropdown;
-}
-
-#update-profile-cover-dropdown {
-  position-anchor: --update-profile-cover-dropdown;
-}
-
-#update-age-dropdown {
-  position-anchor: --update-age-dropdown;
-}
-
-#update-experience-dropdown {
-  position-anchor: --update-experience-dropdown;
-}
-
-.dropdown-menu:popover-open {
-  display: flex;
-  flex-direction: column;
-  opacity: 1;
-  transform: scaleY(1);
-
-  @starting-style {
-    opacity: 0;
-    transform: scaleY(0);
-  }
-}
-
-@position-try --bottom-left {
-  inset: unset;
-  top: anchor(bottom);
-  right: anchor(right);
-}
-
-@position-try --bottom-right {
-  inset: unset;
-  top: anchor(bottom);
-  left: anchor(left);
-}
-
-@position-try --top-left {
-  inset: unset;
-  bottom: anchor(top);
-  right: anchor(right);
-}
-
-@position-try --top-right {
-  inset: unset;
-  bottom: anchor(top);
-  left: anchor(left);
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* --- Animations --- */
@@ -322,68 +189,6 @@ button[popovertarget="update-profile-cover-dropdown"] {
   }
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes fadeOut {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-
-@keyframes slideInFromLeft {
-  from {
-    opacity: 0;
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(50%);
-    opacity: 1;
-  }
-}
-
-@keyframes slideInFromRight {
-  from {
-    transform: translateX(50%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@keyframes slideInFromTop {
-  from {
-    opacity: 0;
-    transform: translateY(-50%);
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes slideInFromBottom {
-  from {
-    opacity: 0;
-    transform: translateY(100%);
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
 @keyframes spinBlob {
   0% {
     transform: rotate(0deg) scale(2);
@@ -401,16 +206,5 @@ button[popovertarget="update-profile-cover-dropdown"] {
 
   50% {
     transform: translateY(2.5rem);
-  }
-}
-
-@keyframes dropdownOpen {
-  from {
-    opacity: 0;
-    transform: scaleY(0);
-  }
-  to {
-    opacity: 1;
-    transform: scaleY(1);
   }
 }
