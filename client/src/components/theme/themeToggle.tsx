@@ -1,3 +1,5 @@
+"use client";
+
 import { themeConfig } from "@/config/config";
 import { useAppStore } from "@/store/store";
 

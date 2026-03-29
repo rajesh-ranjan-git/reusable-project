@@ -1,12 +1,5 @@
-import Main from "@/components/main/main";
-import DefaultMainContent from "@/components/main/defaultMainContent";
+import LandingPage from "@/components/pages/landingPage";
 
 export default function Home() {
-  return (
-    <>
-      <Main>
-        <DefaultMainContent />
-      </Main>
-    </>
-  );
+  return <LandingPage />;
 }
