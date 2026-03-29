@@ -74,32 +74,32 @@ const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
 const variantConfig = {
   success: {
-    bg: "bg-glass-success border-glass-success-border backdrop-blur-2xl",
-    text: "text-glass-success-text",
+    bg: "bg-success-bg border-success-border backdrop-blur-2xl",
+    text: "text-success-text-primary",
     icon: FiCheckCircle,
-    iconColor: "text-glass-success-text",
-    progress: "bg-glass-success-text",
+    iconColor: "text-success-text-primary",
+    progress: "bg-success-text-primary",
   },
   error: {
-    bg: "bg-glass-error border-glass-error-border backdrop-blur-2xl",
-    text: "text-glass-error-text",
+    bg: "bg-error-bg border-error-border backdrop-blur-2xl",
+    text: "text-error-text-primary",
     icon: FiAlertCircle,
-    iconColor: "text-glass-error-text",
-    progress: "bg-glass-error-text",
+    iconColor: "text-error-text-primary",
+    progress: "bg-error-text-primary",
   },
   warning: {
-    bg: "bg-glass-warning border-glass-warning-border backdrop-blur-2xl",
-    text: "text-glass-warning-text",
+    bg: "bg-warning border-warning-border backdrop-blur-2xl",
+    text: "text-warning-text-primary",
     icon: TbAlertTriangle,
-    iconColor: "text-glass-warning-text",
-    progress: "bg-glass-warning-text",
+    iconColor: "text-warning-text-primary",
+    progress: "bg-warning-text-primary",
   },
   info: {
-    bg: "bg-glass-info border-glass-info-border backdrop-blur-2xl",
-    text: "text-glass-info-text",
+    bg: "bg-info border-info-border backdrop-blur-2xl",
+    text: "text-info-text-primary",
     icon: FaInfoCircle,
-    iconColor: "text-glass-info-text",
-    progress: "bg-glass-info-text",
+    iconColor: "text-info-text-primary",
+    progress: "bg-info-text-primary",
   },
 };
 
@@ -228,7 +228,7 @@ const ToastItem: React.FC<{
             setShouldExit(true);
             setTimeout(() => onRemove(toast.id), 300);
           }}
-          className={`${config.text} opacity-70 border border-glass-border-subtle hover:border-glass-border-bright hover:opacity-100 transition-opacity shrink-0 cursor-pointer rounded-md`}
+          className={`${config.text} opacity-70 border border-border hover:opacity-100 transition-opacity shrink-0 cursor-pointer rounded-md`}
         >
           <IoClose size={18} />
         </button>
