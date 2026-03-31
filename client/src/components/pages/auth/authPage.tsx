@@ -45,6 +45,28 @@ const GoogleIcon = ({ size }: { size: number }) => (
   </svg>
 );
 
+const DecorativeRings = () => (
+  <div className="absolute inset-0 flex justify-center items-center overflow-hidden pointer-events-none">
+    {[1, 2, 3].map((i) => (
+      <motion.div
+        key={i}
+        className="absolute border border-white/10 rounded-full"
+        style={{
+          width: `${i * 140 + 80}px`,
+          height: `${i * 140 + 80}px`,
+        }}
+        animate={{ rotate: i % 2 === 0 ? 360 : -360 }}
+        transition={{
+          duration: 20 + i * 8,
+          repeat: Infinity,
+          ease: "linear",
+        }}
+      />
+    ))}
+    <div className="absolute bg-white/5 blur-2xl rounded-full w-32 h-32" />
+  </div>
+);
+
 export default function AuthPage() {
   const pathname = usePathname();
   const router = useRouter();
@@ -98,7 +120,7 @@ export default function AuthPage() {
         <div className="hidden sm:block -right-64 bottom-1/4 absolute bg-accent/20 blur-[120px] rounded-full w-150 h-150 pointer-events-none mix-blend-screen"></div>
 
         <div
-          className={`relative z-10 w-full max-w-4xl bg-surface rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row h-full max-h-212.5 transition-all duration-1000 isolate ${!isLogin ? "md:flex-row-reverse" : ""}`}
+          className={`relative z-10 w-full max-w-4xl bg-surface rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row h-full max-h-212.5 min-h-0 transition-all duration-1000 isolate ${!isLogin ? "md:flex-row-reverse" : ""}`}
         >
           <motion.div
             layout
@@ -106,6 +128,7 @@ export default function AuthPage() {
             className={`w-full md:w-1/2 bg-primary flex flex-col items-center justify-center p-6 md:p-12 text-center text-white min-h-55 md:min-h-0 md:h-full shadow-lg shadow-primary/20 relative z-20 shrink-0 transition-[border-radius] duration-800 ease-in-out ${isLogin ? "md:rounded-r-[150px] rounded-b-[40px] md:rounded-bl-none md:rounded-tl-none" : "md:rounded-l-[150px] rounded-b-[40px] md:rounded-br-none md:rounded-tr-none"}`}
             transition={{ type: "tween", ease: "easeInOut", duration: 0.8 }}
           >
+            <DecorativeRings />
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -166,7 +189,7 @@ export default function AuthPage() {
           <motion.div
             layout
             transition={{ type: "tween", ease: "easeInOut", duration: 0.8 }}
-            className="z-10 relative flex flex-col bg-surface w-full md:w-1/2 h-full shrink-0"
+            className="z-10 relative flex flex-col md:flex-none bg-surface w-full md:w-1/2 min-h-[70%] shrink-0"
           >
             <AnimatePresence mode="wait">
               {isLogin ? (
@@ -176,7 +199,7 @@ export default function AuthPage() {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="absolute flex justify-center items-center p-4 sm:p-6 md:p-8 w-full h-max overflow-y-auto custom-scrollbar"
+                  className="absolute inset-0 flex justify-center items-center p-4 sm:p-6 md:p-8 w-full overflow-y-auto custom-scrollbar"
                 >
                   <div className="flex flex-col my-auto py-2 md:py-4 w-full max-w-md">
                     <div className="mb-4 md:mb-8 text-center">
@@ -274,7 +297,7 @@ export default function AuthPage() {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="absolute flex justify-center items-center p-4 sm:p-6 md:p-8 w-full h-max overflow-y-auto custom-scrollbar"
+                  className="absolute inset-0 flex justify-center items-center p-4 sm:p-6 md:p-8 w-full overflow-y-auto custom-scrollbar"
                 >
                   <div className="flex flex-col my-auto py-4 w-full max-w-md">
                     <div className="mb-4 md:mb-6 text-center">
