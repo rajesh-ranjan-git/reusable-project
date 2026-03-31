@@ -93,7 +93,7 @@ export default function AuthPage() {
 
   return (
     <LayoutGroup>
-      <div className="fixed inset-0 flex justify-center items-center bg-bg selection:bg-primary/30 p-4 sm:p-6 w-full h-full overflow-hidden">
+      <div className="fixed inset-0 flex justify-center items-center bg-bg selection:bg-primary/30 p-4 sm:p-6 w-full h-dvh">
         <div className="hidden sm:block top-1/4 -left-64 absolute bg-primary/20 blur-[100px] rounded-full w-125 h-125 pointer-events-none mix-blend-screen"></div>
         <div className="hidden sm:block -right-64 bottom-1/4 absolute bg-accent/20 blur-[120px] rounded-full w-150 h-150 pointer-events-none mix-blend-screen"></div>
 
@@ -166,7 +166,7 @@ export default function AuthPage() {
           <motion.div
             layout
             transition={{ type: "tween", ease: "easeInOut", duration: 0.8 }}
-            className="z-10 relative flex flex-col bg-surface w-full md:w-1/2 h-full overflow-hidden shrink-0"
+            className="z-10 relative flex flex-col bg-surface w-full md:w-1/2 h-full shrink-0"
           >
             <AnimatePresence mode="wait">
               {isLogin ? (
@@ -176,7 +176,7 @@ export default function AuthPage() {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="absolute inset-0 flex justify-center items-center p-4 sm:p-6 md:p-8 overflow-y-auto custom-scrollbar"
+                  className="absolute flex justify-center items-center p-4 sm:p-6 md:p-8 w-full h-max overflow-y-auto custom-scrollbar"
                 >
                   <div className="flex flex-col my-auto py-2 md:py-4 w-full max-w-md">
                     <div className="mb-4 md:mb-8 text-center">
@@ -274,7 +274,7 @@ export default function AuthPage() {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="absolute inset-0 flex justify-center items-center p-4 sm:p-6 md:p-8 overflow-y-auto custom-scrollbar"
+                  className="absolute flex justify-center items-center p-4 sm:p-6 md:p-8 w-full h-max overflow-y-auto custom-scrollbar"
                 >
                   <div className="flex flex-col my-auto py-4 w-full max-w-md">
                     <div className="mb-4 md:mb-6 text-center">
