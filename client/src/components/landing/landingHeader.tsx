@@ -46,13 +46,13 @@ export default function LandingHeader() {
 
           <ThemeToggle />
 
-          <Link href="/login" className="btn btn-secondary">
+          <Link href="/login" className="text-sm btn btn-secondary">
             Log in
           </Link>
 
           <Link
             href="/discover"
-            className="px-4.5 py-2 text-text-on-accent text-sm btn btn-primary"
+            className="text-text-on-accent text-sm btn btn-primary"
           >
             Open App
           </Link>

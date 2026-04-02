@@ -693,6 +693,7 @@
     border: none;
     cursor: pointer;
     text-decoration: none;
+    padding: 8px 18px;
     transition:
       background var(--transition-fast),
       box-shadow var(--transition-fast),
@@ -714,7 +715,6 @@
     background: var(--gradient-brand-vivid);
     color: var(--text-on-accent);
     border-radius: var(--border-radius-pill);
-    padding: 10px 24px;
     box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
   }
   .btn-primary:hover {
@@ -728,7 +728,6 @@
     color: var(--text-primary);
     border: 1px solid var(--glass-border);
     border-radius: var(--border-radius-pill);
-    padding: 9px 22px;
     backdrop-filter: blur(var(--glass-blur-light));
     -webkit-backdrop-filter: blur(var(--glass-blur-light));
   }
@@ -743,7 +742,6 @@
     color: var(--accent-purple);
     border: 1px solid transparent;
     border-radius: var(--border-radius-md);
-    padding: 8px 16px;
   }
   .btn-ghost:hover {
     background: rgba(139, 92, 246, 0.1);
