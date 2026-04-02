@@ -15,7 +15,7 @@ export default function LandingHeader() {
             height={100}
             className="shadow-glass-bg shadow-md rounded-full w-10 md:w-12 h-auto select-none"
           />
-          <span className="font-tourney font-semibold text-gradient text-2xl md:text-3xl tracking-tight">
+          <span className="font-tourney font-semibold text-gradient text-xl md:text-3xl tracking-tight">
             App Name
           </span>
         </Link>
