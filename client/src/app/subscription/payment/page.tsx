@@ -1,5 +1,7 @@
 import PaymentPage from "@/components/pages/subscription/paymentPage";
 
-export default function Home() {
+const Payment = () => {
   return <PaymentPage />;
-}
+};
+
+export default Payment;

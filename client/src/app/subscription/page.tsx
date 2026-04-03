@@ -1,5 +1,7 @@
 import SubscriptionPage from "@/components/pages/subscription/subscriptionPage";
 
-export default function Home() {
+const Subscription = () => {
   return <SubscriptionPage hideHeader={false} />;
-}
+};
+
+export default Subscription;

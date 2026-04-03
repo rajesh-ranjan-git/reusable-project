@@ -63,6 +63,7 @@ export default function Header() {
 
         <div className="hidden md:block relative flex-1 mx-6 max-w-md">
           <LuSearch className="top-1/2 left-3 absolute w-4 h-4 text-text-secondary -translate-y-1/2" />
+
           <input
             type="search"
             className="pl-9"
@@ -115,9 +116,9 @@ export default function Header() {
       />
 
       <div
-        className={`fixed top-0 left-0 h-dvh w-72 sm:w-80 bg-[#0B0F1A] md:hidden z-(--z-modal) transition-transform duration-300 shadow-2xl ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
+        className={`fixed top-0 left-0 h-dvh w-72 sm:w-80 bg-[#0B0F1A] md:hidden z-(--z-toast) transition-transform duration-300 shadow-2xl ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
-        <div className="top-2 right-2 z-(--z-modal) absolute">
+        <div className="top-2 right-2 z-(--z-toast) absolute">
           <button
             onClick={() => setIsSidebarOpen(false)}
             className="bg-glass-bg-strong p-1 border border-glass-border hover:border-glass-border-accent rounded-lg text-text-secondary hover:text-text-primary transition-colors"

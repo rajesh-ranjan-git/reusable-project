@@ -2,7 +2,8 @@ import { useRef, useCallback, useState } from "react";
 import { createPortal } from "react-dom";
 import Webcam from "react-webcam";
 import { motion, AnimatePresence } from "motion/react";
-import { LuCamera, LuRefreshCw, LuX } from "react-icons/lu";
+import { LuCamera, LuCameraOff, LuRefreshCw, LuX } from "react-icons/lu";
+import Image from "next/image";
 
 type CameraModalProps = {
   isOpen: boolean;
@@ -33,6 +34,13 @@ export default function CameraModal({
   const handleConfirm = () => {
     if (imgSrc) onCapture(imgSrc);
     setImgSrc(null);
+    setWebcamError(false);
+    onClose();
+  };
+
+  const handleReset = () => {
+    setImgSrc(null);
+    setWebcamError(false);
     onClose();
   };
 
@@ -43,43 +51,42 @@ export default function CameraModal({
       {isOpen && (
         <div
           key="camera-modal-wrapper"
-          className="z-120 fixed inset-0 flex justify-center items-center p-4"
+          className="z-(--z-modal) fixed inset-0 flex justify-center items-center p-4"
         >
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
-            onClick={onClose}
+            className="fixed inset-0 bg-glass-bg backdrop-blur-sm duration-300"
+            onClick={() => handleReset()}
           />
 
           <motion.div
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            className="relative flex flex-col bg-white dark:bg-surface shadow-2xl border border-black/10 dark:border-white/10 rounded-2xl w-full max-w-lg overflow-hidden"
+            className="relative flex flex-col w-full max-w-lg overflow-hidden glass"
           >
-            <div className="flex justify-between items-center bg-black/5 dark:bg-white/5 p-4 border-black/10 dark:border-white/10 border-b">
-              <h2 className="font-semibold text-text-primary text-lg">
+            <div className="flex items-center p-2">
+              <h3 className="pt-1 w-full font-arima font-semibold text-center">
                 Take a picture
-              </h2>
-              <button
-                onClick={onClose}
-                className="bg-black/5 hover:bg-black/10 dark:bg-white/5 dark:hover:bg-white/10 p-1.5 rounded-lg text-text-secondary hover:text-text-primary transition-colors"
-              >
+              </h3>
+              <button onClick={onClose} className="p-1.5 glass-interactive">
                 <LuX size={20} />
               </button>
             </div>
 
-            <div className="flex flex-col justify-center items-center bg-black/5 dark:bg-black/50 p-4 min-h-75 md:min-h-100">
+            <div className="flex flex-col justify-center items-center p-2 min-h-75 md:min-h-full">
               {imgSrc ? (
-                <img
+                <Image
                   src={imgSrc}
                   alt="captured"
-                  className="shadow-inner rounded-xl w-full object-cover"
+                  width={400}
+                  height={400}
+                  className="shadow-inner rounded-lg w-full object-cover"
                 />
               ) : (
-                <div className="relative flex justify-center items-center bg-black shadow-inner rounded-xl w-full min-h-75 overflow-hidden">
+                <div className="relative flex justify-center items-center rounded-md w-full min-h-75 overflow-hidden">
                   {!webcamError ? (
                     <Webcam
                       audio={false}
@@ -90,10 +97,10 @@ export default function CameraModal({
                       onUserMediaError={() => setWebcamError(true)}
                     />
                   ) : (
-                    <div className="flex flex-col items-center p-6 text-text-primary text-center">
-                      <LuCamera className="mb-3 w-12 h-12 text-black/20 dark:text-white/20" />
-                      <p className="text-text-secondary">
-                        Camera access denied or unavailable
+                    <div className="flex flex-col items-center p-6 text-center">
+                      <LuCameraOff className="mb-3 w-12 h-12 text-status-error-text" />
+                      <p className="text-status-error-text">
+                        Camera access denied or unavailable!
                       </p>
                     </div>
                   )}
@@ -101,18 +108,18 @@ export default function CameraModal({
               )}
             </div>
 
-            <div className="flex justify-center items-center gap-4 bg-black/5 dark:bg-white/5 p-4 border-black/10 dark:border-white/10 border-t">
+            <div className="flex justify-center items-center gap-4 p-4 border-glass-border border-t">
               {imgSrc ? (
                 <>
                   <button
                     onClick={handleRetake}
-                    className="flex flex-1 justify-center items-center gap-2 bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/20 py-3 border border-black/10 dark:border-white/10 rounded-xl font-medium text-text-primary dark:text-white text-sm transition-colors"
+                    className="px-6 md:px-10 btn btn-secondary"
                   >
                     <LuRefreshCw size={18} /> Retake
                   </button>
                   <button
                     onClick={handleConfirm}
-                    className="flex-1 bg-primary hover:bg-indigo-600 shadow-[0_0_20px_rgba(79,70,229,0.3)] py-3 rounded-xl font-medium text-white text-sm transition-colors"
+                    className="px-6 md:px-10 btn btn-primary"
                   >
                     Use Photo
                   </button>
@@ -121,11 +128,14 @@ export default function CameraModal({
                 <button
                   onClick={capture}
                   disabled={webcamError}
-                  className="group flex justify-center items-center bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/20 disabled:opacity-50 border-2 border-black/20 hover:border-black/50 dark:border-white/50 dark:hover:border-white rounded-full w-16 h-16 transition-all disabled:cursor-not-allowed"
+                  className="group flex justify-center items-center disabled:opacity-50 rounded-full w-16 h-16 transition-all disabled:cursor-not-allowed glass-heavy"
                   title="Capture"
                 >
-                  <div className="flex justify-center items-center bg-white shadow-md rounded-full w-12 h-12 group-hover:scale-95 transition-transform">
-                    <LuCamera className="text-black" size={24} />
+                  <div className="flex justify-center items-center rounded-full w-full h-full group-hover:scale-110 transition-transform">
+                    <LuCamera
+                      className="text-text-secondary group-hover:text-text-primary"
+                      size={24}
+                    />
                   </div>
                 </button>
               )}

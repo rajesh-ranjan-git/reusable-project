@@ -1,10 +1,12 @@
+"use client";
+
+import { useParams } from "next/navigation";
 import AppSidebar from "@/components/layout/appSidebar";
 import BottomNav from "@/components/layout/bottomNav";
 import Header from "@/components/layout/header";
 import ActivitySection from "@/components/profile/activitySection";
 import ProfileHeader from "@/components/profile/profileHeader";
 import TechStack from "@/components/profile/techStack";
-import { useParams } from "next/navigation";
 
 type User = {
   name: string;
@@ -98,14 +100,12 @@ export default function UserProfilePage() {
           <div className="mx-auto p-4 md:p-8 pb-24 md:pb-8 max-w-200">
             <ProfileHeader isOwnProfile={isOwnProfile} user={mockUser} />
 
-            <div className="bg-surface/50 shadow-lg backdrop-blur-md mb-6 p-6 border border-white/5 rounded-2xl text-text-secondary text-sm md:text-base leading-relaxed">
-              <h2 className="mb-4 font-semibold text-white text-xl">
-                About Me
-              </h2>
-              Deep learning researcher obsessed with making AI more accessible.
-              Actively seeking collaboration on open source ML orchestration
-              tools. Send me a connection request if you want to chat about
-              LLMs!
+            <div className="mb-6 p-6 leading-relaxed glass">
+              <h3 className="mb-4">About Me</h3>
+              I'm a passionate software engineer with 6+ years of experience
+              building scalable web applications. I love bridging the gap
+              between design and engineering. Currently looking for innovative
+              teams building tools for creators or developers. Let's connect!
             </div>
 
             <TechStack skills={mockSkills} />

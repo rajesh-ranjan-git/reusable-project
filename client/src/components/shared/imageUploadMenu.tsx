@@ -48,36 +48,52 @@ export default function ImageUploadMenu({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: -10 }}
           transition={{ duration: 0.15 }}
-          className={`absolute ${positionClass} w-52 bg-white/95 dark:bg-[#0B0F1A]/95 backdrop-blur-2xl border border-black/10 dark:border-white/10 rounded-xl shadow-lg dark:shadow-[0_0_30px_rgba(0,0,0,0.5)] z-(--z-dropdown) py-1`}
+          className={`absolute ${positionClass} w-64 glass-heavy backdrop-blur-md z-(--z-dropdown) pt-1 flex flex-col overflow-hidden`}
         >
-          <button
-            onClick={() => {
-              onClose();
-              onUploadClick();
-            }}
-            className="flex items-center gap-3 hover:bg-black/5 dark:hover:bg-white/10 px-4 py-3 w-full text-text-primary text-sm text-left transition-colors"
-          >
-            <LuUpload size={16} className="text-text-secondary" />
-            Upload from system
-          </button>
-          <button
-            onClick={() => {
-              onClose();
-              onCameraClick();
-            }}
-            className="flex items-center gap-3 hover:bg-black/5 dark:hover:bg-white/10 px-4 py-3 w-full text-text-primary text-sm text-left transition-colors"
-          >
-            <LuCamera size={16} className="text-text-secondary" />
-            Take a picture
-          </button>
-          <div className="bg-black/10 dark:bg-white/10 my-1 w-full h-px" />
-          <button
+          <ul className="max-h-75">
+            <li
+              onClick={() => {
+                onClose();
+                onUploadClick();
+              }}
+              className="flex items-center gap-3 hover:bg-glass-bg-hover px-4 py-2 w-full text-left"
+            >
+              <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
+                <LuUpload size={16} />
+              </div>
+              <div className="flex-1">
+                <p className="text-text-primary text-sm leading-snug">
+                  Upload from system
+                </p>
+              </div>
+            </li>
+            <li
+              onClick={() => {
+                onClose();
+                onCameraClick();
+              }}
+              className="flex items-center gap-3 hover:bg-glass-bg-hover px-4 py-2 w-full text-left"
+            >
+              <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
+                <LuCamera size={16} />
+              </div>
+              <div className="flex-1">
+                <p className="text-text-primary text-sm leading-snug">
+                  Take a picture
+                </p>
+              </div>
+            </li>
+          </ul>
+
+          <div
             onClick={onClose}
-            className="group flex items-center gap-3 hover:bg-red-50 dark:hover:bg-red-500/10 px-4 py-3 w-full text-red-500 text-sm text-left transition-colors"
+            className="flex justify-center items-center gap-2 hover:bg-status-error-bg mt-1 px-4 py-1 border-accent-purple-dark/30 border-t w-full text-status-error-text text-left cursor-pointer"
           >
-            <LuTrash2 size={16} className="group-hover:text-red-500" />
-            Remove photo
-          </button>
+            <button className="w-full h-full text-xs leading-snug">
+              <LuTrash2 size={16} />
+              Remove photo
+            </button>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

@@ -6,42 +6,64 @@ import {
   arima,
   inter,
   poppins,
+  staticImages,
   tourney,
 } from "@/config/common.config";
 import { ToastProvider } from "@/hooks/toast";
 import ThemeManager from "@/components/theme/themeManager";
-import DefaultAnimatedBackground from "@/components/background/defaultAnimatedBackground";
+import Orb from "@/components/background/orb";
+import Flash from "@/components/flash/flash";
+import Header from "@/components/layout/header";
+import AppSidebar from "@/components/layout/appSidebar";
+import Image from "next/image";
+import { MdError } from "react-icons/md";
+import ReloadButton from "@/components/errors/reloadButton";
 
-export default function GlobalError() {
+const GlobalError = () => {
   return (
     <html lang="en">
       <body
-        className={`${poppins.variable} ${inter.variable} ${alkatra.variable} ${arima.variable} ${tourney.variable} max-h-screen h-screen overflow-hidden`}
+        className={`${poppins.variable} ${inter.variable} ${alkatra.variable} ${arima.variable} ${tourney.variable} antialiased`}
         suppressHydrationWarning
       >
         <ToastProvider>
           <ThemeManager />
-          <DefaultAnimatedBackground />
-          <div className="flex flex-col justify-center items-center p-2">
-            <div className="relative flex justify-center items-center w-full h-dvh overflow-hidden font-arima">
-              <div className="flex flex-col justify-center items-center gap-8 bg-error-bg p-2 border border-error-border rounded-xl w-full max-w-7xl h-[95%] text-error-text-primary">
-                <h2 className="font-bold text-2xl text-center">
-                  Something went wrong!
-                </h2>
-                <button
-                  type="button"
-                  className="bg-error-accent px-8 py-2 border-success-border border-t border-b rounded-full text-success-text-primary hover:scale-105 transition-all ease-in-out cursor-pointer"
-                  onClick={() => {
-                    window.location.reload();
-                  }}
-                >
-                  Refresh
-                </button>
+          <Orb />
+          <Flash />
+
+          <div className="flex flex-col bg-bg-page h-dvh overflow-hidden text-text-primary">
+            <Header />
+            <main className="relative flex flex-1 overflow-hidden">
+              <div className="hidden xl:flex">
+                <AppSidebar />
               </div>
-            </div>
+
+              <div className="relative flex flex-col flex-1 justify-center items-center gap-4 bg-status-error-bg p-2 pb-20 md:pb-6 overflow-hidden">
+                <div className="relative flex justify-center w-full overflow-hidden">
+                  <Image
+                    src={staticImages.unexpectedError.src}
+                    alt={staticImages.unexpectedError.alt}
+                    width={400}
+                    height={400}
+                    className="object-contain select-none"
+                  />
+                </div>
+
+                <div className="flex justify-center items-center gap-2 mx-auto">
+                  <MdError className="text-status-error-text text-2xl md:text-5xl" />
+                  <h3 className="font-poppins text-status-error-text text-lg md:text-3xl">
+                    Oops! An unexpected error occurred.
+                  </h3>
+                </div>
+
+                <ReloadButton />
+              </div>
+            </main>
           </div>
         </ToastProvider>
       </body>
     </html>
   );
-}
+};
+
+export default GlobalError;

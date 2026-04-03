@@ -1,5 +1,7 @@
 import AuthPage from "@/components/pages/auth/authPage";
 
-export default function Home() {
+const Login = () => {
   return <AuthPage />;
-}
+};
+
+export default Login;

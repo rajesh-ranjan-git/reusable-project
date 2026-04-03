@@ -1,5 +1,7 @@
 import ChatPage from "@/components/pages/chat/chatPage";
 
-export default function Home() {
+const Chat = () => {
   return <ChatPage />;
-}
+};
+
+export default Chat;

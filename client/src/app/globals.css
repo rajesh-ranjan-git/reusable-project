@@ -884,6 +884,32 @@
     opacity: 0.4;
     margin: var(--space-6) 0;
   }
+  .divider-gradient-to-bottom {
+    border: none;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(
+      180deg,
+      var(--accent-purple),
+      var(--accent-blue),
+      transparent
+    );
+    opacity: 0.4;
+    margin: 0 var(--space-6);
+  }
+  .divider-gradient-to-top {
+    border: none;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(
+      180deg,
+      transparent,
+      var(--accent-blue),
+      var(--accent-purple)
+    );
+    opacity: 0.4;
+    margin: 0 var(--space-6);
+  }
 
   ::-webkit-scrollbar {
     width: 6px;

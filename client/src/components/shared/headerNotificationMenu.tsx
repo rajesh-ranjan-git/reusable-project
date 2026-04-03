@@ -1,4 +1,4 @@
-import { MouseEvent, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useRouter } from "next/navigation";
 import { LuHeart, LuMessageSquare, LuUserPlus } from "react-icons/lu";

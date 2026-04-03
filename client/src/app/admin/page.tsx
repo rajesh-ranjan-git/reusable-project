@@ -1,5 +1,7 @@
 import AdminDashboard from "@/components/pages/admin/adminDashboard";
 
-export default function Home() {
+const Admin = () => {
   return <AdminDashboard />;
-}
+};
+
+export default Admin;

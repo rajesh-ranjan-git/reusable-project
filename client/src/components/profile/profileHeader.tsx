@@ -13,6 +13,7 @@ import {
 import { FaEdit, FaLink } from "react-icons/fa";
 import { FiMoreHorizontal } from "react-icons/fi";
 import CameraModal from "@/components/shared/cameraModal";
+import Image from "next/image";
 
 type User = {
   name: string;
@@ -73,28 +74,40 @@ export default function ProfileHeader({
   };
 
   return (
-    <div className="z-(--z-raised) relative bg-white/60 dark:bg-surface/50 shadow-sm dark:shadow-lg backdrop-blur-md mb-6 border border-black/5 dark:border-white/5 rounded-2xl">
-      {/* Cover Image Area */}
+    <div className="z-(--z-raised) relative mb-6 glass-heavy rounded-t-2xl">
       <div className="group relative bg-black rounded-t-2xl w-full h-32 md:h-48">
-        <img
+        <Image
           src={localCover}
           alt="Cover"
+          width={1600}
+          height={800}
           className="opacity-80 group-hover:opacity-60 rounded-t-2xl w-full h-full object-cover transition-opacity cursor-pointer"
           onClick={() => handleImagePreview(localCover)}
         />
 
         {isOwnProfile && (
-          <div className="top-4 right-4 z-(--z-raised) absolute flex flex-col items-end">
+          <div className="top-4 right-4 z-(--z-modal) absolute flex flex-col items-end">
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 setActiveMenu(activeMenu === "cover" ? null : "cover");
               }}
-              className="flex items-center gap-2 bg-white hover:bg-primary dark:bg-[#0B0F1A] shadow-md dark:shadow-2xl p-2 md:px-3 border border-black/10 hover:border-primary dark:border-white/10 rounded-lg font-semibold text-text-primary hover:text-white text-xs transition-colors"
+              className="hidden relative sm:flex px-2 sm:px-4 hover:text-text-primary text-xs transition-colors text-accent-purple-light glass-interactive"
             >
-              <LuCamera size={16} />{" "}
+              <LuCamera size={16} />
               <span className="hidden sm:inline">Update Cover Photo</span>
             </button>
+
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setActiveMenu(activeMenu === "cover" ? null : "cover");
+              }}
+              className="sm:hidden relative bg-glass-bg-strong backdrop-blur-md px-2 hover:text-text-primary text-xs transition-colors text-accent-purple-dark glass-interactive"
+            >
+              <LuCamera size={18} />
+            </button>
+
             <div className="relative flex justify-end w-full">
               <ImageUploadMenu
                 isOpen={activeMenu === "cover"}
@@ -110,29 +123,31 @@ export default function ProfileHeader({
 
       <div className="z-20 relative px-6 pb-6 pointer-events-none">
         <div className="flex md:flex-row flex-col justify-between md:items-end gap-4 -mt-12 md:-mt-16 mb-4">
-          {/* Avatar Area */}
           <div className="group inline-block relative self-start md:self-auto pointer-events-auto">
-            <img
+            <Image
               src={localAvatar}
               alt={user.name}
-              className="z-(--z-base) relative bg-bg shadow-xl border-4 border-bg rounded-xl w-24 md:w-32 h-24 md:h-32 object-cover hover:scale-[1.02] transition-transform cursor-pointer"
+              width={400}
+              height={400}
+              className="z-(--z-base) relative bg-glass shadow-xl border-4 border-bg rounded-xl w-24 md:w-32 h-24 md:h-32 object-cover hover:scale-[1.02] transition-transform cursor-pointer"
               onClick={() => handleImagePreview(localAvatar)}
             />
             <div
-              className={`absolute bottom-2 right-2 w-4 h-4 rounded-full border-2 border-bg z-(--z-raised) ${user.online ? "bg-green-500" : "bg-gray-500"}`}
+              className={`absolute bottom-1 right-1 w-4 h-4 rounded-full border-2 border-bg z-(--z-raised) ${user.online ? "bg-green-500" : "bg-gray-500"}`}
             ></div>
 
             {isOwnProfile && (
-              <div className="-top-3 -right-3 z-30 absolute">
+              <div className="-top-2 -right-2 z-30 absolute">
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     setActiveMenu(activeMenu === "avatar" ? null : "avatar");
                   }}
-                  className="bg-white hover:bg-primary dark:bg-[#0B0F1A] shadow-md dark:shadow-2xl p-2 border-2 border-primary/50 hover:border-primary rounded-full text-text-primary hover:text-white transition-colors"
+                  className="relative bg-glass-bg-strong backdrop-blur-md px-2 hover:text-text-primary text-xs transition-colors text-accent-purple-dark glass-interactive"
                 >
                   <LuCamera size={18} />
                 </button>
+
                 <ImageUploadMenu
                   isOpen={activeMenu === "avatar"}
                   onClose={() => setActiveMenu(null)}
@@ -146,20 +161,20 @@ export default function ProfileHeader({
 
           <div className="flex items-center gap-3 pointer-events-auto">
             {isOwnProfile ? (
-              <button className="flex items-center gap-2 bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/20 px-5 py-2.5 border border-black/10 dark:border-white/10 rounded-lg focus:ring-2 focus:ring-primary/20 font-medium text-text-primary text-sm transition-colors">
+              <button className="text-sm btn btn-secondary">
                 <FaEdit size={16} />
                 Update Profile
               </button>
             ) : (
               <>
-                <button className="flex items-center gap-2 bg-primary hover:bg-indigo-600 active:bg-indigo-700 shadow-md shadow-primary/20 px-5 py-2.5 rounded-lg font-medium text-white text-sm transition-colors">
+                <button className="flex items-center gap-2 px-5 py-2 btn btn-primary">
                   <LuUserPlus size={16} />
                   Connect
                 </button>
-                <button className="flex items-center gap-2 bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/20 px-4 py-2.5 border border-black/10 dark:border-white/10 rounded-lg focus:ring-2 focus:ring-primary/20 text-text-primary transition-colors">
+                <button className="flex items-center gap-2 p-3 focus:ring-1 focus:ring-accent-purple-light glass">
                   <LuMessageSquare size={16} />
                 </button>
-                <button className="flex items-center gap-2 bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/20 px-3 py-2.5 border border-black/10 dark:border-white/10 rounded-lg focus:ring-2 focus:ring-primary/20 text-text-primary transition-colors">
+                <button className="flex items-center gap-2 p-3 focus:ring-1 focus:ring-accent-purple-light glass">
                   <FiMoreHorizontal size={16} />
                 </button>
               </>
@@ -168,9 +183,7 @@ export default function ProfileHeader({
         </div>
 
         <div className="pointer-events-auto">
-          <h1 className="font-bold text-text-primary text-2xl md:text-3xl tracking-tight">
-            {user.name}
-          </h1>
+          <h1 className="font-arima font-extrabold">{user.name}</h1>
           <p className="mt-1 text-text-secondary text-base md:text-lg">
             {user.headline}
           </p>
@@ -216,14 +229,15 @@ export default function ProfileHeader({
         createPortal(
           <AnimatePresence>
             {previewImage && (
-              <div className="z-130 fixed inset-0 flex justify-center items-center p-4">
+              <div className="z-200 fixed inset-0 flex justify-center items-center p-4">
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="absolute inset-0 bg-black/90 backdrop-blur-md"
+                  className="absolute inset-0 backdrop-blur-md"
                   onClick={() => setPreviewImage(null)}
                 />
+
                 <motion.img
                   key={previewImage}
                   initial={{ scale: 0.8, opacity: 0, y: 20 }}
@@ -236,11 +250,12 @@ export default function ProfileHeader({
                   transition={{ type: "spring", damping: 20, stiffness: 300 }}
                   src={previewImage}
                   alt="Preview"
-                  className="z-(--z-raised) relative shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-xl max-w-full max-h-[90vh] object-contain"
+                  className="relative shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-xl max-w-full max-h-[90vh] object-contain"
                   onClick={(e) => e.stopPropagation()}
                 />
+
                 <button
-                  className="top-6 right-6 z-20 absolute bg-white/10 hover:bg-white/20 p-2 rounded-full text-white transition-colors"
+                  className="top-6 right-6 absolute p-2 rounded-full glass"
                   onClick={() => setPreviewImage(null)}
                 >
                   <LuX size={24} />

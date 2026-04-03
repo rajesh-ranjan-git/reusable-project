@@ -69,7 +69,7 @@ export default function AppSidebar({ setIsSidebarOpen }: AppSidebarProps) {
       <div className="p-2 pt-3 border-glass-border border-b">
         <h2 className="font-arima md:text-3xl tracking-wider">Network</h2>
       </div>
-      <div className="md:hidden p-2 pb-0 md:">
+      <div className="md:hidden p-2">
         <div className="relative flex-1 max-w-md">
           <LuSearch className="top-1/2 left-3 absolute w-4 h-4 text-text-secondary -translate-y-1/2 shrink-0 z-(--z-raised)" />
           <input

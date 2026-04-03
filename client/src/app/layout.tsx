@@ -12,7 +12,6 @@ import { ReactNodeProps } from "@/types/propTypes";
 import { ToastProvider } from "@/hooks/toast";
 import Banner from "@/lib/banner/banner";
 import ThemeManager from "@/components/theme/themeManager";
-import DefaultAnimatedBackground from "@/components/background/defaultAnimatedBackground";
 import Flash from "@/components/flash/flash";
 import ErrorWrapper from "@/components/errors/errorWrapper";
 import Orb from "@/components/background/orb";
@@ -26,7 +25,7 @@ export const metadata: Metadata = {
   description: "Your application's description.",
 };
 
-export default function RootLayout({ children }: Readonly<ReactNodeProps>) {
+const RootLayout = ({ children }: Readonly<ReactNodeProps>) => {
   return (
     <html lang="en">
       <body
@@ -43,4 +42,6 @@ export default function RootLayout({ children }: Readonly<ReactNodeProps>) {
       </body>
     </html>
   );
-}
+};
+
+export default RootLayout;

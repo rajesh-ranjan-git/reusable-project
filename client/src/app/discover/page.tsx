@@ -1,5 +1,7 @@
 import DiscoverPage from "@/components/pages/discover/discoverPage";
 
-export default function Home() {
+const Discover = () => {
   return <DiscoverPage />;
-}
+};
+
+export default Discover;

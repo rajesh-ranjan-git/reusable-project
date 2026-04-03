@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import AppSidebar from "@/components/layout/appSidebar";
 import BottomNav from "@/components/layout/bottomNav";
@@ -113,10 +115,8 @@ export default function ProfilePage() {
           <div className="mx-auto p-4 md:p-8 pb-24 md:pb-8 max-w-200">
             <ProfileHeader isOwnProfile={isOwnProfile} user={mockUser} />
 
-            <div className="bg-surface/50 shadow-lg backdrop-blur-md mb-6 p-6 border border-white/5 rounded-2xl text-text-secondary text-sm md:text-base leading-relaxed">
-              <h2 className="mb-4 font-semibold text-white text-xl">
-                About Me
-              </h2>
+            <div className="mb-6 p-6 leading-relaxed glass">
+              <h3 className="mb-4">About Me</h3>
               I'm a passionate software engineer with 6+ years of experience
               building scalable web applications. I love bridging the gap
               between design and engineering. Currently looking for innovative
