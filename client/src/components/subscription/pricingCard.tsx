@@ -40,17 +40,17 @@ export default function PricingCard({
         </div>
       )}
 
-      <div className="z-10 mb-6">
+      <div className="z-(--z-raised) mb-6">
         <h3 className="mb-2 font-poppins text-3xl">{name}</h3>
         <p>{description}</p>
       </div>
 
-      <div className="z-10 flex items-end gap-1 mb-8">
+      <div className="z-(--z-raised) flex items-end gap-1 mb-8">
         <span className="font-extrabold text-4xl">${price}</span>
         <span className="pb-1 font-medium text-text-secondary">/mo</span>
       </div>
 
-      <div className="z-10 flex-1 mb-8">
+      <div className="z-(--z-raised) flex-1 mb-8">
         <ul className="space-y-4">
           {features.map((feature, idx) => (
             <li key={idx} className="flex items-start gap-3">
@@ -65,7 +65,7 @@ export default function PricingCard({
 
       <Link
         href="/subscription/payment"
-        className={`w-full btn flex items-center justify-center gap-2 py-3 rounded-xl font-medium transition-all z-10 ${
+        className={`w-full btn flex items-center justify-center gap-2 py-3 rounded-xl font-medium transition-all z-(--z-raised) ${
           highlighted
             ? "btn-primary text-text-on-accent border border-transparent group-hover:border-accent-purple-light"
             : "btn-secondary"

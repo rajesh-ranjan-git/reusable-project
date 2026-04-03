@@ -6,7 +6,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="z-100 fixed inset-0 flex justify-center items-center p-4">
+    <div className="z-(--z-raised)0 fixed inset-0 flex justify-center items-center p-4">
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onClose}

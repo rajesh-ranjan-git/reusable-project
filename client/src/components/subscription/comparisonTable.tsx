@@ -67,7 +67,7 @@ export default function ComparisonTable() {
       </div>
 
       <div className="w-full min-w-175">
-        <div className="top-0 z-10 sticky gap-4 grid grid-cols-4 bg-glass-bg hover:bg-glass-bg-hover backdrop-blur-md p-4 rounded-t-md text-lg">
+        <div className="top-0 z-(--z-raised) sticky gap-4 grid grid-cols-4 bg-glass-bg hover:bg-glass-bg-hover backdrop-blur-md p-4 rounded-t-md text-lg">
           <div className="col-span-1"></div>
           <div className="font-bold text-text-secondary text-center">Free</div>
           <div className="font-bold text-center">Pro</div>

@@ -82,23 +82,23 @@ export default function HeaderNotificationMenu({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: -10 }}
           transition={{ duration: 0.15 }}
-          className={`absolute ${positionClass} w-72 bg-white/95 dark:bg-[#0B0F1A]/95 backdrop-blur-2xl border border-black/10 dark:border-white/10 rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.1)] dark:shadow-[0_0_40px_rgba(0,0,0,0.6)] z-50 py-1 flex flex-col`}
+          className={`absolute ${positionClass} w-72 glass-heavy backdrop-blur-md z-(--z-dropdown) pt-1 flex flex-col overflow-hidden`}
         >
-          <div className="mb-1 px-4 py-3 border-black/10 dark:border-white/10 border-b">
-            <h3 className="font-semibold text-text-primary">Notifications</h3>
+          <div className="mb-1 px-4 py-3 border-accent-purple-dark/30 border-b">
+            <h4 className="font-poppins text-center">Notifications</h4>
           </div>
 
-          <div className="max-h-75 overflow-y-auto custom-scrollbar">
+          <ul className="max-h-75 overflow-y-auto custom-scrollbar">
             {notifications.length > 0 ? (
               notifications.map((notification) => {
                 const Icon = notification.icon;
                 return (
-                  <button
+                  <li
                     key={notification.id}
                     onClick={() => handleNavigation(notification.path)}
-                    className="flex items-start gap-3 hover:bg-black/5 dark:hover:bg-white/10 px-4 py-3 w-full text-left transition-colors"
+                    className="flex items-start gap-3 hover:bg-glass-bg-hover px-4 py-3 w-full text-left"
                   >
-                    <div className="bg-black/5 dark:bg-white/5 mt-0.5 p-1.5 border border-black/5 dark:border-white/5 rounded-full">
+                    <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
                       <Icon size={16} className={notification.color} />
                     </div>
                     <div className="flex-1">
@@ -109,7 +109,7 @@ export default function HeaderNotificationMenu({
                         {notification.time}
                       </p>
                     </div>
-                  </button>
+                  </li>
                 );
               })
             ) : (
@@ -117,13 +117,13 @@ export default function HeaderNotificationMenu({
                 No new notifications
               </div>
             )}
-          </div>
+          </ul>
 
-          <div className="mt-1 py-1 border-black/10 dark:border-white/10 border-t">
-            <button
-              onClick={onClose}
-              className="hover:bg-black/5 dark:hover:bg-white/10 px-4 py-3 w-full font-medium text-primary hover:text-indigo-400 text-xs text-center transition-colors"
-            >
+          <div
+            onClick={onClose}
+            className="flex justify-center items-center gap-2 hover:bg-glass-bg-hover mt-1 px-4 py-1 border-accent-purple-dark/30 border-t w-full text-status-error-text text-left cursor-pointer"
+          >
+            <button className="w-full h-full text-text-secondary hover:text-text-primary text-xs leading-snug">
               Mark all as read
             </button>
           </div>

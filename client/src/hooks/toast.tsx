@@ -254,7 +254,9 @@ const ToastContainer: React.FC<{
   onRemove: (id: string) => void;
 }> = ({ toasts, position, onRemove }) => {
   return (
-    <div className={`fixed ${positionStyles[position]} z-50 flex flex-col`}>
+    <div
+      className={`fixed ${positionStyles[position]} z-(--z-dropdown) flex flex-col`}
+    >
       {toasts.map((toast, index) => (
         <ToastItem
           key={toast.id}

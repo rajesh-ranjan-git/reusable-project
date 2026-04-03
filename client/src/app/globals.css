@@ -411,14 +411,16 @@
   }
   h4 {
     font-size: 1.25rem;
+    font-family: var(--font-poppins);
   }
   h5 {
     font-size: 1rem;
+    font-family: var(--font-poppins);
   }
   h6 {
     font-size: 0.875rem;
     letter-spacing: 0.05em;
-    text-transform: uppercase;
+    font-family: var(--font-poppins);
   }
 
   p {

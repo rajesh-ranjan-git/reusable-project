@@ -36,7 +36,7 @@ export default function PaymentPage() {
 
   return (
     <div className="min-h-screen text-text-primary">
-      <header className="top-0 z-50 sticky flex items-center backdrop-blur-md px-4 md:px-8 border-white/10 border-b h-20">
+      <header className="top-0 z-(--z-dropdown) sticky flex items-center backdrop-blur-md px-4 md:px-8 border-white/10 border-b h-20">
         <Link
           href="/subscription"
           className="group flex items-center gap-2 px-2 py-1 text-text-secondary hover:text-white transition-colors"

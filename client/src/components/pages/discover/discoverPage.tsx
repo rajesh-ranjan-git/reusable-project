@@ -73,7 +73,7 @@ export default function DiscoverPage() {
   };
 
   return (
-    <div className="flex flex-col bg-bg h-dvh overflow-hidden text-text-primary">
+    <div className="flex flex-col bg-bg-page h-dvh overflow-hidden text-text-primary">
       <Header />
 
       <main className="relative flex flex-1 overflow-hidden">
@@ -84,11 +84,11 @@ export default function DiscoverPage() {
         <div className="relative flex flex-col flex-1 justify-center items-center p-4 pb-20 md:pb-6 overflow-hidden">
           <div className="relative flex justify-center items-center w-full max-w-90 md:max-w-md h-137.5 md:h-150">
             {profiles.length === 0 ? (
-              <div className="bg-surface/30 backdrop-blur-sm p-8 border border-white/5 rounded-3xl w-full text-center">
-                <div className="flex justify-center items-center bg-primary/20 mx-auto mb-4 border border-primary/30 rounded-full w-20 h-20">
+              <div className="p-8 border w-full text-center glass">
+                <div className="flex justify-center items-center mx-auto mb-4 border border-glass-border-accent rounded-full w-20 h-20 r">
                   <span className="text-3xl">🚀</span>
                 </div>
-                <h3 className="mb-2 font-bold text-white text-xl">
+                <h3 className="mb-2 font-bold text-text-primary text-xl">
                   You're all caught up!
                 </h3>
                 <p className="text-text-secondary text-sm">

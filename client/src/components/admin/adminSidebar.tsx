@@ -41,7 +41,7 @@ export default function AdminSidebar({
 
       <aside
         className={`
-        fixed inset-y-0 left-0 z-50 bg-bg/95 backdrop-blur-md border-r border-white/10 flex flex-col transition-all duration-300
+        fixed inset-y-0 left-0 z-(--z-dropdown) bg-bg/95 backdrop-blur-md border-r border-white/10 flex flex-col transition-all duration-300
         ${collapsed ? "w-20" : "w-64"}
         ${isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
       `}

@@ -67,7 +67,7 @@ export default function ChatWindow({ chat, onBack }: ChatWindowProps) {
   return (
     <div className="relative flex flex-col flex-1 bg-bg w-full h-full">
       {/* Header */}
-      <div className="z-10 flex justify-between items-center bg-white/90 dark:bg-surface/50 backdrop-blur-md px-4 border-black/10 dark:border-white/10 border-b w-full h-16">
+      <div className="z-(--z-raised) flex justify-between items-center bg-white/90 dark:bg-surface/50 backdrop-blur-md px-4 border-black/10 dark:border-white/10 border-b w-full h-16">
         <div className="flex items-center gap-3">
           <button
             onClick={onBack}
@@ -102,7 +102,7 @@ export default function ChatWindow({ chat, onBack }: ChatWindowProps) {
         </div>
       </div>
 
-      <div className="z-0 relative flex flex-col flex-1 p-4 pb-20 md:pb-4 overflow-y-auto custom-scrollbar">
+      <div className="z-(--z-base) relative flex flex-col flex-1 p-4 pb-20 md:pb-4 overflow-y-auto custom-scrollbar">
         <div className="my-4 font-medium text-text-secondary text-xs text-center">
           Yesterday
         </div>
@@ -117,7 +117,7 @@ export default function ChatWindow({ chat, onBack }: ChatWindowProps) {
         ))}
       </div>
 
-      <div className="bottom-0 z-10 md:static absolute bg-white/80 dark:bg-surface/80 backdrop-blur-xl p-3 md:p-4 border-black/10 dark:border-white/10 border-t w-full">
+      <div className="bottom-0 z-(--z-raised) md:static absolute bg-white/80 dark:bg-surface/80 backdrop-blur-xl p-3 md:p-4 border-black/10 dark:border-white/10 border-t w-full">
         <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 px-2 py-2 border border-black/10 focus-within:border-primary/50 dark:border-white/10 rounded-xl transition-colors">
           <button className="hover:bg-black/10 dark:hover:bg-white/10 p-2 rounded-lg text-text-secondary hover:text-text-primary transition-colors">
             <LuPaperclip size={20} />

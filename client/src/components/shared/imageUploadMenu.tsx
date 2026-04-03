@@ -48,7 +48,7 @@ export default function ImageUploadMenu({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: -10 }}
           transition={{ duration: 0.15 }}
-          className={`absolute ${positionClass} w-52 bg-white/95 dark:bg-[#0B0F1A]/95 backdrop-blur-2xl border border-black/10 dark:border-white/10 rounded-xl shadow-lg dark:shadow-[0_0_30px_rgba(0,0,0,0.5)] z-50 py-1`}
+          className={`absolute ${positionClass} w-52 bg-white/95 dark:bg-[#0B0F1A]/95 backdrop-blur-2xl border border-black/10 dark:border-white/10 rounded-xl shadow-lg dark:shadow-[0_0_30px_rgba(0,0,0,0.5)] z-(--z-dropdown) py-1`}
         >
           <button
             onClick={() => {

@@ -85,7 +85,7 @@ export default function AuthPage() {
     <LayoutGroup>
       <div className="fixed inset-0 flex justify-center items-center selection:bg-primary/30 p-4 sm:p-6 w-full h-dvh">
         <div
-          className={`relative z-10 w-full max-w-7xl glass rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row h-full max-h-212.5 min-h-0 transition-all duration-1000 isolate ${!isLogin ? "md:flex-row-reverse" : ""}`}
+          className={`relative z-(--z-raised) w-full max-w-7xl glass overflow-hidden flex flex-col md:flex-row h-full max-h-212.5 min-h-0 transition-all duration-1000 isolate ${!isLogin ? "md:flex-row-reverse" : ""}`}
         >
           <motion.div
             layout
@@ -155,7 +155,7 @@ export default function AuthPage() {
           <motion.div
             layout
             transition={{ type: "tween", ease: "easeInOut", duration: 0.8 }}
-            className="z-10 relative flex flex-col md:flex-none bg-surface w-full md:w-1/2 min-h-[65%] shrink-0"
+            className="z-(--z-raised) relative flex flex-col md:flex-none w-full md:w-1/2 min-h-[65%] shrink-0"
           >
             <AnimatePresence mode="wait">
               {isLogin ? (
@@ -177,7 +177,7 @@ export default function AuthPage() {
                           type="email"
                           placeholder="you@example.com"
                           value={formData.email}
-                          className="pr-8"
+                          className="pr-9"
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             handleChange("email", e.target.value)
                           }
@@ -191,7 +191,7 @@ export default function AuthPage() {
                           type={showPassword ? "text" : "password"}
                           placeholder="Password"
                           value={formData.password}
-                          className="pr-8"
+                          className="pr-9"
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             handleChange("password", e.target.value)
                           }
@@ -282,7 +282,7 @@ export default function AuthPage() {
                           type="email"
                           placeholder="you@example.com"
                           value={formData.email}
-                          className="pr-8"
+                          className="pr-9"
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             handleChange("email", e.target.value)
                           }
@@ -296,7 +296,7 @@ export default function AuthPage() {
                           type="text"
                           placeholder="Full Name"
                           value={formData.name}
-                          className="pr-8"
+                          className="pr-9"
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             handleChange("name", e.target.value)
                           }
@@ -310,7 +310,7 @@ export default function AuthPage() {
                           type={showPassword ? "text" : "password"}
                           placeholder="Password"
                           value={formData.password}
-                          className="pr-8"
+                          className="pr-9"
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             handleChange("password", e.target.value)
                           }

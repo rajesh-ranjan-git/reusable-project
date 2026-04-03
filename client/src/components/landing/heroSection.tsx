@@ -53,7 +53,7 @@ export default function HeroSection() {
             <img
               src="https://i.pravatar.cc/100?u=3"
               alt="User"
-              className="z-10 relative border-2 border-bg rounded-full w-8 h-8"
+              className="z-(--z-raised) relative border-2 border-bg rounded-full w-8 h-8"
             />
           </div>
           <p>Joined by 10,000+ developers worldwide</p>

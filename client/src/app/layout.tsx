@@ -36,7 +36,6 @@ export default function RootLayout({ children }: Readonly<ReactNodeProps>) {
         <ToastProvider>
           <Banner nodeVersion={process.version} />
           <ThemeManager />
-          {/* <DefaultAnimatedBackground /> */}
           <Orb />
           <Flash />
           <ErrorWrapper>{children}</ErrorWrapper>

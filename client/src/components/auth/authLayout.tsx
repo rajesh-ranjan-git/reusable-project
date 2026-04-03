@@ -16,7 +16,7 @@ export default function AuthLayout({
 }: AuthLayoutProps) {
   return (
     <div className="relative flex justify-center items-start md:items-center px-4 md:px-4 py-20 h-dvh overflow-hidden">
-      <div className="z-10 relative w-full max-w-md">
+      <div className="z-(--z-raised) relative w-full max-w-md">
         <div className="mb-8 text-center">
           <Link
             href="/discover"

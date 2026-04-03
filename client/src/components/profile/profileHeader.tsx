@@ -73,7 +73,7 @@ export default function ProfileHeader({
   };
 
   return (
-    <div className="z-10 relative bg-white/60 dark:bg-surface/50 shadow-sm dark:shadow-lg backdrop-blur-md mb-6 border border-black/5 dark:border-white/5 rounded-2xl">
+    <div className="z-(--z-raised) relative bg-white/60 dark:bg-surface/50 shadow-sm dark:shadow-lg backdrop-blur-md mb-6 border border-black/5 dark:border-white/5 rounded-2xl">
       {/* Cover Image Area */}
       <div className="group relative bg-black rounded-t-2xl w-full h-32 md:h-48">
         <img
@@ -84,7 +84,7 @@ export default function ProfileHeader({
         />
 
         {isOwnProfile && (
-          <div className="top-4 right-4 z-10 absolute flex flex-col items-end">
+          <div className="top-4 right-4 z-(--z-raised) absolute flex flex-col items-end">
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -115,11 +115,11 @@ export default function ProfileHeader({
             <img
               src={localAvatar}
               alt={user.name}
-              className="z-0 relative bg-bg shadow-xl border-4 border-bg rounded-xl w-24 md:w-32 h-24 md:h-32 object-cover hover:scale-[1.02] transition-transform cursor-pointer"
+              className="z-(--z-base) relative bg-bg shadow-xl border-4 border-bg rounded-xl w-24 md:w-32 h-24 md:h-32 object-cover hover:scale-[1.02] transition-transform cursor-pointer"
               onClick={() => handleImagePreview(localAvatar)}
             />
             <div
-              className={`absolute bottom-2 right-2 w-4 h-4 rounded-full border-2 border-bg z-10 ${user.online ? "bg-green-500" : "bg-gray-500"}`}
+              className={`absolute bottom-2 right-2 w-4 h-4 rounded-full border-2 border-bg z-(--z-raised) ${user.online ? "bg-green-500" : "bg-gray-500"}`}
             ></div>
 
             {isOwnProfile && (
@@ -236,7 +236,7 @@ export default function ProfileHeader({
                   transition={{ type: "spring", damping: 20, stiffness: 300 }}
                   src={previewImage}
                   alt="Preview"
-                  className="z-10 relative shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-xl max-w-full max-h-[90vh] object-contain"
+                  className="z-(--z-raised) relative shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-xl max-w-full max-h-[90vh] object-contain"
                   onClick={(e) => e.stopPropagation()}
                 />
                 <button

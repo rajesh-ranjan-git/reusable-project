@@ -20,12 +20,12 @@ export default function ChatPage() {
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
 
   return (
-    <div className="flex flex-col bg-bg h-dvh overflow-hidden text-text-primary">
+    <div className="flex flex-col bg-bg-page h-dvh overflow-hidden text-text-primary">
       <Header />
 
       <main className="relative flex flex-1 overflow-hidden">
         <div
-          className={`w-full h-full md:w-72 lg:w-80 shrink-0 md:flex ${selectedChat ? "hidden md:flex" : "flex"}`}
+          className={`w-full h-full pb-16 md:pb-0 md:w-72 lg:w-80 shrink-0 md:flex ${selectedChat ? "hidden md:flex" : "flex"}`}
         >
           <ChatList
             selectedChatId={selectedChat?.id ?? null}
