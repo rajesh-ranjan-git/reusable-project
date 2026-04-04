@@ -18,7 +18,7 @@ type ActivitySectionProps = { activities: Activity[] };
 export default function ActivitySection({ activities }: ActivitySectionProps) {
   return (
     <div className="mb-8 md:mb-6 p-6 glass">
-      <h3 className="mb-4">Tech Stack & Expertise</h3>
+      <h3 className="mb-4">Recent Activities</h3>
 
       <div className="space-y-0">
         {activities.map((activity, idx) => {
@@ -60,10 +60,8 @@ export default function ActivitySection({ activities }: ActivitySectionProps) {
                   {activity.date}
                 </p>
                 <div className="p-4 glass">
-                  <h4 className="mb-1.5 font-medium text-lg">
-                    {activity.title}
-                  </h4>
-                  <p className="text-text-secondary text-sm leading-relaxed">
+                  <h6 className="mb-4 break-all">{activity.title}</h6>
+                  <p className="text-text-secondary text-xs md:text-sm leading-relaxed">
                     {activity.description}
                   </p>
                 </div>
