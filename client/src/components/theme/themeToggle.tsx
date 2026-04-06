@@ -16,7 +16,7 @@ const ThemeToggle = () => {
   };
 
   return (
-    <div className="p-1 rounded-full btn btn-secondary">
+    <div className="p-0.5 md:p-1 rounded-full btn btn-secondary">
       <input
         type="checkbox"
         id="theme-toggle"
