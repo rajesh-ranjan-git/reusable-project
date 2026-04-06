@@ -1,6 +1,6 @@
 export const appConfig = {
-  name: "Your App Name",
-  description: "Your applications's description",
+  name: "App Name",
+  description: "App's description",
 };
 
 export const bannerFontsConfig = {

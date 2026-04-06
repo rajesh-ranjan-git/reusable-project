@@ -22,8 +22,11 @@ REFRESH_TOKEN_SECRET=refresh-token-secret
 ACCESS_TOKEN_EXPIRY=15m
 REFRESH_TOKEN_EXPIRY=7d
 
+# VAPID Configurations
+VAPID_PUBLIC_KEY=BO6JKr2lz0ztteYnW9Q0TtK9FMKbNBSwKWruOUvqty-kHj6Z77PhZUbWwLGXlg3_lyvO2UMuCOUxrLqpr62ZPl0
+VAPID_PRIVATE_KEY=JtsYc4J2re1utpCyI4L3GqNBg6iCQ2y1ADPlNMZxFdo
 
-# Email Configiurations
+# Email Configurations
 SMTP_FROM=noreply@yourappname.com
 SMTP_HOST=your-app-smtp-host
 SMTP_PORT=587

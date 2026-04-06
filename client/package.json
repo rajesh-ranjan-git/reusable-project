@@ -1,16 +1,16 @@
 {
-  "name": "your-app-name",
+  "name": "app-name",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Your application's description.",
+  "description": "App's description.",
   "keywords": [
     "keywords"
   ],
   "author": "Rajesh Ranjan",
   "scripts": {
     "dev": "concurrently --names \"🧩 CLIENT 🧩,🤖 BACKEND 🤖\" --prefix \"[{name}]\" --timestamp --timestamp-format \"HH:mm:ss\" --prefix-colors \"yellow,green\" \"cross-env NODE_ENV=development next dev\" \"cross-env NODE_ENV=development CONCURRENTLY=true nodemon --quiet ../backendJS/src/server.js\"",
-    "build": "concurrently --names \"🧩 CLIENT  🧩,🤖 BACKEND 🤖\" --prefix \"[{name}]\" --timestamp --timestamp-format \"HH:mm:ss\" --prefix-colors \"yellow,green\" \"cross-env NODE_ENV=development next build\" \"cross-env NODE_ENV=development CONCURRENTLY=true nodemon --quiet ../backendJS/src/server.js\"",
+    "build": "next build",
     "start": "concurrently --names \"🧩 CLIENT  🧩,🤖 BACKEND 🤖\" --prefix \"[{name}]\" --timestamp --timestamp-format \"HH:mm:ss\" --prefix-colors \"yellow,green\" \"cross-env NODE_ENV=development next start\" \"cross-env NODE_ENV=development CONCURRENTLY=true nodemon --quiet ../backendJS/src/server.js\"",
     "lint": "eslint"
   },
@@ -18,11 +18,12 @@
     "boxen": "^8.0.1",
     "concurrently": "^9.2.1",
     "cross-env": "^10.1.0",
-    "dotenv": "^17.3.1",
+    "dotenv": "^17.4.1",
     "figlet": "^1.11.0",
     "gradient-string": "^3.0.0",
+    "idb": "^8.0.3",
     "motion": "^12.38.0",
-    "next": "16.2.1",
+    "next": "16.2.2",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-icons": "^5.6.0",
@@ -38,7 +39,7 @@
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
-    "eslint-config-next": "16.2.1",
+    "eslint-config-next": "16.2.2",
     "tailwindcss": "^4",
     "typescript": "^5.9"
   }

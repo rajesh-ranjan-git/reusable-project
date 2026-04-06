@@ -9,8 +9,9 @@ import {
   tourney,
 } from "@/config/common.config";
 import { ReactNodeProps } from "@/types/propTypes";
-import { ToastProvider } from "@/hooks/toast";
 import Banner from "@/lib/banner/banner";
+import ServiceWorkerRegister from "@/components/serviceWorker/serviceWorker";
+import { ToastProvider } from "@/hooks/toast";
 import ThemeManager from "@/components/theme/themeManager";
 import Flash from "@/components/flash/flash";
 import ErrorWrapper from "@/components/errors/errorWrapper";
@@ -22,7 +23,9 @@ export const metadata: Metadata = {
     default: "App Name",
     template: "%s | App Name",
   },
-  description: "Your application's description.",
+  description: "App's description.",
+  manifest: "/manifest/manifest.json",
+  themeColor: "#6366f1",
 };
 
 const RootLayout = ({ children }: Readonly<ReactNodeProps>) => {
@@ -32,6 +35,7 @@ const RootLayout = ({ children }: Readonly<ReactNodeProps>) => {
         className={`${alkatra.variable} ${arima.variable} ${inter.variable} ${poppins.variable} ${tourney.variable} antialiased`}
         suppressHydrationWarning
       >
+        <ServiceWorkerRegister />
         <ToastProvider>
           <Banner nodeVersion={process.version} />
           <ThemeManager />

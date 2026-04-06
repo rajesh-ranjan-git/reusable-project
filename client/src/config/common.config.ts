@@ -30,7 +30,7 @@ export const staticImages: StaticImageType = {
 
 export const appConfig = {
   name: "App Name",
-  description: "Your applications's description.",
+  description: "App's description.",
 };
 
 export const alkatra = Alkatra({

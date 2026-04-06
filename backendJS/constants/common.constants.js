@@ -19,6 +19,9 @@ export const REFRESH_TOKEN_EXPIRY = process.env.REFRESH_TOKEN_EXPIRY || "7d";
 export const JWT_ISSUER = process.env.JWT_ISSUER || "backend";
 export const JWT_AUDIENCE = process.env.JWT_AUDIENCE || "client";
 
+export const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY;
+export const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY;
+
 export const NAME_REGEX = /^[A-Za-z]+$/;
 export const USERNAME_REGEX = /^[A-Za-z0-9!@#$%&_]{4,}$/;
 export const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
