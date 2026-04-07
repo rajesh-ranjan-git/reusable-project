@@ -6,6 +6,8 @@ import ActivityLog from "../../models/auth/activityLog.model.js";
 import { sessionService } from "../../services/auth/session.service.js";
 import { asyncHandler } from "../../utils/common.utils.js";
 import { successResponseHandler } from "../../utils/response.utils.js";
+import { emailValidator } from "../../validators/auth.validator.js";
+import AppError from "../../errors/app.error.js";
 
 export const getAccountInfo = asyncHandler(async (req, res) => {
   const [account, profile] = await Promise.all([
@@ -40,10 +42,19 @@ export const updateEmail = asyncHandler(async (req, res) => {
   }
 
   const existing = await Account.findOne({ email: validatedEmail });
+
   if (existing && existing.user.toString() !== req.data.userId) {
     throw AppError.conflict({
       message:
         "This email is associated with another account, please use a different email!",
+      code: "EMAIL UPDATE FAILED",
+      details: { email: validatedEmail },
+    });
+  }
+
+  if (existing && existing.user.toString() === req.data.userId) {
+    throw AppError.conflict({
+      message: "This email is already updated on your account!",
       code: "EMAIL UPDATE FAILED",
       details: { email: validatedEmail },
     });
@@ -60,7 +71,7 @@ export const updateEmail = asyncHandler(async (req, res) => {
   });
 
   successResponseHandler(req, res, {
-    status: "UPDATE EMAIL SUCCESS",
+    status: "EMAIL UPDATE SUCCESS",
     message: "Email updated successfully!",
   });
 });

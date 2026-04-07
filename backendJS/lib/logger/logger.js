@@ -243,12 +243,6 @@ const logger = {
     const incomingError = args[0].appError;
     const incomingErrorMetadata = args[0].metadata;
 
-    console.log("debug from logger incomingError:", incomingError);
-    console.log(
-      "debug from logger incomingErrorMetadata:",
-      incomingErrorMetadata,
-    );
-
     if (incomingError && incomingErrorMetadata) {
       const argsToPrint = [
         incomingError.metadata.method || incomingErrorMetadata.metadata.method

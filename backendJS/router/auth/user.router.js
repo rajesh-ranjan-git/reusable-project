@@ -6,20 +6,28 @@ import {
   getDashboardSummary,
 } from "../../controllers/auth/user.controller.js";
 import { requestMiddleware } from "../../middlewares/request.middleware.js";
+import { authenticate } from "../../middlewares/auth.middleware.js";
 
 const userRouter = express.Router();
 
-userRouter.get("/get-account-info", requestMiddleware({}), getAccountInfo);
+userRouter.get("/account", requestMiddleware({}), authenticate, getAccountInfo);
 userRouter.get(
-  "/get-dashboard-summary",
+  "/dashboard/summary",
   requestMiddleware({}),
+  authenticate,
   getDashboardSummary,
 );
 userRouter.put(
-  "/update-email",
+  "/email",
   requestMiddleware({ requireBody: true }),
+  authenticate,
   updateEmail,
 );
-userRouter.delete("/delete-account", requestMiddleware({}), deleteAccount);
+userRouter.delete(
+  "/account",
+  requestMiddleware({}),
+  authenticate,
+  deleteAccount,
+);
 
 export default userRouter;

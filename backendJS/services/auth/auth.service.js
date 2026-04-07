@@ -112,7 +112,7 @@ class AuthService {
       throw AppError.notFound({
         message: "User account does not exist!",
         code: "ACCOUNT NOT FOUND",
-        details: { user: payload.userId },
+        details: { user },
       });
     }
 
@@ -120,7 +120,7 @@ class AuthService {
       throw AppError.unauthorized({
         message: "User account has been deleted!",
         code: "ACCOUNT DELETED",
-        details: { user: payload.userId },
+        details: { user },
       });
     }
 
@@ -128,7 +128,7 @@ class AuthService {
       throw AppError.unauthorized({
         message: "User account has been suspended!",
         code: "ACCOUNT SUSPENDED",
-        details: { user: payload.userId },
+        details: { user },
       });
     }
 
