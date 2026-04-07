@@ -30,7 +30,21 @@ export const getMyProfile = asyncHandler(async (req, res) => {
 export const getUserProfile = asyncHandler(async (req, res) => {
   const { username } = req.data.params;
 
-  const profile = await Profile.findOne({ userName: username.toLowerCase() })
+  const {
+    isUserNameValid,
+    message: userNameErrorMessage,
+    validatedUserName,
+  } = userNameValidator(username);
+
+  if (!isUserNameValid) {
+    throw AppError.unprocessable({
+      message: userNameErrorMessage,
+      code: "USERNAME VALIDATION FAILED",
+      details: { userName: username },
+    });
+  }
+
+  const profile = await Profile.findOne({ userName: validatedUserName })
     .populate("user", "status emailVerified lastSeen")
     .lean();
 

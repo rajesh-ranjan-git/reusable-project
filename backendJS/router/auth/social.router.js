@@ -6,23 +6,32 @@ import {
   updateSocialLinks,
 } from "../../controllers/auth/social.controller.js";
 import { requestMiddleware } from "../../middlewares/request.middleware.js";
+import { authenticate } from "../../middlewares/auth.middleware.js";
 
 const socialRouter = express.Router();
 
-socialRouter.get("/get-social-links", requestMiddleware({}), getSocialLinks);
 socialRouter.get(
-  "/get-social-links-by-user",
+  "/social",
+  requestMiddleware({}),
+  authenticate,
+  getSocialLinks,
+);
+socialRouter.get(
+  "/social/:userId",
   requestMiddleware({ requireParams: true }),
+  authenticate,
   getSocialLinksByUser,
 );
 socialRouter.patch(
-  "/update-social-links",
+  "/social",
   requestMiddleware({ requireBody: true }),
+  authenticate,
   updateSocialLinks,
 );
 socialRouter.delete(
-  "/revoke-session",
+  "/social/:platform",
   requestMiddleware({ requireParams: true }),
+  authenticate,
   deleteSocialLink,
 );
 

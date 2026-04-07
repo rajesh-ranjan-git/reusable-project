@@ -1,3 +1,5 @@
+import { toTitleCase } from "../utils/common.utils.js";
+
 export const numberPropertiesValidator = ({
   propertyName,
   propertyValue,
@@ -25,21 +27,21 @@ export const numberPropertiesValidator = ({
   if (!isPropertyValid) {
     return {
       isPropertyValid: false,
-      message: `${propertyName} is invalid!`,
+      message: `${toTitleCase(propertyName)} is invalid!`,
     };
   }
 
   if (Number(propertyValue) < minValue) {
     return {
       isPropertyValid: false,
-      message: `${propertyName} must be more than ${minValue}!`,
+      message: `${toTitleCase(propertyName)} must be more than ${minValue}!`,
     };
   }
 
   if (Number(propertyValue) > maxValue) {
     return {
       isPropertyValid: false,
-      message: `${propertyName} must be less than ${maxValue}!`,
+      message: `${toTitleCase(propertyName)} must be less than ${maxValue}!`,
     };
   }
 
@@ -67,7 +69,7 @@ export const numberRegexPropertiesValidator = (
   if (!regex.test(propertyValue) || isNaN(Number(propertyValue))) {
     return {
       isPropertyValid: false,
-      message: `${propertyName} is invalid!`,
+      message: `${toTitleCase(propertyName)} is invalid!`,
     };
   }
 
@@ -91,13 +93,13 @@ export const regexPropertiesValidator = (
 
   propertyValue =
     typeof propertyValue === "string"
-      ? propertyValue.trim().toLowerCase
+      ? propertyValue.trim().toLowerCase()
       : propertyValue;
 
   if (!regex.test(propertyValue)) {
     return {
       isPropertyValid: false,
-      message: `${propertyName} is invalid!`,
+      message: `${toTitleCase(propertyName)} is invalid!`,
     };
   }
 
@@ -123,7 +125,7 @@ export const stringPropertiesValidator = (
   if (typeof propertyValue !== "string") {
     return {
       isPropertyValid: false,
-      message: `${propertyName} is invalid!`,
+      message: `${toTitleCase(propertyName)} is invalid!`,
     };
   }
 
@@ -132,14 +134,14 @@ export const stringPropertiesValidator = (
   if (trimmedProperty.length < minLength) {
     return {
       isPropertyValid: false,
-      message: `${propertyName} must be at least ${minLength} characters long!`,
+      message: `${toTitleCase(propertyName)} must be at least ${minLength} characters long!`,
     };
   }
 
   if (trimmedProperty.length > maxLength) {
     return {
       isPropertyValid: false,
-      message: `${propertyName} must not less than ${maxLength} characters long!`,
+      message: `${toTitleCase(propertyName)} must not less than ${maxLength} characters long!`,
     };
   }
 
@@ -160,7 +162,7 @@ export const listPropertiesValidator = (propertyName, propertyValue) => {
   if (typeof propertyValue !== "string" && !Array.isArray(propertyValue)) {
     return {
       isPropertyValid: false,
-      message: `${propertyName} is must be a list of strings!`,
+      message: `${toTitleCase(propertyName)} is must be a list of strings!`,
     };
   }
 

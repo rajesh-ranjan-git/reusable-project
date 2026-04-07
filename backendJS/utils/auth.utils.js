@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { SALT_ROUNDS } from "../constants/common.constants.js";
@@ -7,10 +6,6 @@ import {
   jwtKnownErrorsConfig,
   timelineConfig,
 } from "../config/common.config.js";
-
-export const isValidMongoDbObjectId = (id) => {
-  return ObjectId.isValid(id);
-};
 
 export const getEncryptedPassword = async (password) => {
   const salt = await bcrypt.genSalt(SALT_ROUNDS);

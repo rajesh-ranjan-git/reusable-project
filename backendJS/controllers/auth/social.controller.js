@@ -1,9 +1,10 @@
+import { isValidObjectId } from "mongoose";
 import { socialPlatforms } from "../../config/common.config.js";
 import SocialLink from "../../models/auth/socialLink.model.js";
 import AppError from "../../errors/app.error.js";
 import { regexPropertiesValidator } from "../../validators/common.validator.js";
+import { asyncHandler, toTitleCase } from "../../utils/common.utils.js";
 import { successResponseHandler } from "../../utils/response.utils.js";
-import { asyncHandler } from "../../utils/common.utils.js";
 
 export const getSocialLinks = asyncHandler(async (req, res) => {
   let links = await SocialLink.findOne({ user: req.data.userId }).lean();
@@ -21,6 +22,17 @@ export const getSocialLinks = asyncHandler(async (req, res) => {
 
 export const getSocialLinksByUser = asyncHandler(async (req, res) => {
   const { userId } = req.data.params;
+
+  const isValidId = isValidObjectId(userId);
+
+  if (!isValidId) {
+    throw AppError.unprocessable({
+      message: "Please provide a valid user id!",
+      code: "USER ID VALIDATION FAILED",
+      details: { userId },
+    });
+  }
+
   const links = await SocialLink.findOne({ user: userId }).lean();
   if (!links) {
     throw AppError.notFound({
@@ -47,7 +59,7 @@ export const updateSocialLinks = asyncHandler(async (req, res) => {
     const value = req.data.body[platform.name];
 
     const { isPropertyValid, message, validatedProperty } =
-      regexPropertiesValidator(value, platform.regex);
+      regexPropertiesValidator(platform.name, value, platform.regex);
 
     if (!isPropertyValid) {
       errors.push(message);
@@ -75,7 +87,7 @@ export const updateSocialLinks = asyncHandler(async (req, res) => {
   const socialLinks = await SocialLink.findOneAndUpdate(
     { user: req.data.userId },
     { $set: updates },
-    { new: true, upsert: true, runValidators: true },
+    { returnDocument: "after", upsert: true, runValidators: true },
   );
 
   successResponseHandler(req, res, {
@@ -92,28 +104,36 @@ export const deleteSocialLink = asyncHandler(async (req, res) => {
 
   if (!allowedPlatforms.includes(platform)) {
     throw AppError.badRequest({
-      message: `Invalid platform. Must be one of: ${allowedPlatforms.join(", ")}!`,
+      message: `Invalid platform. Must be one of: ${toTitleCase(allowedPlatforms.join(", "))}!`,
       code: "DELETE SOCIAL LINKS FAILED",
     });
   }
 
-  const socialLinks = await SocialLink.findOneAndUpdate(
+  const socialLinks = await SocialLink.findOne({ user: req.data.userId });
+
+  if (!socialLinks[platform]) {
+    throw AppError.badRequest({
+      message: `${toTitleCase(platform)} link not available to delete!`,
+      code: "DELETE SOCIAL LINKS FAILED",
+    });
+  }
+
+  const updatedSocialLinks = await SocialLink.findOneAndUpdate(
     { user: req.data.userId },
     { $unset: { [platform]: 1 } },
-    { new: true },
+    { returnDocument: "after", runValidators: true },
   );
 
-  if (!socialLinks) {
+  if (!updatedSocialLinks) {
     throw AppError.notFound({
       message: "Social links record not found!",
       code: "SOCIAL LINKS NOT FOUND",
-      details: { socialLinks: links },
     });
   }
 
   successResponseHandler(req, res, {
     status: "DELETE SOCIAL LINK SUCCESS",
-    message: `${platform} link removed successfully!`,
-    data: { socialLinks },
+    message: `${toTitleCase(platform)} link removed successfully!`,
+    data: { socialLinks: updatedSocialLinks },
   });
 });

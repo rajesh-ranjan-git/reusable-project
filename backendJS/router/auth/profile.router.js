@@ -11,27 +11,32 @@ import { authenticate } from "../../middlewares/auth.middleware.js";
 
 const profileRouter = express.Router();
 
-profileRouter.get("/user", requestMiddleware({}), authenticate, getMyProfile);
 profileRouter.get(
-  "/user/:username",
+  "/profile",
+  requestMiddleware({}),
+  authenticate,
+  getMyProfile,
+);
+profileRouter.get(
+  "/profile/:username",
   requestMiddleware({ requireParams: true }),
   authenticate,
   getUserProfile,
 );
 profileRouter.patch(
-  "/user",
+  "/profile",
   requestMiddleware({ requireBody: true }),
   authenticate,
   updateProfile,
 );
 profileRouter.put(
-  "/user/username",
+  "/profile/username",
   requestMiddleware({ requireBody: true }),
   authenticate,
   updateUsername,
 );
 profileRouter.post(
-  "/user/gender",
+  "/profile/gender",
   requestMiddleware({ requireBody: true }),
   authenticate,
   updateGender,
