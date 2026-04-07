@@ -11,7 +11,7 @@ import {
   resetPassword,
   resendVerification,
 } from "../../controllers/auth/auth.controller.js";
-import { requestMiddleware } from "../../middleware/request.middleware.js";
+import { requestMiddleware } from "../../middlewares/request.middleware.js";
 
 const authRouter = express.Router();
 

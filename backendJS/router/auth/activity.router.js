@@ -4,7 +4,7 @@ import {
   getActivityTypes,
   getMyActivity,
 } from "../../controllers/auth/activity.controller.js";
-import { requestMiddleware } from "../../middleware/request.middleware.js";
+import { requestMiddleware } from "../../middlewares/request.middleware.js";
 
 const activityRouter = express.Router();
 

@@ -5,7 +5,7 @@ import {
   getSocialLinksByUser,
   updateSocialLinks,
 } from "../../controllers/auth/social.controller.js";
-import { requestMiddleware } from "../../middleware/request.middleware.js";
+import { requestMiddleware } from "../../middlewares/request.middleware.js";
 
 const socialRouter = express.Router();
 

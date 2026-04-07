@@ -5,7 +5,7 @@ import {
   updateProfile,
   updateUsername,
 } from "../../controllers/auth/profile.controller.js";
-import { requestMiddleware } from "../../middleware/request.middleware.js";
+import { requestMiddleware } from "../../middlewares/request.middleware.js";
 
 const profileRouter = express.Router();
 

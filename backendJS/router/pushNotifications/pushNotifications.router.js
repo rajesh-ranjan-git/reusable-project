@@ -1,5 +1,5 @@
 import express from "express";
-import { requestMiddleware } from "../../middleware/request.middleware.js";
+import { requestMiddleware } from "../../middlewares/request.middleware.js";
 import { subscribe } from "../../controllers/pushNotifications/pushNotifications.controller.js";
 
 const pushNotificationsRouter = express.Router();

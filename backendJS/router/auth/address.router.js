@@ -7,7 +7,7 @@ import {
   deleteAddress,
   setDefaultAddress,
 } from "../../controllers/auth/address.controller.js";
-import { requestMiddleware } from "../../middleware/request.middleware.js";
+import { requestMiddleware } from "../../middlewares/request.middleware.js";
 
 const addressRouter = express.Router();
 
