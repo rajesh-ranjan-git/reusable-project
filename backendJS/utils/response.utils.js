@@ -25,7 +25,7 @@ export const successResponseHandler = (
       MODE === "development"
         ? {
             requestId: req.headers["x-request-id"],
-            path: req.url || req.originalUrl,
+            path: req.originalUrl || req.url,
             method: req.method,
           }
         : null,
@@ -47,7 +47,7 @@ export const errorResponseHandler = (err, req, res, next) => {
       metadata:
         MODE === "development"
           ? {
-              path: err?.metadata?.path || req.url || req.originalUrl,
+              path: err?.metadata?.path || req.originalUrl || req.url,
               requestId: err?.requestId || req.headers["x-request-id"],
               isOperational: err?.isOperational || false,
               method: req.method,
@@ -72,7 +72,7 @@ export const errorResponseHandler = (err, req, res, next) => {
     metadata:
       MODE === "development"
         ? {
-            path: err?.metadata?.path || req.url || req.originalUrl,
+            path: err?.metadata?.path || req.originalUrl || req.url,
             requestId: err?.requestId || req.headers["x-request-id"],
             isOperational: err?.isOperational || false,
             method: req.method,
