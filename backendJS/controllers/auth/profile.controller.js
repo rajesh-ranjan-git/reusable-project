@@ -6,7 +6,6 @@ import {
 } from "../../validators/auth.validator.js";
 import { successResponseHandler } from "../../utils/response.utils.js";
 import { asyncHandler } from "../../utils/common.utils.js";
-import logger from "../../lib/logger/logger.js";
 import { httpStatusConfig } from "../../config/common.config.js";
 
 export const getMyProfile = asyncHandler(async (req, res) => {
