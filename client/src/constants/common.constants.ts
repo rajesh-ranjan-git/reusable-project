@@ -3,7 +3,7 @@ export const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:1995";
 export const CLIENT_PORT = process.env.CLIENT_PORT || 1997;
 export const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:1997";
 
-export const MODE = process.env.MODE_ENV || "development";
+export const MODE = process.env.NODE_ENV || "development";
 
 export const EMAIL_FROM_ADDRESS = process.env.SMTP_FROM || "noreply@myapp.com";
 export const SMTP_HOST = process.env.SMTP_HOST;

@@ -1,5 +1,5 @@
 # Environment
-NEXT_PUBLIC_MODE_ENV=production
+NEXT_PUBLIC_NODE_ENV=production
 
 # Ports
 NEXT_PUBLIC_HOST_PORT=1995

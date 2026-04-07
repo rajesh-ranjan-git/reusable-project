@@ -2,8 +2,8 @@
 DOTENV_CONFIG_QUIET=true
 
 # Environment
-MODE_ENV=production
-NEXT_PUBLIC_MODE_ENV=production
+NODE_ENV=production
+NEXT_PUBLIC_NODE_ENV=production
 
 # Ports
 HOST_PORT=1995

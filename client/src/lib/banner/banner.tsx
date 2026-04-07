@@ -16,7 +16,7 @@ import { getRandomItem, toTitleCase } from "@/utils/common.utils";
 import { getDateToShow } from "@/utils/date.utils";
 
 const systemInfo = (nodeVersion: string) => {
-  const env = process.env.NEXT_PUBLIC_MODE_ENV;
+  const env = process.env.NEXT_PUBLIC_NODE_ENV;
 
   const info = `
     Node: ${nodeVersion}

@@ -2,8 +2,8 @@
 DOTENV_CONFIG_QUIET=true
 
 # Environment
-MODE_ENV=development
-NEXT_PUBLIC_MODE_ENV=development
+NODE_ENV=development
+NEXT_PUBLIC_NODE_ENV=development
 
 # Ports
 HOST_PORT=1995

@@ -1,7 +1,5 @@
 import http from "http";
 import express from "express";
-import * as dotenv from "dotenv";
-import path from "path";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import "../lib/logger/logger.js";
@@ -9,7 +7,6 @@ import {
   BACKEND_PORT,
   BACKEND_URL,
   CLIENT_URL,
-  MODE,
 } from "../constants/common.constants.js";
 import { httpStatusConfig } from "../config/common.config.js";
 import connectDB from "../db/db.connect.js";
@@ -28,11 +25,6 @@ import { showBanner } from "../lib/banner/banner.js";
 import { setDbAdapter } from "../lib/logger/logger.js";
 import AppError from "../errors/app.error.js";
 import { errorResponseHandler } from "../utils/response.utils.js";
-
-const envFile =
-  MODE === "production" ? "env/env-production" : "env/env-development";
-
-dotenv.config({ path: path.resolve(process.cwd(), "env", envFile) });
 
 const app = express();
 

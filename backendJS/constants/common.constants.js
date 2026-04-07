@@ -1,14 +1,25 @@
 import dotenv from "dotenv";
-dotenv.config();
+import path from "path";
+import { fileURLToPath } from "url";
 
-export const BACKEND_PORT = process.env.BACKEND_PORT || 1995;
-export const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:1995";
-export const CLIENT_PORT = process.env.CLIENT_PORT || 1997;
-export const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:1997";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-export const MODE = process.env.MODE_ENV || "development";
+const envFile =
+  process.env.NODE_ENV === "production"
+    ? path.join(__dirname, "../env/.env-production")
+    : path.join(__dirname, "../env/.env-development");
 
-export const EMAIL_FROM_ADDRESS = process.env.SMTP_FROM || "noreply@myapp.com";
+dotenv.config({ path: envFile });
+
+export const BACKEND_PORT = process.env.BACKEND_PORT;
+export const BACKEND_URL = process.env.BACKEND_URL;
+export const CLIENT_PORT = process.env.CLIENT_PORT;
+export const CLIENT_URL = process.env.CLIENT_URL;
+
+export const MODE = process.env.NODE_ENV;
+
+export const EMAIL_FROM_ADDRESS = process.env.SMTP_FROM;
 export const SMTP_HOST = process.env.SMTP_HOST;
 export const SMTP_PORT = process.env.SMTP_PORT;
 export const SMTP_SECURE = process.env.SMTP_SECURE;
@@ -17,10 +28,10 @@ export const SMTP_PASS = process.env.SMTP_PASS;
 
 export const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
 export const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
-export const ACCESS_TOKEN_EXPIRY = process.env.ACCESS_TOKEN_EXPIRY || "15m";
-export const REFRESH_TOKEN_EXPIRY = process.env.REFRESH_TOKEN_EXPIRY || "7d";
-export const JWT_ISSUER = process.env.JWT_ISSUER || "backend";
-export const JWT_AUDIENCE = process.env.JWT_AUDIENCE || "client";
+export const ACCESS_TOKEN_EXPIRY = process.env.ACCESS_TOKEN_EXPIRY;
+export const REFRESH_TOKEN_EXPIRY = process.env.REFRESH_TOKEN_EXPIRY;
+export const JWT_ISSUER = process.env.JWT_ISSUER;
+export const JWT_AUDIENCE = process.env.JWT_AUDIENCE;
 
 export const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY;
 export const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY;
