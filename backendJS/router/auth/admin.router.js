@@ -26,17 +26,17 @@ adminRouter.patch(
   authenticate,
   updateUserStatus,
 );
-adminRouter.delete(
-  "/user",
-  requestMiddleware({}),
-  authenticate,
-  hardDeleteUser,
-);
 adminRouter.post(
   "/user/logout",
   requestMiddleware({}),
   authenticate,
   forceLogoutUser,
+);
+adminRouter.delete(
+  "/user",
+  requestMiddleware({}),
+  authenticate,
+  hardDeleteUser,
 );
 adminRouter.get("/role/list", requestMiddleware({}), authenticate, listRoles);
 adminRouter.post(

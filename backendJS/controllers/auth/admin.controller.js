@@ -23,7 +23,7 @@ export const listUsers = asyncHandler(async (req, res) => {
     search,
     sortBy = "createdAt",
     order = "desc",
-  } = req.query;
+  } = req.data.query;
 
   const pageNum = Math.max(1, parseInt(page));
   const limitNum = Math.min(MAX_PAGE_SIZE, Math.max(1, parseInt(limit)));
@@ -106,7 +106,7 @@ export const listUsers = asyncHandler(async (req, res) => {
 });
 
 export const getUser = asyncHandler(async (req, res) => {
-  const { userId } = req.params;
+  const { userId } = req.data.params;
 
   const [user, profile, accounts, sessions] = await Promise.all([
     User.findById(userId).populate("role", "name permissions").lean(),
@@ -136,7 +136,7 @@ export const getUser = asyncHandler(async (req, res) => {
 });
 
 export const updateUserStatus = asyncHandler(async (req, res) => {
-  const { userId } = req.params;
+  const { userId } = req.data.params;
   const { status } = req.body;
 
   if (!["active", "suspended", "deleted"].includes(status)) {
@@ -147,7 +147,7 @@ export const updateUserStatus = asyncHandler(async (req, res) => {
     });
   }
 
-  if (userId === req.userId) {
+  if (userId === req.data.userId) {
     throw AppError.badRequest({
       message: "Admins cannot change their own status!",
       code: "UPDATE USER STATUS FAILED",
@@ -173,7 +173,7 @@ export const updateUserStatus = asyncHandler(async (req, res) => {
   }
 
   await ActivityLog.create({
-    user: req.userId,
+    user: req.data.userId,
     action: "admin_user_status_changed",
     metadata: { targetUserId: userId, newStatus: status },
     ipAddress: req.ip,
@@ -186,10 +186,29 @@ export const updateUserStatus = asyncHandler(async (req, res) => {
   });
 });
 
-export const hardDeleteUser = asyncHandler(async (req, res) => {
-  const { userId } = req.params;
+export const forceLogoutUser = asyncHandler(async (req, res) => {
+  const { userId } = req.data.params;
 
-  if (userId === req.userId) {
+  const result = await sessionService.revokeAllUserSessions(userId);
+
+  await ActivityLog.create({
+    user: req.data.userId,
+    action: "admin_force_logout",
+    metadata: { targetUserId: userId, sessionsRevoked: result.deletedCount },
+    ipAddress: req.ip,
+  }).catch(() => {});
+
+  successResponseHandler(req, res, {
+    status: "LOGOUT USER SUCCESS",
+    message: "All sessions revoked for user!",
+    data: { revoked: result.deletedCount },
+  });
+});
+
+export const hardDeleteUser = asyncHandler(async (req, res) => {
+  const { userId } = req.data.params;
+
+  if (userId === req.data.userId) {
     throw AppError.badRequest({
       message: "Admins cannot delete their own account this way!",
       code: "DELETE ACCOUNT FAILED",
@@ -217,25 +236,6 @@ export const hardDeleteUser = asyncHandler(async (req, res) => {
   successResponseHandler(req, res, {
     status: "DELETE USER SUCCESS",
     message: "User and all associated data permanently deleted!",
-  });
-});
-
-export const forceLogoutUser = asyncHandler(async (req, res) => {
-  const { userId } = req.params;
-
-  const result = await sessionService.revokeAllUserSessions(userId);
-
-  await ActivityLog.create({
-    user: req.userId,
-    action: "admin_force_logout",
-    metadata: { targetUserId: userId, sessionsRevoked: result.deletedCount },
-    ipAddress: req.ip,
-  }).catch(() => {});
-
-  successResponseHandler(req, res, {
-    status: "LOGOUT USER SUCCESS",
-    message: "All sessions revoked for user!",
-    data: { revoked: result.deletedCount },
   });
 });
 
@@ -281,7 +281,7 @@ export const createRole = asyncHandler(async (req, res) => {
 });
 
 export const assignRole = asyncHandler(async (req, res) => {
-  const { userId } = req.params;
+  const { userId } = req.data.params;
   const { roleId } = req.body;
 
   if (!roleId) {
@@ -316,7 +316,7 @@ export const assignRole = asyncHandler(async (req, res) => {
   await user.updateOne({ role: role._id });
 
   await ActivityLog.create({
-    user: req.userId,
+    user: req.data.userId,
     action: "admin_role_assigned",
     metadata: { targetUserId: userId, roleId, roleName: role.name },
     ipAddress: req.ip,
@@ -329,7 +329,7 @@ export const assignRole = asyncHandler(async (req, res) => {
 });
 
 export const updateRole = asyncHandler(async (req, res) => {
-  const { roleId } = req.params;
+  const { roleId } = req.data.params;
   const { name, permissions } = req.body;
 
   const role = await Role.findById(roleId);
@@ -354,7 +354,7 @@ export const updateRole = asyncHandler(async (req, res) => {
 });
 
 export const deleteRole = asyncHandler(async (req, res) => {
-  const { roleId } = req.params;
+  const { roleId } = req.data.params;
 
   const usersWithRole = await User.countDocuments({ role: roleId });
   if (usersWithRole > 0) {
@@ -387,7 +387,7 @@ export const getActivityLogs = asyncHandler(async (req, res) => {
     action,
     from,
     to,
-  } = req.query;
+  } = req.data.query;
 
   const pageNum = Math.max(1, parseInt(page));
   const limitNum = Math.min(MAX_PAGE_SIZE, Math.max(1, parseInt(limit)));
