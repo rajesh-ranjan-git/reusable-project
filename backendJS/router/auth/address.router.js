@@ -11,29 +11,29 @@ import { requestMiddleware } from "../../middlewares/request.middleware.js";
 
 const addressRouter = express.Router();
 
-addressRouter.get("/get-addresses", requestMiddleware({}), getAddresses);
+addressRouter.get("/address", requestMiddleware({}), getAddresses);
 addressRouter.get(
-  "/get-address",
+  "/address/:addressId",
   requestMiddleware({ requireParams: true }),
   getAddress,
 );
 addressRouter.post(
-  "/create-address",
+  "/address/create",
   requestMiddleware({ requireBody: true }),
   createAddress,
 );
 addressRouter.patch(
-  "/update-address",
+  "/address",
   requestMiddleware({ requireBody: true, requireParams: true }),
   updateAddress,
 );
 addressRouter.delete(
-  "/delete-address",
+  "/address",
   requestMiddleware({ requireParams: true }),
   deleteAddress,
 );
-addressRouter.delete(
-  "/set-default-address",
+addressRouter.post(
+  "/address/default",
   requestMiddleware({ requireParams: true }),
   setDefaultAddress,
 );

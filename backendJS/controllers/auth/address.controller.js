@@ -1,9 +1,11 @@
+import { isValidObjectId } from "mongoose";
 import Address from "../../models/auth/address.model.js";
 import { MAX_ADDRESSES } from "../../constants/common.constants.js";
 import { successResponseHandler } from "../../utils/response.utils.js";
 import { asyncHandler } from "../../utils/common.utils.js";
 import AppError from "../../errors/app.error.js";
 import { httpStatusConfig } from "../../config/common.config.js";
+import { validateAddress } from "../../validators/address.validator.js";
 
 export const getAddresses = asyncHandler(async (req, res) => {
   const addresses = await Address.find({ user: req.data.userId })
@@ -18,8 +20,18 @@ export const getAddresses = asyncHandler(async (req, res) => {
 });
 
 export const getAddress = asyncHandler(async (req, res) => {
+  const validatedAddressId = isValidObjectId(req.data.params.addressId);
+
+  if (!validatedAddressId) {
+    throw AppError.unprocessable({
+      message: "Please provide a valid address ID!",
+      code: "ADDRESS ID VALIDATION FAILED",
+      details: { addressId: req.data.params.addressId },
+    });
+  }
+
   const address = await Address.findOne({
-    _id: req.data.params.id,
+    _id: validatedAddressId,
     user: req.data.userId,
   }).lean();
 
@@ -27,7 +39,7 @@ export const getAddress = asyncHandler(async (req, res) => {
     throw AppError.notFound({
       message: "No address found with the provided address ID!",
       code: "ADDRESS NOT FOUND",
-      details: { addressId: req.data.params.id },
+      details: { addressId: req.data.params.addressId },
     });
   }
 
@@ -39,27 +51,29 @@ export const getAddress = asyncHandler(async (req, res) => {
 });
 
 export const createAddress = asyncHandler(async (req, res) => {
-  const { type, street, city, state, country, pinCode, isDefault } =
-    req.data.body;
-
-  if (!type || !["home", "office"].includes(type)) {
-    return errorResponseHandler(
-      res,
-      "Address type must be 'home' or 'office'.",
-      422,
-    );
-  }
+  const { isDefault } = req.data.body;
 
   const count = await Address.countDocuments({ user: req.data.userId });
   if (count >= MAX_ADDRESSES) {
-    return errorResponseHandler(
-      res,
-      `You can have at most ${MAX_ADDRESSES} addresses.`,
-      400,
-    );
+    throw new AppError({
+      message:
+        "You have maximum number of addresses saved, please remove some to continue.",
+      code: "ADDRESS CREATE FAILED",
+      statusCode: httpStatusConfig.notAcceptable.statusCode,
+    });
   }
 
-  if (isDefault) {
+  const { validatedAddressProperties, errors } = validateAddress(req.data.body);
+
+  if (errors && Object.values(errors).length) {
+    throw AppError.unprocessable({
+      message: "Failed to create new address!",
+      code: "ADDRESS CREATE FAILED",
+      details: { errors },
+    });
+  }
+
+  if (isDefault && typeof isDefault === "boolean") {
     await Address.updateMany(
       { user: req.data.userId },
       { $set: { isDefault: false } },
@@ -70,12 +84,12 @@ export const createAddress = asyncHandler(async (req, res) => {
 
   const address = await Address.create({
     user: req.data.userId,
-    type,
-    street,
-    city,
-    state,
-    country,
-    pinCode,
+    type: validatedAddressProperties.type,
+    street: validatedAddressProperties.street,
+    city: validatedAddressProperties.city,
+    state: validatedAddressProperties.state,
+    country: validatedAddressProperties.country,
+    pinCode: validatedAddressProperties.pinCode,
     isDefault: shouldBeDefault,
   });
 
@@ -88,59 +102,92 @@ export const createAddress = asyncHandler(async (req, res) => {
 });
 
 export const updateAddress = asyncHandler(async (req, res) => {
-  const { type, street, city, state, country, pinCode, isDefault } =
-    req.data.body;
+  const { isDefault } = req.data.body;
 
-  if (type && !["home", "office"].includes(type)) {
-    return errorResponseHandler(
-      res,
-      "Address type must be 'home' or 'office'.",
-      422,
-    );
+  const validatedAddressId = isValidObjectId(req.data.params.addressId);
+
+  if (!validatedAddressId) {
+    throw AppError.unprocessable({
+      message: "Please provide a valid address ID!",
+      code: "ADDRESS ID VALIDATION FAILED",
+      details: { addressId: req.data.params.addressId },
+    });
   }
 
   const address = await Address.findOne({
-    _id: req.data.params.id,
+    _id: validatedAddressId,
     user: req.data.userId,
   });
+
   if (!address) {
     throw AppError.notFound({
       message: "No address found with the provided address ID!",
       code: "ADDRESS NOT FOUND",
-      details: { addressId: req.data.params.id },
+      details: { addressId: validatedAddressId },
     });
   }
 
-  if (isDefault) {
+  if (isDefault && typeof isDefault === "boolean") {
     await Address.updateMany(
       { user: req.data.userId, _id: { $ne: address._id } },
       { $set: { isDefault: false } },
     );
   }
 
+  const { validatedAddressProperties, errors } = validateAddress(req.data.body);
+
+  if (errors && Object.values(errors).length) {
+    throw AppError.unprocessable({
+      message: "Failed to update address!",
+      code: "ADDRESS UPDATE FAILED",
+      details: { errors },
+    });
+  }
+
   const updated = await Address.findByIdAndUpdate(
     address._id,
-    { $set: { type, street, city, state, country, pinCode, isDefault } },
-    { new: true, runValidators: true },
+    {
+      $set: {
+        type: validatedAddressProperties.type,
+        street: validatedAddressProperties.street,
+        city: validatedAddressProperties.city,
+        state: validatedAddressProperties.state,
+        country: validatedAddressProperties.country,
+        pinCode: validatedAddressProperties.pinCode,
+        isDefault,
+      },
+    },
+    { returnDocument: "after", runValidators: true },
   );
 
   successResponseHandler(req, res, {
     status: "UPDATE ADDRESS SUCCESS",
     message: "Address updated successfully!",
-    data: { address },
+    data: { address: updated },
   });
 });
 
 export const deleteAddress = asyncHandler(async (req, res) => {
+  const validatedAddressId = isValidObjectId(req.data.params.addressId);
+
+  if (!validatedAddressId) {
+    throw AppError.unprocessable({
+      message: "Please provide a valid address ID!",
+      code: "ADDRESS ID VALIDATION FAILED",
+      details: { addressId: req.data.params.addressId },
+    });
+  }
+
   const address = await Address.findOneAndDelete({
-    _id: req.data.params.id,
+    _id: validatedAddressId,
     user: req.data.userId,
   });
+
   if (!address) {
     throw AppError.notFound({
       message: "No address found with the provided address ID!",
       code: "ADDRESS NOT FOUND",
-      details: { addressId: req.data.params.id },
+      details: { addressId: validatedAddressId },
     });
   }
 
@@ -159,15 +206,26 @@ export const deleteAddress = asyncHandler(async (req, res) => {
 });
 
 export const setDefaultAddress = asyncHandler(async (req, res) => {
+  const validatedAddressId = isValidObjectId(req.data.params.addressId);
+
+  if (!validatedAddressId) {
+    throw AppError.unprocessable({
+      message: "Please provide a valid address ID!",
+      code: "ADDRESS ID VALIDATION FAILED",
+      details: { addressId: req.data.params.addressId },
+    });
+  }
+
   const address = await Address.findOne({
-    _id: req.data.params.id,
+    _id: validatedAddressId,
     user: req.data.userId,
   });
+
   if (!address) {
     throw AppError.notFound({
       message: "No address found with the provided address ID!",
       code: "ADDRESS NOT FOUND",
-      details: { addressId: req.data.params.id },
+      details: { addressId: validatedAddressId },
     });
   }
 

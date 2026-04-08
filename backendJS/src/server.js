@@ -43,7 +43,7 @@ app.use("/api/v1/oauth", oauthRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/user", profileRouter);
 app.use("/api/v1/user", socialRouter);
-app.use("/api/v1/address", addressRouter);
+app.use("/api/v1/user", addressRouter);
 app.use("/api/v1/session", sessionRouter);
 app.use("/api/v1/activity", activityRouter);
 
