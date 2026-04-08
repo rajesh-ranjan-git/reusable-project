@@ -37,7 +37,7 @@ export const login = asyncHandler(async (req, res) => {
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
     expires: tokens.refreshTokenExpiry,
-    path: "/api/auth",
+    path: "/api/v1",
   });
 
   successResponseHandler(req, res, {
@@ -62,7 +62,7 @@ export const logout = asyncHandler(async (req, res) => {
     await authService.logout(req.data.userId, refreshToken, req.ip);
   }
 
-  res.clearCookie("refreshToken", { path: "/api/auth" });
+  res.clearCookie("refreshToken", { path: "/api/v1" });
   successResponseHandler(req, res, {
     status: "LOGOUT SUCCESS",
     message: "Logged out successfully!",
@@ -185,7 +185,7 @@ export const refreshTokens = asyncHandler(async (req, res) => {
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
     expires: tokens.refreshTokenExpiry,
-    path: "/api/auth",
+    path: "/api/v1",
   });
 
   successResponseHandler(req, res, {

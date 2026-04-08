@@ -130,7 +130,7 @@ export const oauthCallback = (provider) =>
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       expires: tokens.refreshTokenExpiry,
-      path: "/api/auth",
+      path: "/api/v1",
     });
 
     const redirectUrl = `${CLIENT_URL}/auth/oauth/callback?accessToken=${tokens.accessToken}`;

@@ -84,7 +84,7 @@ export const deleteAccount = asyncHandler(async (req, res) => {
 
   await sessionService.revokeAllUserSessions(req.data.userId);
 
-  res.clearCookie("refreshToken", { path: "/api/auth" });
+  res.clearCookie("refreshToken", { path: "/api/v1" });
 
   await ActivityLog.create({
     user: req.data.userId,

@@ -1,6 +1,8 @@
+import { isValidObjectId } from "mongoose";
 import { sessionService } from "../../services/auth/session.service.js";
 import { successResponseHandler } from "../../utils/response.utils.js";
 import { asyncHandler } from "../../utils/common.utils.js";
+import AppError from "../../errors/app.error.js";
 
 export const getActiveSessions = asyncHandler(async (req, res) => {
   const sessions = await sessionService.getUserSessions(req.data.userId);
@@ -29,6 +31,16 @@ export const getActiveSessions = asyncHandler(async (req, res) => {
 export const revokeSession = asyncHandler(async (req, res) => {
   const { sessionId } = req.data.params;
 
+  const isSessionIdValid = isValidObjectId(sessionId);
+
+  if (!isSessionIdValid) {
+    throw AppError.unprocessable({
+      message: "Please provide a valid session ID!",
+      code: "SESSION ID VALIDATION FAILED",
+      details: { sessionId },
+    });
+  }
+
   await sessionService.revokeSessionById(sessionId, req.data.userId);
 
   successResponseHandler(req, res, {
@@ -38,12 +50,19 @@ export const revokeSession = asyncHandler(async (req, res) => {
 });
 
 export const revokeOtherSessions = asyncHandler(async (req, res) => {
-  const currentRefreshToken =
-    req.cookies?.refreshToken || req.data.body?.refreshToken;
+  const currentRefreshToken = req.cookies?.refreshToken;
+
+  if (!currentRefreshToken) {
+    throw AppError.unprocessable({
+      message: "You must be logged in to revoke other sessions!",
+      code: "SESSION ID VALIDATION FAILED",
+      details: { currentRefreshToken },
+    });
+  }
 
   const result = await sessionService.revokeAllUserSessions(
     req.data.userId,
-    currentRefreshToken || null,
+    currentRefreshToken,
   );
 
   successResponseHandler(req, res, {

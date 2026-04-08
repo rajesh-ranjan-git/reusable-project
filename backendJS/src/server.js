@@ -40,14 +40,15 @@ app.use(cookieParser());
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/oauth", oauthRouter);
+
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/user", profileRouter);
 app.use("/api/v1/user", socialRouter);
 app.use("/api/v1/user", addressRouter);
-app.use("/api/v1/session", sessionRouter);
+app.use("/api/v1/user", sessionRouter);
 app.use("/api/v1/user", activityRouter);
 
-app.use("/api/push-notifications", pushNotificationsRouter);
+app.use("/api/v1/push-notifications", pushNotificationsRouter);
 
 app.use((req, res, next) => {
   next(

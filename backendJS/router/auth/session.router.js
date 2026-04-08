@@ -6,28 +6,33 @@ import {
   revokeSession,
 } from "../../controllers/auth/session.controller.js";
 import { requestMiddleware } from "../../middlewares/request.middleware.js";
+import { authenticate } from "../../middlewares/auth.middleware.js";
 
 const sessionRouter = express.Router();
 
 sessionRouter.get(
-  "/get-active-sessions",
+  "/session",
   requestMiddleware({}),
+  authenticate,
   getActiveSessions,
 );
 sessionRouter.get(
-  "/get-session-count",
-  requestMiddleware({ requireBody: true }),
+  "/session/count",
+  requestMiddleware({}),
+  authenticate,
   getSessionCount,
 );
 sessionRouter.delete(
-  "/revoke-session",
-  requestMiddleware({ requireParams: true }),
-  revokeSession,
+  "/session/revoke/other",
+  requestMiddleware({}),
+  authenticate,
+  revokeOtherSessions,
 );
 sessionRouter.delete(
-  "/revoke-other-sessions",
-  requestMiddleware({}),
-  revokeOtherSessions,
+  "/session/revoke/:sessionId",
+  requestMiddleware({ requireParams: true }),
+  authenticate,
+  revokeSession,
 );
 
 export default sessionRouter;
