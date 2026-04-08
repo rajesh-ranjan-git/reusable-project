@@ -9,9 +9,10 @@ import { sessionService } from "../../services/auth/session.service.js";
 import { successResponseHandler } from "../../utils/response.utils.js";
 import { asyncHandler } from "../../lib/utils/utils.js";
 import AppError from "../../errors/app.error.js";
-
-const DEFAULT_PAGE_SIZE = 20;
-const MAX_PAGE_SIZE = 100;
+import {
+  DEFAULT_PAGE_SIZE,
+  MAX_PAGE_SIZE,
+} from "../../constants/common.constants.js";
 
 export const listUsers = asyncHandler(async (req, res) => {
   const {
@@ -185,54 +186,6 @@ export const updateUserStatus = asyncHandler(async (req, res) => {
   });
 });
 
-export const assignRole = asyncHandler(async (req, res) => {
-  const { userId } = req.params;
-  const { roleId } = req.body;
-
-  if (!roleId) {
-    throw AppError.unprocessable({
-      message: "roleId is required to assign roles!",
-      code: "ASSIGN ROLE FAILED",
-      details: { roleId },
-    });
-  }
-
-  const [user, role] = await Promise.all([
-    User.findById(userId),
-    Role.findById(roleId),
-  ]);
-
-  if (!user) {
-    throw AppError.notFound({
-      message: "No user found with provided userId!",
-      code: "USER NOT FOUND",
-      details: { userId },
-    });
-  }
-
-  if (!role) {
-    throw AppError.notFound({
-      message: "No role found with provided roleId!",
-      code: "ROLE NOT FOUND",
-      details: { roleId },
-    });
-  }
-
-  await user.updateOne({ role: role._id });
-
-  await ActivityLog.create({
-    user: req.userId,
-    action: "admin_role_assigned",
-    metadata: { targetUserId: userId, roleId, roleName: role.name },
-    ipAddress: req.ip,
-  }).catch(() => {});
-
-  successResponseHandler(req, res, {
-    status: "ASSIGN USER ROLE SUCCESS",
-    message: `Role '${role.name}' assigned to user successfully!`,
-  });
-});
-
 export const hardDeleteUser = asyncHandler(async (req, res) => {
   const { userId } = req.params;
 
@@ -324,6 +277,54 @@ export const createRole = asyncHandler(async (req, res) => {
     statusCode: httpStatusConfig.created.statusCode,
     message: "New role created successfully!",
     data: { role },
+  });
+});
+
+export const assignRole = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+  const { roleId } = req.body;
+
+  if (!roleId) {
+    throw AppError.unprocessable({
+      message: "roleId is required to assign roles!",
+      code: "ASSIGN ROLE FAILED",
+      details: { roleId },
+    });
+  }
+
+  const [user, role] = await Promise.all([
+    User.findById(userId),
+    Role.findById(roleId),
+  ]);
+
+  if (!user) {
+    throw AppError.notFound({
+      message: "No user found with provided userId!",
+      code: "USER NOT FOUND",
+      details: { userId },
+    });
+  }
+
+  if (!role) {
+    throw AppError.notFound({
+      message: "No role found with provided roleId!",
+      code: "ROLE NOT FOUND",
+      details: { roleId },
+    });
+  }
+
+  await user.updateOne({ role: role._id });
+
+  await ActivityLog.create({
+    user: req.userId,
+    action: "admin_role_assigned",
+    metadata: { targetUserId: userId, roleId, roleName: role.name },
+    ipAddress: req.ip,
+  }).catch(() => {});
+
+  successResponseHandler(req, res, {
+    status: "ASSIGN USER ROLE SUCCESS",
+    message: `Role '${role.name}' assigned to user successfully!`,
   });
 });
 
