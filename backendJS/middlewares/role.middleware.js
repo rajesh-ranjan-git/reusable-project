@@ -8,11 +8,11 @@ import { asyncHandler } from "../utils/common.utils.js";
 
 export const requireRole = (...allowedRoles) =>
   asyncHandler(async (req, res, next) => {
-    if (!req.user) {
+    if (!req.data.user) {
       throw new AppError("Authentication required.", 401);
     }
 
-    if (!req.user.role) {
+    if (!req.data.user.role) {
       throw new AppError(
         "Access denied. No role assigned to this account.",
         403,
@@ -21,7 +21,7 @@ export const requireRole = (...allowedRoles) =>
 
     // role is populated by authenticate middleware
     const roleName =
-      typeof req.user.role === "object" ? req.user.role.name : null;
+      typeof req.data.user.role === "object" ? req.data.user.role.name : null;
 
     if (!roleName || !allowedRoles.includes(roleName)) {
       throw new AppError(
@@ -39,11 +39,11 @@ export const requireRole = (...allowedRoles) =>
 
 export const requirePermission = (...requiredPermissions) =>
   asyncHandler(async (req, res, next) => {
-    if (!req.user) {
+    if (!req.data.user) {
       throw new AppError("Authentication required.", 401);
     }
 
-    if (!req.user.role) {
+    if (!req.data.user.role) {
       throw new AppError(
         "Access denied. No role assigned to this account.",
         403,
@@ -51,7 +51,7 @@ export const requirePermission = (...requiredPermissions) =>
     }
 
     // Fetch fresh role with permissions if not already populated
-    let role = req.user.role;
+    let role = req.data.user.role;
     if (!role.permissions) {
       role = await Role.findById(role).lean();
     }
@@ -79,11 +79,11 @@ export const requirePermission = (...requiredPermissions) =>
 
 export const requireAnyPermission = (...permissions) =>
   asyncHandler(async (req, res, next) => {
-    if (!req.user) {
+    if (!req.data.user) {
       throw new AppError("Authentication required.", 401);
     }
 
-    let role = req.user.role;
+    let role = req.data.user.role;
     if (role && !role.permissions) {
       role = await Role.findById(role).lean();
     }
@@ -104,13 +104,13 @@ export const requireAnyPermission = (...permissions) =>
 
 export const requireSelfOrAdmin = (paramName = "id") =>
   asyncHandler(async (req, res, next) => {
-    if (!req.user) {
+    if (!req.data.user) {
       throw new AppError("Authentication required.", 401);
     }
 
-    const targetId = req.params[paramName];
-    const isAdmin = req.user.role && req.user.role.name === "admin";
-    const isSelf = req.userId === targetId;
+    const targetId = req.data.params[paramName];
+    const isAdmin = req.data.user.role && req.data.user.role.name === "admin";
+    const isSelf = req.data.userId === targetId;
 
     if (!isSelf && !isAdmin) {
       throw new AppError(
