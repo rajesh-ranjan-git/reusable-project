@@ -1,12 +1,42 @@
 import mongoose from "mongoose";
 
-const roleSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    unique: true,
-  },
+const roleSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+    },
 
-  permissions: [String],
-});
+    description: String,
+
+    permissions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Permission" }],
+
+    inherits: [{ type: mongoose.Schema.Types.ObjectId, ref: "Role" }], // role hierarchy
+
+    isSystem: {
+      type: Boolean,
+      default: true,
+    },
+
+    priority: {
+      type: Number,
+      default: 0,
+    },
+
+    status: {
+      type: String,
+      enum: ["ACTIVE", "INACTIVE"],
+      default: "ACTIVE",
+    },
+
+    metadata: {
+      type: mongoose.Schema.Types.Mixed,
+      default: {},
+    },
+  },
+  { timestamps: true },
+);
 
 export default mongoose.model("Role", roleSchema);

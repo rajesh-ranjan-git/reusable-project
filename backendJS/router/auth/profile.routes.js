@@ -7,7 +7,7 @@ import {
   updateGender,
 } from "../../controllers/auth/profile.controller.js";
 import { requestMiddleware } from "../../middlewares/request.middleware.js";
-import { authenticate } from "../../middlewares/auth.middleware.js";
+import { authenticate } from "../../middlewares/authenticate.middleware.js";
 
 const profileRouter = express.Router();
 

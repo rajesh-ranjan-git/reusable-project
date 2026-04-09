@@ -6,7 +6,7 @@ import {
   getDashboardSummary,
 } from "../../controllers/auth/user.controller.js";
 import { requestMiddleware } from "../../middlewares/request.middleware.js";
-import { authenticate } from "../../middlewares/auth.middleware.js";
+import { authenticate } from "../../middlewares/authenticate.middleware.js";
 
 const userRouter = express.Router();
 

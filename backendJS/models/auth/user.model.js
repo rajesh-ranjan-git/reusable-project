@@ -25,12 +25,6 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
 
-    role: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Role",
-      index: true,
-    },
-
     lastSeen: {
       type: Date,
       default: null,

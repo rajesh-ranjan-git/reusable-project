@@ -6,7 +6,7 @@ import {
   revokeSession,
 } from "../../controllers/auth/session.controller.js";
 import { requestMiddleware } from "../../middlewares/request.middleware.js";
-import { authenticate } from "../../middlewares/auth.middleware.js";
+import { authenticate } from "../../middlewares/authenticate.middleware.js";
 
 const sessionRouter = express.Router();
 

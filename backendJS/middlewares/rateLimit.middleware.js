@@ -15,7 +15,7 @@ const rateLimitHandler = (req, res, next, options) => {
 // ─── Key generators ───────────────────────────────────────────────────────────
 
 const ipKey = (req) => req.ip;
-const userOrIpKey = (req) => req.userId || req.ip;
+const userOrIpKey = (req) => req.data.userId || req.ip;
 
 // ─── Presets ──────────────────────────────────────────────────────────────────
 
@@ -76,7 +76,7 @@ export const apiLimiter = rateLimit({
   message: "Too many requests. Please slow down.",
   standardHeaders: true,
   legacyHeaders: false,
-  skip: (req) => req.user?.role?.name === "admin", // Admins bypass API limits
+  skip: (req) => req.data.user?.role?.name === "admin", // Admins bypass API limits
 });
 
 /**

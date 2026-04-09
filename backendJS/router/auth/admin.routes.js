@@ -14,7 +14,7 @@ import {
   updateUserStatus,
 } from "../../controllers/auth/admin.controller.js";
 import { requestMiddleware } from "../../middlewares/request.middleware.js";
-import { authenticate } from "../../middlewares/auth.middleware.js";
+import { authenticate } from "../../middlewares/authenticate.middleware.js";
 
 const adminRouter = express.Router();
 
