@@ -6,7 +6,7 @@ import {
   JWT_ISSUER,
   REFRESH_TOKEN_EXPIRY,
   REFRESH_TOKEN_SECRET,
-} from "../../constants/common.constants.js";
+} from "../../constants/env.constants.js";
 import { jwtKnownErrorsConfig } from "../../config/common.config.js";
 import AppError from "../../errors/app.error.js";
 

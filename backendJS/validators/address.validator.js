@@ -2,7 +2,7 @@ import {
   addressTypeProperties,
   propertyConstraints,
 } from "../config/common.config.js";
-import { PIN_CODE_REGEX } from "../constants/common.constants.js";
+import { PIN_CODE_REGEX } from "../constants/regex.constants.js";
 import {
   numberRegexPropertiesValidator,
   stringPropertiesValidator,

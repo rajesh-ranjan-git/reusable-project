@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 import User from "../models/auth/user.model.js";
-import { BACKEND_URL, CLIENT_URL } from "../constants/common.constants.js";
+import { BACKEND_URL, CLIENT_URL } from "../constants/env.constants.js";
 import { httpStatusConfig } from "../config/common.config.js";
 import AppError from "../errors/app.error.js";
 import { generateRoomId } from "./socket.utils.js";

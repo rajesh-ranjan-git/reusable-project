@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { MODE } from "../../constants/common.constants.js";
+import { MODE } from "../../constants/env.constants.js";
 import { getDateToShow, getDateToStore } from "../../utils/date.utils.js";
 import { ansiConfig } from "../../config/common.config.js";
 

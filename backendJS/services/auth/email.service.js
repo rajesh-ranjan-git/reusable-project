@@ -7,7 +7,7 @@ import {
   SMTP_PORT,
   SMTP_SECURE,
   SMTP_USER,
-} from "../../constants/common.constants.js";
+} from "../../constants/env.constants.js";
 import { appConfig, httpStatusConfig } from "../../config/common.config.js";
 import AppError from "../../errors/app.error.js";
 

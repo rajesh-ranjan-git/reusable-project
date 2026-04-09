@@ -1,4 +1,4 @@
-import { CLIENT_URL } from "../../constants/common.constants.js";
+import { CLIENT_URL } from "../../constants/env.constants.js";
 import User from "../../models/auth/user.model.js";
 import Account from "../../models/auth/account.model.js";
 import AuthProvider from "../../models/auth/authProvider.model.js";

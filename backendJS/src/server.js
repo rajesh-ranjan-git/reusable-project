@@ -7,7 +7,7 @@ import {
   BACKEND_PORT,
   BACKEND_URL,
   CLIENT_URL,
-} from "../constants/common.constants.js";
+} from "../constants/env.constants.js";
 import { httpStatusConfig } from "../config/common.config.js";
 import connectDB from "../db/db.connect.js";
 import authRouter from "../router/auth/auth.router.js";

@@ -1,7 +1,7 @@
 import figlet from "figlet";
 import gradient from "gradient-string";
 import boxen from "boxen";
-import { BACKEND_PORT, MODE } from "../../constants/common.constants.js";
+import { BACKEND_PORT, MODE } from "../../constants/env.constants.js";
 import {
   appConfig,
   bannerFontsConfig,

@@ -6,7 +6,7 @@ import {
   NUMBER_REGEX,
   UPPER_CASE_REGEX,
   USERNAME_REGEX,
-} from "../constants/common.constants.js";
+} from "../constants/regex.constants.js";
 import {
   maritalStatusProperties,
   propertyConstraints,
