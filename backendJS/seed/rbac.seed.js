@@ -1,6 +1,6 @@
-import { Permission } from "../models/permission.model.js";
-import { Role } from "../models/role.model.js";
-import { PERMISSIONS } from "../constants/permissions.js";
+import { Permission } from "../models/auth/permission.model.js";
+import { Role } from "../models/auth/role.model.js";
+import { PERMISSIONS } from "../constants/permission.constants.js";
 
 export const seedRBAC = async () => {
   const permissionNames = Object.values(PERMISSIONS);
@@ -18,7 +18,6 @@ export const seedRBAC = async () => {
   const getPermissions = (names) =>
     permissionDocs.filter((p) => names.includes(p.name));
 
-  // SUPER ADMIN
   await Role.findOneAndUpdate(
     { name: "SUPER_ADMIN" },
     {
@@ -28,7 +27,6 @@ export const seedRBAC = async () => {
     { upsert: true },
   );
 
-  // ADMIN
   await Role.findOneAndUpdate(
     { name: "ADMIN" },
     {
@@ -42,7 +40,6 @@ export const seedRBAC = async () => {
     { upsert: true },
   );
 
-  // USER
   await Role.findOneAndUpdate(
     { name: "USER" },
     {

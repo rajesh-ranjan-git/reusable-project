@@ -13,7 +13,7 @@ const roleSchema = new mongoose.Schema(
 
     permissions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Permission" }],
 
-    inherits: [{ type: mongoose.Schema.Types.ObjectId, ref: "Role" }], // role hierarchy
+    inherits: [{ type: mongoose.Schema.Types.ObjectId, ref: "Role" }],
 
     isSystem: {
       type: Boolean,
