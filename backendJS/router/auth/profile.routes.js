@@ -10,7 +10,6 @@ import { requestMiddleware } from "../../middlewares/request.middleware.js";
 import { authenticate } from "../../middlewares/authenticate.middleware.js";
 import { authorize } from "../../middlewares/authorize.middleware.js";
 import { PERMISSIONS } from "../../constants/permission.constants.js";
-import Profile from "../../models/auth/profile.model.js";
 
 const profileRouter = express.Router();
 
@@ -25,17 +24,7 @@ profileRouter.get(
   "/profile/:username",
   requestMiddleware({ requireParams: true }),
   authenticate,
-  authorize({
-    permissions: [PERMISSIONS.PROFILE_READ_ANY],
-    ownership: {
-      type: "resource",
-      source: "params",
-      fieldKey: "userId",
-      model: Profile,
-      ownerIdField: "user",
-    },
-    enforceHierarchy: true,
-  }),
+  authorize({ permissions: [PERMISSIONS.PROFILE_READ_ANY] }),
   getUserProfile,
 );
 profileRouter.patch(
