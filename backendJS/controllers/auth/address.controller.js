@@ -14,8 +14,15 @@ export const getAddresses = asyncHandler(async (req, res) => {
     .sort({ isDefault: -1, createdAt: -1 })
     .lean();
 
+  if (!addresses) {
+    throw AppError.internal({
+      message: "Failed to fetch addresses!",
+      code: "ADDRESS FETCH FAILED",
+    });
+  }
+
   successResponseHandler(req, res, {
-    status: "FETCH ADDRESS SUCCESS",
+    status: "ADDRESS FETCH SUCCESS",
     message: "Addresses fetched successfully!",
     data: { addresses, count: addresses.length },
   });
@@ -71,6 +78,13 @@ export const createAddress = asyncHandler(async (req, res) => {
     pinCode: validatedAddressProperties.pinCode,
     isDefault: shouldBeDefault,
   });
+
+  if (!address) {
+    throw AppError.internal({
+      message: "Failed to create address!",
+      code: "ADDRESS CREATE FAILED",
+    });
+  }
 
   successResponseHandler(req, res, {
     status: "ADDRESS CREATE SUCCESS",
@@ -131,8 +145,15 @@ export const updateAddress = asyncHandler(async (req, res) => {
     { returnDocument: "after", runValidators: true },
   );
 
+  if (!updated) {
+    throw AppError.internal({
+      message: "Failed to update address!",
+      code: "ADDRESS UPDATE FAILED",
+    });
+  }
+
   successResponseHandler(req, res, {
-    status: "UPDATE ADDRESS SUCCESS",
+    status: "ADDRESS UPDATE SUCCESS",
     message: "Address updated successfully!",
     data: { address: updated },
   });
@@ -143,10 +164,9 @@ export const deleteAddress = asyncHandler(async (req, res) => {
   const address = await Address.findByIdAndDelete(addressId);
 
   if (!address) {
-    throw AppError.notFound({
-      message: "No address found with the provided address ID!",
-      code: "ADDRESS NOT FOUND",
-      details: { addressId: addressId },
+    throw AppError.internal({
+      message: "Failed to delete address for provided address ID!",
+      code: "ADDRESS DELETE FAILED",
     });
   }
 
@@ -167,6 +187,13 @@ export const deleteAddress = asyncHandler(async (req, res) => {
 export const deleteAllAddresses = asyncHandler(async (req, res) => {
   const result = await Address.deleteMany({ user: req.data.userId });
 
+  if (!result) {
+    throw AppError.internal({
+      message: "Failed to delete addresses!",
+      code: "ADDRESS DELETE FAILED",
+    });
+  }
+
   successResponseHandler(req, res, {
     status: "ADDRESS DELETE SUCCESS",
     message: "All addresses deleted successfully!",
@@ -186,8 +213,15 @@ export const setDefaultAddress = asyncHandler(async (req, res) => {
     { returnDocument: "after", runValidators: true },
   );
 
+  if (!updatedAddress) {
+    throw AppError.internal({
+      message: "Failed to set default address!",
+      code: "ADDRESS UPDATE FAILED",
+    });
+  }
+
   successResponseHandler(req, res, {
-    status: "UPDATE ADDRESS SUCCESS",
+    status: "ADDRESS UPDATE SUCCESS",
     message: "Default address updated successfully!",
     data: { address: updatedAddress },
   });
