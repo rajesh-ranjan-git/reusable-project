@@ -1,6 +1,8 @@
 import { ROLE_PERMISSIONS_MAP } from "../config/permission.config.js";
 import { PERMISSIONS } from "../constants/permission.constants.js";
 import { ROLE_HIERARCHY } from "../constants/roles.constants.js";
+import { sanitizeMongoData } from "../db/db.utils.js";
+import { toTitleCase } from "./common.utils.js";
 
 export const extractPermissions = (roles) => {
   const permissions = new Set();
@@ -79,21 +81,36 @@ export const resolveOwnership = async (req, ownership) => {
       const resourceId = req.data.params?.[idParam];
 
       if (!resourceId) {
-        throw AppError.badRequest({
-          message: "Please provide Resource ID missing for ownership check!",
+        throw AppError.unprocessable({
+          message: `Please provide ${model.toLowerCase()} ID for ownership check!`,
           code: "OWNERSHIP VALIDATION FAILED",
+          details: { resourceId },
         });
       }
 
-      const resource = await model.findById(resourceId);
+      const isResourceIdValid = isValidObjectId(resourceId);
+
+      if (!isResourceIdValid) {
+        throw AppError.unprocessable({
+          message: `Please provide a valid ${model.toLowerCase()} ID!`,
+          code: `${model.toUpperCase()} ID VALIDATION FAILED`,
+          details: { resourceId },
+        });
+      }
+
+      const resource = await model.findById(resourceId).lean();
 
       if (!resource) {
         throw AppError.notFound({
-          message: "Resource not found!",
+          message: `No ${model.toLowerCase()} found with the provided ${model.toLowerCase()} ID!`,
+          code: `${model.toUpperCase()} NOT FOUND`,
+          details: { resource },
         });
       }
 
-      return resource[ownerField]?.toString();
+      req.data.user[resource] = sanitizeMongoData(resource);
+
+      return req.data[resource][ownerField];
     }
 
     case "custom":
@@ -115,7 +132,7 @@ export const checkConditions = (conditions, req) => {
 
   if (conditions.requireVerifiedEmail && !req.data.user.emailVerified) {
     throw AppError.forbidden({
-      message: "Email verification required",
+      message: "Email verification required!",
     });
   }
 
@@ -123,7 +140,7 @@ export const checkConditions = (conditions, req) => {
     const hour = new Date().getHours();
     if (hour < conditions.timeRange.start || hour > conditions.timeRange.end) {
       throw AppError.forbidden({
-        message: "Access denied due to time restrictions",
+        message: "Access denied due to time restrictions!",
       });
     }
   }
