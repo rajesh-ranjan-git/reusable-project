@@ -77,11 +77,9 @@ export const authenticate = asyncHandler(async (req, res, next) => {
   req.data = {
     ...req.data,
     userId: user._id.toString(),
-    user: {
-      ...user,
-      roles: payload.roles,
-      permissions: payload.permissions,
-    },
+    user,
+    roles: payload.roles,
+    permissions: payload.permissions,
   };
 
   next();

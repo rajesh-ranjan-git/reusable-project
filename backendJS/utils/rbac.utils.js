@@ -66,51 +66,54 @@ export const resolveOwnership = async (req, ownership) => {
   if (!ownership) return null;
 
   switch (ownership.type) {
-    case "params":
-      return req.data.params?.[ownership.key];
-
-    case "body":
-      return req.data.body?.[ownership.key];
-
-    case "query":
-      return req.data.query?.[ownership.key];
-
     case "resource": {
-      const { model, idParam, ownerField } = ownership;
+      const { source, idKey, fieldKey, model, ownerIdField } = ownership;
 
-      const resourceId = req.data.params?.[idParam];
+      const sourceData = req.data[source] || {};
 
-      if (!resourceId) {
+      const resourceId = idKey ? sourceData[idKey] : null;
+      const fieldValue = fieldKey ? sourceData[fieldKey] : null;
+
+      if (!resourceId && !fieldValue) {
         throw AppError.unprocessable({
-          message: `Please provide ${model.toLowerCase()} ID for ownership check!`,
+          message: `Please provide appropriate resource identifier for ownership check!`,
           code: "OWNERSHIP VALIDATION FAILED",
-          details: { resourceId },
+          details: { resourceId, fieldValue },
         });
       }
 
-      const isResourceIdValid = isValidObjectId(resourceId);
+      let resource;
 
-      if (!isResourceIdValid) {
-        throw AppError.unprocessable({
-          message: `Please provide a valid ${model.toLowerCase()} ID!`,
-          code: `${model.toUpperCase()} ID VALIDATION FAILED`,
-          details: { resourceId },
-        });
+      if (resourceId) {
+        const isResourceIdValid = isValidObjectId(resourceId);
+
+        if (!isResourceIdValid) {
+          throw AppError.unprocessable({
+            message: `Please provide a valid ${model.modelName.toLowerCase()} ID!`,
+            code: `${model.modelName.toUpperCase()} ID VALIDATION FAILED`,
+            details: { resourceId },
+          });
+        }
+
+        resource = await model.findById(resourceId).select(ownerIdField).lean();
+      } else {
+        resource = await model
+          .findOne({ [fieldKey]: fieldValue })
+          .select(ownerIdField)
+          .lean();
       }
-
-      const resource = await model.findById(resourceId).lean();
 
       if (!resource) {
         throw AppError.notFound({
-          message: `No ${model.toLowerCase()} found with the provided ${model.toLowerCase()} ID!`,
+          message: `No ${model.modelName.toLowerCase()} found with the provided ${resourceId ? `${model.modelName.toLowerCase()} ID` : fieldKey}!`,
           code: `${model.toUpperCase()} NOT FOUND`,
           details: { resource },
         });
       }
 
-      req.data.user[resource] = sanitizeMongoData(resource);
+      req.data[model.modelName.toLowerCase()] = sanitizeMongoData(resource);
 
-      return req.data[resource][ownerField];
+      return resource[ownerIdField];
     }
 
     case "custom":
