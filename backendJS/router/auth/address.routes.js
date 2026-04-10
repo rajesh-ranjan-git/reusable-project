@@ -1,4 +1,6 @@
 import express from "express";
+import { PERMISSIONS } from "../../constants/permission.constants.js";
+import Address from "../../models/auth/address.model.js";
 import {
   getAddresses,
   getAddress,
@@ -10,7 +12,6 @@ import {
 import { requestMiddleware } from "../../middlewares/request.middleware.js";
 import { authenticate } from "../../middlewares/authenticate.middleware.js";
 import { authorize } from "../../middlewares/authorize.middleware.js";
-import { PERMISSIONS } from "../../constants/permission.constants.js";
 
 const addressRouter = express.Router();
 
@@ -25,7 +26,16 @@ addressRouter.get(
   "/address/:addressId",
   requestMiddleware({ requireParams: true }),
   authenticate,
-  authorize({ permissions: [PERMISSIONS.ADDRESS_READ_OWN] }),
+  authorize({
+    permissions: [PERMISSIONS.ADDRESS_READ_OWN],
+    ownership: {
+      type: "resource",
+      model: Address,
+      idParam: "addressId",
+      ownerField: "user",
+    },
+    enforceOwnership: true,
+  }),
   getAddress,
 );
 addressRouter.post(
@@ -39,21 +49,48 @@ addressRouter.patch(
   "/address/:addressId",
   requestMiddleware({ requireBody: true, requireParams: true }),
   authenticate,
-  authorize({ permissions: [PERMISSIONS.ADDRESS_UPDATE_OWN] }),
+  authorize({
+    permissions: [PERMISSIONS.ADDRESS_UPDATE_OWN],
+    ownership: {
+      type: "resource",
+      model: Address,
+      idParam: "addressId",
+      ownerField: "user",
+    },
+    enforceOwnership: true,
+  }),
   updateAddress,
 );
 addressRouter.delete(
   "/address/:addressId",
   requestMiddleware({ requireParams: true }),
   authenticate,
-  authorize({ permissions: [PERMISSIONS.ADDRESS_DELETE_OWN] }),
+  authorize({
+    permissions: [PERMISSIONS.ADDRESS_DELETE_OWN],
+    ownership: {
+      type: "resource",
+      model: Address,
+      idParam: "addressId",
+      ownerField: "user",
+    },
+    enforceOwnership: true,
+  }),
   deleteAddress,
 );
 addressRouter.post(
   "/address/default/:addressId",
   requestMiddleware({ requireParams: true }),
   authenticate,
-  authorize({ permissions: [PERMISSIONS.ADDRESS_UPDATE_OWN] }),
+  authorize({
+    permissions: [PERMISSIONS.ADDRESS_UPDATE_OWN],
+    ownership: {
+      type: "resource",
+      model: Address,
+      idParam: "addressId",
+      ownerField: "user",
+    },
+    enforceOwnership: true,
+  }),
   setDefaultAddress,
 );
 

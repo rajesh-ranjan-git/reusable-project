@@ -1,57 +1,28 @@
 import { PERMISSIONS } from "../constants/permission.constants.js";
 import User from "../models/auth/user.model.js";
 import {
+  checkConditions,
   getHighestRoleLevel,
   getUserPermissions,
-} from "../services/auth/rbac.service.js";
+  hasPermission,
+  resolveOwnership,
+} from "../utils/rbac.utils.js";
 import AppError from "../errors/app.error.js";
 import { asyncHandler } from "../utils/common.utils.js";
-
-const getTargetId = async (data, ownership) => {
-  if (!ownership) return null;
-
-  let targetId = null;
-
-  switch (ownership.type) {
-    case "params":
-      targetId = data.params?.[ownership.key];
-      break;
-
-    case "body":
-      targetId = data.body?.[ownership.key];
-      break;
-
-    case "query":
-      targetId = data.query?.[ownership.key];
-      break;
-
-    case "custom":
-      if (typeof ownership.handler === "function") {
-        targetId = await ownership.handler(req);
-      }
-      break;
-
-    default:
-      throw AppError.forbidden({
-        message: "Invalid ownership configuration!",
-        code: "AUTHORIZATION FAILED",
-      });
-  }
-
-  return targetId;
-};
 
 export const authorize = ({
   permissions = [],
   ownership = null,
+  enforceOwnership = false,
   enforceHierarchy = false,
+  conditions = null,
   allowSuperAdmin = true,
 }) =>
   asyncHandler(async (req, res, next) => {
     const user = req.data.user;
     const userId = req.data.userId;
 
-    let userPermissions = user.permissions;
+    let userPermissions = user.permissions || [];
 
     if (!userPermissions) {
       userPermissions = await getUserPermissions(userId);
@@ -64,9 +35,11 @@ export const authorize = ({
     }
 
     if (permissions.length) {
-      const hasAccess = permissions.every((p) => userPermissions.has(p));
+      const hasAllPermissions = permissions.every((p) =>
+        hasPermission(userPermissions, p),
+      );
 
-      if (!hasAccess) {
+      if (!hasAllPermissions) {
         throw AppError.forbidden({
           message:
             "You do not have sufficient permission to perform this activity!",
@@ -78,11 +51,11 @@ export const authorize = ({
     let targetUserId = null;
 
     if (ownership) {
-      targetUserId = await getTargetId(req, ownership);
+      targetUserId = await resolveOwnership(req, ownership);
     }
 
-    if (ownership?.enforce) {
-      if (!targetUserId || targetUserId.toString() !== userId.toString()) {
+    if (enforceOwnership) {
+      if (!targetUserId || targetUserId !== userId) {
         throw AppError.forbidden({
           message: "You do not have permission to perform this activity!",
           code: "AUTHORIZATION FAILED",
@@ -115,6 +88,8 @@ export const authorize = ({
         });
       }
     }
+
+    checkConditions(conditions, req);
 
     next();
   });

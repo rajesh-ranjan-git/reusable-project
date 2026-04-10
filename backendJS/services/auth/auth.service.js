@@ -18,7 +18,7 @@ import { sessionService } from "./session.service.js";
 import { emailService } from "./email.service.js";
 import AppError from "../../errors/app.error.js";
 import { getRemainingTime } from "../../utils/date.utils.js";
-import { getUserPermissions, getUserRoles } from "./rbac.service.js";
+import { getUserPermissions, getUserRoles } from "../../utils/rbac.utils.js";
 
 class AuthService {
   async register(
