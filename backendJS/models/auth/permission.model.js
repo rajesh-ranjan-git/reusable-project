@@ -17,6 +17,7 @@ const permissionSchema = new mongoose.Schema(
 
     action: {
       type: String,
+      enum: ["create", "read", "update", "delete", "manage"],
       required: true,
       index: true,
     },
@@ -55,6 +56,8 @@ const permissionSchema = new mongoose.Schema(
 permissionSchema.index({ resource: 1, action: 1, scope: 1 }, { unique: true });
 
 permissionSchema.pre("validate", function (next) {
+  if (!this.key) return next();
+
   if (this.key) {
     const [resource, action, scope] = this.key.split(":");
 

@@ -39,4 +39,9 @@ const roleSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+roleSchema.pre("save", function (next) {
+  this.permissions = [...new Set(this.permissions.map(String))];
+  next();
+});
+
 export default mongoose.model("Role", roleSchema);

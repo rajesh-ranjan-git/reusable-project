@@ -67,7 +67,7 @@ class SessionService {
     return Session.findByIdAndUpdate(
       sessionId,
       { refreshToken: newRefreshToken, expiresAt: newExpiresAt },
-      { new: true },
+      { returnDocument: "after" },
     );
   }
 

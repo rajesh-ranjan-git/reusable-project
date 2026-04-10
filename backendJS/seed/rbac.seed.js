@@ -1,53 +1,78 @@
-import { Permission } from "../models/auth/permission.model.js";
-import { Role } from "../models/auth/role.model.js";
+import "../lib/logger/logger.js";
+import { setDbAdapter } from "../lib/logger/logger.js";
+import connectDB from "../db/db.connect.js";
+import Permission from "../models/auth/permission.model.js";
+import Role from "../models/auth/role.model.js";
+import Log from "../models/log/log.model.js";
 import { PERMISSIONS } from "../constants/permission.constants.js";
+import { ROLE_PERMISSIONS_MAP } from "../config/permission.config.js";
 
-export const seedRBAC = async () => {
-  const permissionNames = Object.values(PERMISSIONS);
+const seedRBAC = async () => {
+  try {
+    await connectDB();
+    setDbAdapter(async (entry) => Log.create(entry));
 
-  const permissionDocs = await Promise.all(
-    permissionNames.map((name) =>
-      Permission.findOneAndUpdate(
-        { name },
-        { name },
-        { upsert: true, new: true },
+    logger.info("📢 [ RBAC ] Initial roles and permissions seeding started!");
+
+    const allPermissionKeys = Object.values(PERMISSIONS).filter(
+      (key) => key !== PERMISSIONS.ALL,
+    );
+
+    const permissionDocs = await Promise.all(
+      allPermissionKeys.map((key) =>
+        Permission.findOneAndUpdate(
+          { key },
+          { key },
+          {
+            upsert: true,
+            returnDocument: "after",
+            setDefaultsOnInsert: true,
+          },
+        ),
       ),
-    ),
-  );
+    );
 
-  const getPermissions = (names) =>
-    permissionDocs.filter((p) => names.includes(p.name));
+    const permissionMap = new Map(permissionDocs.map((p) => [p.key, p._id]));
 
-  await Role.findOneAndUpdate(
-    { name: "SUPER_ADMIN" },
-    {
-      name: "SUPER_ADMIN",
-      permissions: permissionDocs,
-    },
-    { upsert: true },
-  );
+    for (const [roleName, permissionKeys] of Object.entries(
+      ROLE_PERMISSIONS_MAP,
+    )) {
+      let permissions = [];
 
-  await Role.findOneAndUpdate(
-    { name: "ADMIN" },
-    {
-      name: "ADMIN",
-      permissions: getPermissions([
-        PERMISSIONS.USER_READ,
-        PERMISSIONS.USER_UPDATE,
-        PERMISSIONS.ADMIN_ACCESS,
-      ]),
-    },
-    { upsert: true },
-  );
+      if (permissionKeys.includes(PERMISSIONS.ALL)) {
+        permissions = permissionDocs.map((p) => p._id);
+      } else {
+        permissions = permissionKeys
+          .map((key) => permissionMap.get(key))
+          .filter(Boolean);
+      }
 
-  await Role.findOneAndUpdate(
-    { name: "USER" },
-    {
-      name: "USER",
-      permissions: getPermissions([PERMISSIONS.PROFILE_UPDATE]),
-    },
-    { upsert: true },
-  );
+      await Role.findOneAndUpdate(
+        { name: roleName },
+        {
+          name: roleName,
+          permissions,
+        },
+        {
+          upsert: true,
+          returnDocument: "after",
+          setDefaultsOnInsert: true,
+        },
+      );
+    }
 
-  console.log("RBAC Seeded");
+    logger.success(
+      "✅ [ RBAC ] Initial roles and permission seeded Successfully!",
+    );
+    process.exit(0);
+  } catch (error) {
+    logger.error(
+      "❌ [ RBAC ] Initial roles and permission seeding Failed:",
+      error,
+    );
+
+    process.exit(1);
+  }
 };
+
+seedRBAC();

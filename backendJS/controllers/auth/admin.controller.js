@@ -159,7 +159,9 @@ export const updateUserStatus = asyncHandler(async (req, res) => {
   if (status === "deleted") updates.deletedAt = new Date();
   if (status === "active") updates.deletedAt = null;
 
-  const user = await User.findByIdAndUpdate(userId, updates, { new: true });
+  const user = await User.findByIdAndUpdate(userId, updates, {
+    returnDocument: "after",
+  });
   if (!user) {
     throw AppError.notFound({
       message: "No user found with provided userId!",

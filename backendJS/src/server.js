@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import "../lib/logger/logger.js";
+import { setDbAdapter } from "../lib/logger/logger.js";
 import {
   BACKEND_PORT,
   BACKEND_URL,
@@ -23,7 +24,6 @@ import pushNotificationsRouter from "../router/pushNotifications/pushNotificatio
 import Log from "../models/log/log.model.js";
 import { initializeSocket } from "../socket/socket.js";
 import { showBanner } from "../lib/banner/banner.js";
-import { setDbAdapter } from "../lib/logger/logger.js";
 import AppError from "../errors/app.error.js";
 import { errorResponseHandler } from "../utils/response.utils.js";
 
