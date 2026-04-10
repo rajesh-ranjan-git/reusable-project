@@ -1,14 +1,14 @@
 import { PERMISSIONS } from "../constants/permission.constants.js";
 import User from "../models/auth/user.model.js";
+import { getUserPermissions } from "../services/auth/rbac.service.js";
+import AppError from "../errors/app.error.js";
+import { asyncHandler } from "../utils/common.utils.js";
 import {
   checkConditions,
   getHighestRoleLevel,
-  getUserPermissions,
   hasPermission,
   resolveOwnership,
 } from "../utils/rbac.utils.js";
-import AppError from "../errors/app.error.js";
-import { asyncHandler } from "../utils/common.utils.js";
 
 export const authorize = ({
   permissions = [],
