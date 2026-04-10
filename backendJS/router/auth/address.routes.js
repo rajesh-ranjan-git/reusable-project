@@ -8,6 +8,7 @@ import {
   updateAddress,
   deleteAddress,
   setDefaultAddress,
+  deleteAllAddresses,
 } from "../../controllers/auth/address.controller.js";
 import { requestMiddleware } from "../../middlewares/request.middleware.js";
 import { authenticate } from "../../middlewares/authenticate.middleware.js";
@@ -76,6 +77,13 @@ addressRouter.delete(
     enforceOwnership: true,
   }),
   deleteAddress,
+);
+addressRouter.delete(
+  "/address",
+  requestMiddleware({ requireParams: true }),
+  authenticate,
+  authorize({ permissions: [PERMISSIONS.ADDRESS_DELETE_OWN] }),
+  deleteAllAddresses,
 );
 addressRouter.post(
   "/address/default/:addressId",

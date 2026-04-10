@@ -164,6 +164,16 @@ export const deleteAddress = asyncHandler(async (req, res) => {
   });
 });
 
+export const deleteAllAddresses = asyncHandler(async (req, res) => {
+  const result = await Address.deleteMany({ user: req.data.userId });
+
+  successResponseHandler(req, res, {
+    status: "ADDRESS DELETE SUCCESS",
+    message: "All addresses deleted successfully!",
+    data: { deleted: result.deletedCount },
+  });
+});
+
 export const setDefaultAddress = asyncHandler(async (req, res) => {
   await Address.updateMany(
     { user: req.data.userId },
