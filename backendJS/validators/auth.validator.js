@@ -138,7 +138,7 @@ export const validateUpdatePassword = (data) => {
 
   if (!currentPassword || !newPassword) {
     throw AppError.badRequest({
-      message: "Current password and new password are required.",
+      message: "Current password and new password are required!",
       code: "PASSWORD VALIDATION FAILED",
       details: { currentPassword, newPassword },
     });

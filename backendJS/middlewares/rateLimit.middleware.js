@@ -6,7 +6,7 @@ import { AppError } from "../errors/app.error.js";
 const rateLimitHandler = (req, res, next, options) => {
   next(
     new AppError(
-      options.message || "Too many requests. Please try again later.",
+      options.message || "Too many requests. Please try again later!",
       429,
     ),
   );
@@ -28,7 +28,7 @@ export const authLimiter = rateLimit({
   max: 10,
   keyGenerator: ipKey,
   handler: rateLimitHandler,
-  message: "Too many authentication attempts. Please try again in 15 minutes.",
+  message: "Too many authentication attempts. Please try again in 15 minutes!",
   standardHeaders: true,
   legacyHeaders: false,
   skipSuccessfulRequests: false,
@@ -44,7 +44,7 @@ export const loginLimiter = rateLimit({
   keyGenerator: ipKey,
   handler: rateLimitHandler,
   message:
-    "Too many login attempts. Please wait 10 minutes before trying again.",
+    "Too many login attempts. Please wait 10 minutes before trying again!",
   standardHeaders: true,
   legacyHeaders: false,
   skipSuccessfulRequests: true, // Only count failed attempts
@@ -59,7 +59,7 @@ export const sensitiveActionLimiter = rateLimit({
   max: 3,
   keyGenerator: ipKey,
   handler: rateLimitHandler,
-  message: "Too many requests for this action. Please try again in 1 hour.",
+  message: "Too many requests for this action. Please try again in 1 hour!",
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -73,7 +73,7 @@ export const apiLimiter = rateLimit({
   max: 100,
   keyGenerator: userOrIpKey,
   handler: rateLimitHandler,
-  message: "Too many requests. Please slow down.",
+  message: "Too many requests. Please slow down!",
   standardHeaders: true,
   legacyHeaders: false,
   skip: (req) => req.data.user?.role?.name === "admin", // Admins bypass API limits
@@ -88,7 +88,7 @@ export const mutationLimiter = rateLimit({
   max: 20,
   keyGenerator: userOrIpKey,
   handler: rateLimitHandler,
-  message: "Too many write operations. Please wait a few minutes.",
+  message: "Too many write operations. Please wait a few minutes!",
   standardHeaders: true,
   legacyHeaders: false,
 });

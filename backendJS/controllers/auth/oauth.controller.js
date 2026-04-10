@@ -177,7 +177,7 @@ export const unlinkProvider = asyncHandler(async (req, res) => {
   if (!localAccount && providerCount <= 1) {
     throw AppError.forbidden({
       message:
-        "Cannot unlink the only authentication method. Please add a password first.",
+        "Cannot unlink the only authentication method. Please add a password first!",
       code: "PROVIDER UNLINK FAILED",
     });
   }

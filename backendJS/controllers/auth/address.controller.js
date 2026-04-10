@@ -41,7 +41,7 @@ export const createAddress = asyncHandler(async (req, res) => {
   if (count >= MAX_ADDRESSES) {
     throw new AppError({
       message:
-        "You have maximum number of addresses saved, please remove some to continue.",
+        "You have maximum number of addresses saved, please remove some to continue!",
       code: "ADDRESS CREATE FAILED",
       statusCode: httpStatusConfig.notAcceptable.statusCode,
     });

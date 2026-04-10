@@ -240,7 +240,7 @@ class AuthService {
 
     if (!account) {
       return {
-        message: "If that email exists, a verification link has been sent.",
+        message: "If that email exists, a verification link has been sent!",
       };
     }
 
@@ -266,7 +266,7 @@ class AuthService {
     await emailService.sendVerificationEmail(email, token);
 
     return {
-      message: "If that email exists, a verification link has been sent.",
+      message: "If that email exists, a verification link has been sent!",
     };
   }
 
@@ -299,7 +299,7 @@ class AuthService {
 
     return {
       message:
-        "If that email is registered, you will receive a password reset link.",
+        "If that email is registered, you will receive a password reset link!",
     };
   }
 
@@ -402,7 +402,7 @@ class AuthService {
 
     await this._logActivity(userId, "password_changed", {}, ipAddress);
 
-    return { message: "Password updated successfully." };
+    return { message: "Password updated successfully!" };
   }
 
   async refreshTokens(refreshToken) {

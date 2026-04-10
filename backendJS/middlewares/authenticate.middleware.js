@@ -9,7 +9,7 @@ export const authenticate = asyncHandler(async (req, res, next) => {
 
   if (!token) {
     throw AppError.unauthorized({
-      message: "Authentication required. Please provide a valid token.",
+      message: "Authentication required. Please provide a valid token!",
       code: "TOKEN VALIDATION FAILED",
       details: { token },
     });

@@ -15,7 +15,7 @@ export const validateCreateAddress = (data) => {
   const errors = {};
 
   if (!type || !Object.values(addressTypeProperties).includes(type)) {
-    errors["type"] = "Address type must be 'home', 'office' or 'other'.";
+    errors["type"] = "Address type must be 'home', 'office' or 'other'!";
   } else {
     validatedAddressProperties["type"] = type;
   }
@@ -126,7 +126,7 @@ export const validateUpdateAddress = (data) => {
   const errors = {};
 
   if (type && !Object.values(addressTypeProperties).includes(type)) {
-    errors["type"] = "Address type must be 'home', 'office' or 'other'.";
+    errors["type"] = "Address type must be 'home', 'office' or 'other'!";
   } else if (type) {
     validatedAddressProperties["type"] = type;
   }

@@ -264,7 +264,7 @@ export const createRole = asyncHandler(async (req, res) => {
   const existing = await Role.findOne({ name: name.toLowerCase() });
   if (existing) {
     throw AppError.conflict({
-      message: "Role with this name already exists.",
+      message: "Role with this name already exists!",
       code: "ROLE ALREADY EXISTS",
     });
   }
