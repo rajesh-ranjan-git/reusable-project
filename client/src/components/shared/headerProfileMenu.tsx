@@ -140,6 +140,17 @@ const HeaderProfileMenu = ({
               </p>
             </li>
             <li
+              onClick={() => handleNavigation("/")}
+              className="flex items-center gap-2 hover:bg-glass-bg-hover px-4 py-1 w-full text-left transition-colors"
+            >
+              <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
+                <LuSettings size={16} className="text-text-secondary" />
+              </div>
+              <p className="text-text-primary text-sm leading-snug">
+                About App
+              </p>
+            </li>
+            <li
               onClick={onClose}
               className="flex items-center gap-2 hover:bg-glass-bg-hover px-4 py-1 w-full text-left transition-colors"
             >

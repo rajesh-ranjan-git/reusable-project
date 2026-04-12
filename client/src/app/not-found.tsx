@@ -1,14 +1,23 @@
+"use client";
+
 import Image from "next/image";
 import { IoIosWarning } from "react-icons/io";
 import { staticImages } from "@/config/common.config";
-import Header from "@/components/layout/header";
 import AppSidebar from "@/components/layout/appSidebar";
 import GoBackButton from "@/components/ui/buttons/goBackButton";
+import Header from "@/components/layout/header";
+import { useState } from "react";
 
 const NotFound = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   return (
     <div className="flex flex-col bg-bg-page h-dvh overflow-hidden text-text-primary">
-      <Header />
+      <Header
+        type="default"
+        isSidebarOpen={isSidebarOpen}
+        setIsSidebarOpen={setIsSidebarOpen}
+      />
       <main className="relative flex flex-1 overflow-hidden">
         <div className="hidden xl:flex">
           <AppSidebar />

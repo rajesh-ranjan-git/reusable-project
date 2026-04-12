@@ -1,12 +1,13 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import Header from "@/components/layout/header";
 import AppSidebar from "@/components/layout/appSidebar";
 import BottomNav from "@/components/layout/bottomNav";
 import ActivitySection from "@/components/profile/activitySection";
 import ProfileHeader from "@/components/profile/profileHeader";
 import TechStack from "@/components/profile/techStack";
+import HeaderNew from "@/components/layout/header";
+import { useState } from "react";
 
 type User = {
   name: string;
@@ -83,13 +84,18 @@ const mockActivities: Activity[] = [
 ];
 
 const UserProfilePage = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { id } = useParams();
 
   const isOwnProfile = false;
 
   return (
     <div className="flex flex-col bg-bg h-dvh overflow-hidden text-text-primary">
-      <Header />
+      <HeaderNew
+        type="default"
+        isSidebarOpen={isSidebarOpen}
+        setIsSidebarOpen={setIsSidebarOpen}
+      />
 
       <main className="relative flex flex-1 overflow-hidden">
         <div className="hidden md:flex">

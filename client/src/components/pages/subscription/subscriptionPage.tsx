@@ -124,7 +124,7 @@ const SubscriptionPage = ({ hideHeader }: { hideHeader: boolean }) => {
       className={`text-text-primary selection:bg-primary/30 pb-20 ${hideHeader ? "" : "min-h-screen"}`}
     >
       {!hideHeader && (
-        <header className="top-0 z-(--z-sticky) fixed flex items-center backdrop-blur-sm w-full glass-nav px-4 md:px-8 h-16">
+        <header className="top-0 z-(--z-sticky) sticky flex items-center backdrop-blur-sm w-full glass-nav px-4 md:px-8 h-16">
           <button
             onClick={() => router.back()}
             className="group flex items-center gap-2 px-2 py-1 text-text-secondary transition-colors hover:text-accent-purple-dark"

@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import Header from "@/components/layout/header";
 import AppSidebar from "@/components/layout/appSidebar";
 import BottomNav from "@/components/layout/bottomNav";
 import ActivitySection from "@/components/profile/activitySection";
 import ProfileHeader from "@/components/profile/profileHeader";
 import TechStack from "@/components/profile/techStack";
+import Header from "@/components/layout/header";
 
 type User = {
   name: string;
@@ -100,11 +100,16 @@ const mockActivities = [
 ];
 
 const ProfilePage = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isOwnProfile] = useState(true);
 
   return (
     <div className="flex flex-col bg-bg h-dvh overflow-hidden text-text-primary">
-      <Header />
+      <Header
+        type="default"
+        isSidebarOpen={isSidebarOpen}
+        setIsSidebarOpen={setIsSidebarOpen}
+      />
 
       <main className="relative flex flex-1 overflow-hidden">
         <div className="hidden md:flex">

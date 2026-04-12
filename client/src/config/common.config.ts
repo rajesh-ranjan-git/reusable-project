@@ -15,7 +15,7 @@ export const staticImages: StaticImageType = {
     alt: "404-error",
   },
   unexpectedError: {
-    src: "/assets/error/something-went-wrong.webp",
+    src: "/assets/error/something-went-wrong-error.webp",
     alt: "unexpected-error",
   },
   avatarPlaceholder: {

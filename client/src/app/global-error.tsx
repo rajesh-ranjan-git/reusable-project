@@ -15,11 +15,14 @@ import { ToastProvider } from "@/hooks/toast";
 import ThemeManager from "@/components/theme/themeManager";
 import Orb from "@/components/background/orb";
 import Flash from "@/components/flash/flash";
-import Header from "@/components/layout/header";
 import AppSidebar from "@/components/layout/appSidebar";
 import ReloadButton from "@/components/ui/buttons/reloadButton";
+import Header from "@/components/layout/header";
+import { useState } from "react";
 
 const GlobalError = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   return (
     <html lang="en">
       <body
@@ -32,7 +35,12 @@ const GlobalError = () => {
           <Flash />
 
           <div className="flex flex-col bg-bg-page h-dvh overflow-hidden text-text-primary">
-            <Header />
+            <Header
+              type="default"
+              isSidebarOpen={isSidebarOpen}
+              setIsSidebarOpen={setIsSidebarOpen}
+            />
+
             <main className="relative flex flex-1 overflow-hidden">
               <div className="hidden xl:flex">
                 <AppSidebar />
@@ -43,8 +51,8 @@ const GlobalError = () => {
                   <Image
                     src={staticImages.unexpectedError.src}
                     alt={staticImages.unexpectedError.alt}
-                    width={400}
-                    height={400}
+                    width={500}
+                    height={500}
                     className="object-contain select-none"
                   />
                 </div>

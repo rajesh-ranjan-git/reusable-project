@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import Header from "@/components/layout/header";
 import AppSidebar from "@/components/layout/appSidebar";
 import BottomNav from "@/components/layout/bottomNav";
 import ActionBar from "@/components/discover/actionBar";
 import SwipeCard from "@/components/discover/swipeCard";
+import HeaderNew from "@/components/layout/header";
 
 type Profile = {
   id: number;
@@ -61,6 +61,7 @@ const mockProfiles: Profile[] = [
 ];
 
 const DiscoverPage = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [profiles, setProfiles] = useState(mockProfiles);
 
   const handleSwipe = (direction: SwipeDirection, id?: number) => {
@@ -74,7 +75,11 @@ const DiscoverPage = () => {
 
   return (
     <div className="flex flex-col bg-bg-page h-dvh overflow-hidden text-text-primary">
-      <Header />
+      <HeaderNew
+        type="default"
+        isSidebarOpen={isSidebarOpen}
+        setIsSidebarOpen={setIsSidebarOpen}
+      />
 
       <main className="relative flex flex-1 overflow-hidden">
         <div className="hidden xl:flex">

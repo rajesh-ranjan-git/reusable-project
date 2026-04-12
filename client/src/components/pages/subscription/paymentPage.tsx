@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import { LuArrowLeft } from "react-icons/lu";
 import OrderSummary from "@/components/subscription/orderSummary";
 import PaymentForm from "@/components/subscription/paymentForm";
+import { useRouter } from "next/navigation";
 
 type PlanDetails = {
   name: string;
@@ -17,6 +17,8 @@ type PlanDetails = {
 
 const PaymentPage = () => {
   const [isMobile, setIsMobile] = useState(false);
+
+  const router = useRouter();
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -36,17 +38,17 @@ const PaymentPage = () => {
 
   return (
     <div className="min-h-screen text-text-primary">
-      <header className="top-0 z-(--z-dropdown) sticky flex items-center backdrop-blur-md px-4 md:px-8 border-white/10 border-b h-20">
-        <Link
-          href="/subscription"
-          className="group flex items-center gap-2 px-2 py-1 text-text-secondary hover:text-white transition-colors"
+      <header className="top-0 z-(--z-sticky) sticky flex items-center backdrop-blur-sm w-full glass-nav px-4 md:px-8 h-16">
+        <button
+          onClick={() => router.push("/subscription")}
+          className="group flex items-center gap-2 px-2 py-1 text-text-secondary transition-colors hover:text-accent-purple-dark"
         >
           <LuArrowLeft
             size={20}
             className="transition-transform group-hover:-translate-x-1"
           />
           <span className="font-medium">Back to Plans</span>
-        </Link>
+        </button>
       </header>
 
       <main className="mx-auto px-4 md:px-8 py-8 md:py-16 max-w-5xl">

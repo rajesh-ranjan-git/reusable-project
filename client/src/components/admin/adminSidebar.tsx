@@ -11,6 +11,7 @@ import {
   LuPanelLeftClose,
   LuSettings,
   LuUsers,
+  LuX,
 } from "react-icons/lu";
 import { staticImages } from "@/config/common.config";
 
@@ -52,7 +53,7 @@ const AdminSidebar = ({
         ${isSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
       `}
       >
-        <div className="flex justify-between items-center px-4 border-glass-border border-b h-16">
+        <div className="relative flex justify-between items-center px-4 border-glass-border border-b h-16">
           {!collapsed && (
             <Link
               href="/admin"
@@ -70,6 +71,14 @@ const AdminSidebar = ({
               <h2 className="font-poppins md:text-xl text-nowrap">
                 Admin Panel
               </h2>
+              <div className="md:hidden top-1/4 right-2 z-(--z-toast) absolute">
+                <button
+                  onClick={() => setIsSidebarOpen(false)}
+                  className="bg-glass-bg-strong p-1 border border-glass-border hover:border-glass-border-accent rounded-lg text-text-secondary hover:text-text-primary transition-colors"
+                >
+                  <LuX size={20} />
+                </button>
+              </div>
             </Link>
           )}
           <button

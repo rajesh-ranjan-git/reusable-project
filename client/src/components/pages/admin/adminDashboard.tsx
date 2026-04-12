@@ -9,10 +9,10 @@ import {
   LuUsers,
 } from "react-icons/lu";
 import ActivityFeed from "@/components/admin/activityFeed";
-import AdminHeader from "@/components/admin/adminHeader";
 import AdminSidebar from "@/components/admin/adminSidebar";
 import ChartCard from "@/components/admin/chartCard";
 import StatCard from "@/components/admin/statCard";
+import Header from "@/components/layout/header";
 
 const AdminDashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -30,7 +30,8 @@ const AdminDashboard = () => {
       <div
         className={`flex flex-col flex-1 md:ml-18 w-full h-dvh overflow-hidden ${!collapsed ? "lg:ml-64" : ""}`}
       >
-        <AdminHeader
+        <Header
+          type="admin"
           isSidebarOpen={isSidebarOpen}
           setIsSidebarOpen={setIsSidebarOpen}
         />

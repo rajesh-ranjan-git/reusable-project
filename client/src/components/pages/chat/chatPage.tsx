@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Header from "@/components/layout/header";
 import BottomNav from "@/components/layout/bottomNav";
 import ChatList from "@/components/chat/chatList";
 import ChatWindow from "@/components/chat/chatWindow";
+import Header from "@/components/layout/header";
 
 type Chat = {
   id: number;
@@ -17,11 +17,16 @@ type Chat = {
 };
 
 const ChatPage = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
 
   return (
     <div className="flex flex-col bg-bg-page h-dvh overflow-hidden text-text-primary">
-      <Header />
+      <Header
+        type="default"
+        isSidebarOpen={isSidebarOpen}
+        setIsSidebarOpen={setIsSidebarOpen}
+      />
 
       <main className="relative flex flex-1 overflow-hidden">
         <div
