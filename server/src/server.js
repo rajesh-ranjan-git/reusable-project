@@ -25,7 +25,10 @@ import Log from "../models/log/log.model.js";
 import { initializeSocket } from "../services/socket/socket.service.js";
 import { showBanner } from "../services/banner/banner.service.js";
 import AppError from "../services/error/error.service.js";
-import { errorResponseHandler } from "../services/response/response.service.js";
+import {
+  errorResponseHandler,
+  successResponseHandler,
+} from "../services/response/response.service.js";
 
 const app = express();
 
@@ -52,6 +55,12 @@ app.use("/api/v1/user", addressRouter);
 app.use("/api/v1/admin", adminRouter);
 
 app.use("/api/v1/push-notifications", pushNotificationRouter);
+
+app.get("/favicon.ico", (req, res) =>
+  successResponseHandler(req, res, {
+    statusCode: httpStatusConfig.noContent.statusCode,
+  }),
+);
 
 app.use((req, res, next) => {
   next(
