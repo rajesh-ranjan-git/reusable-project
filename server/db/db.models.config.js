@@ -1,0 +1,14 @@
+import "../models/log/log.model.js";
+import "../models/user/auth/account.model.js";
+import "../models/user/auth/auth.provider.model.js";
+import "../models/user/auth/user.model.js";
+import "../models/user/auth/verification.token.model.js";
+import "../models/user/auth/session.model.js";
+import "../models/user/auth/activity.log.model.js";
+import "../models/user/rbac/role.model.js";
+import "../models/user/rbac/permission.model.js";
+import "../models/user/rbac/user.role.model.js";
+import "../models/user/profile/profile.model.js";
+import "../models/user/profile/address.model.js";
+import "../models/user/profile/social.model.js";
+import "../models/push/push.notification.model.js";

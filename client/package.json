@@ -9,9 +9,9 @@
   ],
   "author": "Rajesh Ranjan",
   "scripts": {
-    "dev": "concurrently --names \"🧩 CLIENT 🧩,🤖 BACKEND 🤖\" --prefix \"[{name}]\" --timestamp --timestamp-format \"HH:mm:ss\" --prefix-colors \"yellow,green\" \"cross-env PORT=1997 NODE_ENV=development next dev\" \"cross-env NODE_ENV=development CONCURRENTLY=true nodemon --quiet ../backendJS/src/server.js\"",
+    "dev": "concurrently --names \"🧩 CLIENT 🧩,🤖 SERVER 🤖\" --prefix \"[{name}]\" --timestamp --timestamp-format \"HH:mm:ss\" --prefix-colors \"yellow,green\" \"cross-env PORT=1997 NODE_ENV=development next dev\" \"cross-env NODE_ENV=development CONCURRENTLY=true nodemon --quiet ../server/src/server.js\"",
     "build": "next build",
-    "start": "concurrently --names \"🧩 CLIENT  🧩,🤖 BACKEND 🤖\" --prefix \"[{name}]\" --timestamp --timestamp-format \"HH:mm:ss\" --prefix-colors \"yellow,green\" \"cross-env PORT=1997 NODE_ENV=development next start\" \"cross-env NODE_ENV=development CONCURRENTLY=true nodemon --quiet ../backendJS/src/server.js\"",
+    "start": "concurrently --names \"🧩 CLIENT  🧩,🤖 SERVER 🤖\" --prefix \"[{name}]\" --timestamp --timestamp-format \"HH:mm:ss\" --prefix-colors \"yellow,green\" \"cross-env PORT=1997 NODE_ENV=development next start\" \"cross-env NODE_ENV=development CONCURRENTLY=true nodemon --quiet ../server/src/server.js\"",
     "lint": "eslint"
   },
   "dependencies": {
@@ -23,9 +23,9 @@
     "gradient-string": "^3.0.0",
     "idb": "^8.0.3",
     "motion": "^12.38.0",
-    "next": "16.2.2",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
+    "next": "16.2.3",
+    "react": "19.2.5",
+    "react-dom": "19.2.5",
     "react-icons": "^5.6.0",
     "react-webcam": "^7.2.0",
     "recharts": "^3.8.1",
@@ -39,7 +39,7 @@
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
-    "eslint-config-next": "16.2.2",
+    "eslint-config-next": "16.2.3",
     "tailwindcss": "^4",
     "typescript": "^5.9"
   }

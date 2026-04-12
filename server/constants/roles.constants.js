@@ -1,0 +1,13 @@
+export const ROLES = {
+  SUPER_ADMIN: "SUPER_ADMIN",
+  ADMIN: "ADMIN",
+  USER: "USER",
+};
+
+export const ROLE_HIERARCHY = {
+  SUPER_ADMIN: 100,
+  ADMIN: 80,
+  USER: 50,
+};
+
+export const RESTRICTED_ROLES = [ROLES.ADMIN, ROLES.SUPER_ADMIN];
