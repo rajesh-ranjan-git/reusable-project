@@ -12,10 +12,7 @@ import UserRole from "../../models/user/rbac/user.role.model.js";
 import Profile from "../../models/user/profile/profile.model.js";
 import SocialLink from "../../models/user/profile/social.model.js";
 import VerificationToken from "../../models/user/auth/verification.token.model.js";
-import {
-  getUserPermissions,
-  getUserRoles,
-} from "../../services/rbac/rbac.service.js";
+import { rbacService } from "../../services/rbac/rbac.service.js";
 import { tokenService } from "../auth/token.service.js";
 import { sessionService } from "../auth/session.service.js";
 import { emailService } from "../email/email.service.js";
@@ -177,8 +174,8 @@ class AuthService {
 
     await User.findByIdAndUpdate(user._id, { lastSeen: new Date() });
 
-    const roles = await getUserRoles(user._id);
-    const permissionsSet = await getUserPermissions(user._id);
+    const roles = await rbacService.getUserRoles(user._id);
+    const permissionsSet = await rbacService.getUserPermissions(user._id);
     const permissions = [...permissionsSet];
 
     const tokens = tokenService.generateAuthTokens(user._id, {
@@ -479,8 +476,8 @@ class AuthService {
       });
     }
 
-    const roles = await getUserRoles(payload.userId);
-    const permissionsSet = await getUserPermissions(payload.userId);
+    const roles = await rbacService.getUserRoles(payload.userId);
+    const permissionsSet = await rbacService.getUserPermissions(payload.userId);
     const permissions = [...permissionsSet];
 
     const tokens = tokenService.generateAuthTokens(

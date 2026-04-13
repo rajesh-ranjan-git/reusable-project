@@ -4,7 +4,7 @@ import {
   userNameValidator,
   validateUpdateProfile,
 } from "../../../validators/auth.validator.js";
-import { successResponseHandler } from "../../../services/response/response.service.js";
+import { responseService } from "../../../services/response/response.service.js";
 import { asyncHandler } from "../../../utils/common.utils.js";
 import { httpStatusConfig } from "../../../config/http.config.js";
 import { genderProperties } from "../../../config/common.config.js";
@@ -19,7 +19,7 @@ export const getMyProfile = asyncHandler(async (req, res) => {
     });
   }
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "PROFILE FETCH SUCCESS",
     message: "Profile fetched successfully!",
     data: { profile },
@@ -54,7 +54,7 @@ export const getUserProfile = asyncHandler(async (req, res) => {
     });
   }
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "PROFILE FETCH SUCCESS",
     message: "Profile fetched successfully!",
     data: { profile },
@@ -115,7 +115,7 @@ export const updateProfile = asyncHandler(async (req, res) => {
     });
   }
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "PROFILE UPDATE SUCCESS",
     message: "Profile updated successfully!",
     data: { profile },
@@ -169,7 +169,7 @@ export const updateUsername = asyncHandler(async (req, res) => {
     });
   }
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "USERNAME UPDATE SUCCESS",
     message: "Username updated successfully!",
     data: { userName: validatedUserName },
@@ -221,7 +221,7 @@ export const updateGender = asyncHandler(async (req, res) => {
     });
   }
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "PROFILE UPDATE SUCCESS",
     statusCode: httpStatusConfig.created.statusCode,
     message: "Gender updated successfully!",

@@ -3,7 +3,7 @@ import {
   DEFAULT_PAGE_SIZE,
   MAX_PAGE_SIZE,
 } from "../../../constants/common.constants.js";
-import { successResponseHandler } from "../../../services/response/response.service.js";
+import { responseService } from "../../../services/response/response.service.js";
 import { asyncHandler } from "../../../utils/common.utils.js";
 import AppError from "../../../services/error/error.service.js";
 
@@ -39,7 +39,7 @@ export const getMyActivity = asyncHandler(async (req, res) => {
     ActivityLog.countDocuments(filter),
   ]);
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "ACTIVITY FETCH SUCCESS",
     message: "Activity details fetched successfully!",
     data: {
@@ -65,7 +65,7 @@ export const getActivityTypes = asyncHandler(async (req, res) => {
     });
   }
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "ACTIVITY FETCH SUCCESS",
     message: "Activity type fetched successfully!",
     data: { types },
@@ -82,7 +82,7 @@ export const clearMyActivity = asyncHandler(async (req, res) => {
     });
   }
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "ACTIVITY CLEAR SUCCESS",
     message: "Activity logs cleared successfully!",
     data: { deleted: result.deletedCount },

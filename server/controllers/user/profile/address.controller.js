@@ -7,7 +7,7 @@ import {
   validateUpdateAddress,
 } from "../../../validators/address.validator.js";
 import AppError from "../../../services/error/error.service.js";
-import { successResponseHandler } from "../../../services/response/response.service.js";
+import { responseService } from "../../../services/response/response.service.js";
 
 export const getAddresses = asyncHandler(async (req, res) => {
   const addresses = await Address.find({ user: req.data.userId })
@@ -21,7 +21,7 @@ export const getAddresses = asyncHandler(async (req, res) => {
     });
   }
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "ADDRESS FETCH SUCCESS",
     message: "Addresses fetched successfully!",
     data: { addresses, count: addresses.length },
@@ -29,7 +29,7 @@ export const getAddresses = asyncHandler(async (req, res) => {
 });
 
 export const getAddress = asyncHandler(async (req, res) => {
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "ADDRESS FETCH SUCCESS",
     message: "Address fetched successfully!",
     data: { address: req.data.resource.address },
@@ -86,7 +86,7 @@ export const createAddress = asyncHandler(async (req, res) => {
     });
   }
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "ADDRESS CREATE SUCCESS",
     statusCode: httpStatusConfig.created.statusCode,
     message: "Address created successfully!",
@@ -152,7 +152,7 @@ export const updateAddress = asyncHandler(async (req, res) => {
     });
   }
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "ADDRESS UPDATE SUCCESS",
     message: "Address updated successfully!",
     data: { address: updated },
@@ -177,7 +177,7 @@ export const deleteAddress = asyncHandler(async (req, res) => {
     if (next) await next.updateOne({ $set: { isDefault: true } });
   }
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "ADDRESS DELETE SUCCESS",
     message: "Address deleted successfully!",
     data: { deleted: address },
@@ -194,7 +194,7 @@ export const deleteAllAddresses = asyncHandler(async (req, res) => {
     });
   }
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "ADDRESS DELETE SUCCESS",
     message: "All addresses deleted successfully!",
     data: { deleted: result.deletedCount },
@@ -220,7 +220,7 @@ export const setDefaultAddress = asyncHandler(async (req, res) => {
     });
   }
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "ADDRESS UPDATE SUCCESS",
     message: "Default address updated successfully!",
     data: { address: updatedAddress },

@@ -23,12 +23,9 @@ import adminRouter from "../routes/admin/admin.routes.js";
 import pushNotificationRouter from "../routes/push/push.notification.routes.js";
 import Log from "../models/log/log.model.js";
 import { initializeSocket } from "../services/socket/socket.service.js";
-import { showBanner } from "../services/banner/banner.service.js";
+import { bannerService } from "../services/banner/banner.service.js";
 import AppError from "../services/error/error.service.js";
-import {
-  errorResponseHandler,
-  successResponseHandler,
-} from "../services/response/response.service.js";
+import { responseService } from "../services/response/response.service.js";
 
 const app = express();
 
@@ -57,7 +54,7 @@ app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/push-notifications", pushNotificationRouter);
 
 app.get("/favicon.ico", (req, res) =>
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     statusCode: httpStatusConfig.noContent.statusCode,
   }),
 );
@@ -73,7 +70,7 @@ app.use((req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  errorResponseHandler(err, req, res, next);
+  responseService.errorResponseHandler(err, req, res, next);
 });
 
 const server = http.createServer(app);
@@ -84,5 +81,5 @@ app.listen(BACKEND_PORT, async () => {
   await connectDB();
   setDbAdapter(async (entry) => Log.create(entry));
   logger.info(`📢  Server is running at ${BACKEND_URL}`);
-  await showBanner(BACKEND_PORT);
+  await bannerService.showBanner(BACKEND_PORT);
 });

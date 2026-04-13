@@ -1,6 +1,6 @@
 import { isValidObjectId } from "mongoose";
 import { sessionService } from "../../../services/auth/session.service.js";
-import { successResponseHandler } from "../../../services/response/response.service.js";
+import { responseService } from "../../../services/response/response.service.js";
 import { asyncHandler } from "../../../utils/common.utils.js";
 import AppError from "../../../services/error/error.service.js";
 
@@ -28,7 +28,7 @@ export const getActiveSessions = asyncHandler(async (req, res) => {
       : false,
   }));
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "SESSION FETCH SUCCESS",
     message: "Sessions fetched successfully!",
     data: { sessions: mapped, count: mapped.length },
@@ -41,7 +41,7 @@ export const revokeSession = asyncHandler(async (req, res) => {
     req.data.userId,
   );
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "SESSION REVOKE SUCCESS",
     message: "Sessions revoked successfully!",
   });
@@ -70,7 +70,7 @@ export const revokeOtherSessions = asyncHandler(async (req, res) => {
     });
   }
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "SESSIONS REVOKE SUCCESS",
     message: "Except current session, all other sessions revoked successfully!",
     data: { revoked: result.deletedCount },
@@ -87,7 +87,7 @@ export const getSessionCount = asyncHandler(async (req, res) => {
     });
   }
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "SESSION FETCH SUCCESS",
     message: "Sessions fetched successfully!",
     data: { activeSessions: count },

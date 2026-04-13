@@ -6,9 +6,10 @@ import Profile from "../../../models/user/profile/profile.model.js";
 import SocialLink from "../../../models/user/profile/social.model.js";
 import { sessionService } from "../../../services/auth/session.service.js";
 import AppError from "../../../services/error/error.service.js";
-import { successResponseHandler } from "../../../services/response/response.service.js";
+import { responseService } from "../../../services/response/response.service.js";
 import { asyncHandler } from "../../../utils/common.utils.js";
 import { activityService } from "../../../services/activity/activity.service.js";
+import { rbacService } from "../../../services/rbac/rbac.service.js";
 
 export const oauthCallback = (provider) =>
   asyncHandler(async (req, res) => {
@@ -104,8 +105,8 @@ export const oauthCallback = (provider) =>
       });
     }
 
-    const roles = await getUserRoles(userId);
-    const permissionsSet = await getUserPermissions(userId);
+    const roles = await rbacService.getUserRoles(userId);
+    const permissionsSet = await rbacService.getUserPermissions(userId);
     const permissions = [...permissionsSet];
 
     const tokens = tokenService.generateAuthTokens(userId, roles, permissions);
@@ -144,7 +145,7 @@ export const getLinkedProviders = asyncHandler(async (req, res) => {
     .select("provider createdAt -_id")
     .lean();
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "PROVIDER FETCH SUCCESS",
     message: "Providers fetched successfully!",
     data: { providers },
@@ -190,7 +191,7 @@ export const unlinkProvider = asyncHandler(async (req, res) => {
     });
   }
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "PROVIDER UNLINK SUCCESS",
     message: `${provider} unlinked successfully!`,
   });

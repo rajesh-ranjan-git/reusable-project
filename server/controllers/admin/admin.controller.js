@@ -13,7 +13,7 @@ import {
 import AppError from "../../services/error/error.service.js";
 import { activityService } from "../../services/activity/activity.service.js";
 import UserRole from "../../models/user/rbac/user.role.model.js";
-import { successResponseHandler } from "../../services/response/response.service.js";
+import { responseService } from "../../services/response/response.service.js";
 import { RESTRICTED_ROLES, ROLES } from "../../constants/roles.constants.js";
 import ActivityLog from "../../models/user/auth/activity.log.model.js";
 import { isValidObjectId } from "mongoose";
@@ -123,7 +123,7 @@ export const listUsers = asyncHandler(async (req, res) => {
     return !roleNames?.some((name) => RESTRICTED_ROLES.includes(name));
   });
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "USERS LIST FETCH SUCCESS",
     message: "Users list fetched successfully!",
     data: {
@@ -152,7 +152,7 @@ export const getUser = asyncHandler(async (req, res) => {
     Session.find({ user: userId, expiresAt: { $gt: new Date() } }).lean(),
   ]);
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "USER DETAILS FETCH SUCCESS",
     message: "User details fetched successfully!",
     data: {
@@ -215,7 +215,7 @@ export const updateUserStatus = asyncHandler(async (req, res) => {
     ipAddress: req.ip,
   });
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "USER STATUS UPDATE SUCCESS",
     message: `User status updated to '${status}' successfully!`,
     data: { user },
@@ -241,7 +241,7 @@ export const forceLogoutUser = asyncHandler(async (req, res) => {
     ipAddress: req.ip,
   });
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "LOGOUT USER SUCCESS",
     message: "All sessions revoked for user!",
     data: { revoked: result.deletedCount },
@@ -277,7 +277,7 @@ export const hardDeleteUser = asyncHandler(async (req, res) => {
     User.findByIdAndDelete(userId),
   ]);
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "USER DELETE SUCCESS",
     message: "User and all associated data permanently deleted!",
   });
@@ -293,7 +293,7 @@ export const listRoles = asyncHandler(async (req, res) => {
     });
   }
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "ROLES FETCH SUCCESS",
     message: "Roles list fetched successfully!",
     data: { roles },
@@ -330,7 +330,7 @@ export const createRole = asyncHandler(async (req, res) => {
     });
   }
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "ROLE CREATE SUCCESS",
     statusCode: httpStatusConfig.created.statusCode,
     message: "New role created successfully!",
@@ -416,7 +416,7 @@ export const assignRole = asyncHandler(async (req, res) => {
     ipAddress: req.ip,
   });
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "USER ROLE ASSIGN SUCCESS",
     message: `Role '${role.name}' assigned to user successfully!`,
   });
@@ -451,7 +451,7 @@ export const updateRole = asyncHandler(async (req, res) => {
     });
   }
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "ROLE UPDATE SUCCESS",
     message: "Role updated successfully!",
     data: { role: updatedRole },
@@ -480,7 +480,7 @@ export const deleteRole = asyncHandler(async (req, res) => {
     });
   }
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "ROLE DELETE SUCCESS",
     message: "Role deleted successfully!",
   });
@@ -527,7 +527,7 @@ export const getActivityLogs = asyncHandler(async (req, res) => {
     });
   }
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "ACTIVITY FETCH SUCCESS",
     message: "Activity logs fetched successfully!",
     data: {
@@ -559,7 +559,7 @@ export const getStats = asyncHandler(async (req, res) => {
     Session.countDocuments({ expiresAt: { $gt: new Date() } }),
   ]);
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "STATS FETCH SUCCESS",
     message: "Stats fetched successfully!",
     data: {

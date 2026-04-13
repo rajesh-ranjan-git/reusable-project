@@ -1,12 +1,5 @@
 import { PERMISSIONS } from "../constants/permission.constants.js";
-import {
-  getUserPermissions,
-  checkConditions,
-  getHighestRoleLevel,
-  hasPermission,
-  resolveOwnership,
-  getUserRoles,
-} from "../services/rbac/rbac.service.js";
+import { rbacService } from "../services/rbac/rbac.service.js";
 import AppError from "../services/error/error.service.js";
 import { asyncHandler } from "../utils/common.utils.js";
 
@@ -25,7 +18,7 @@ export const authorize = ({
     let userPermissions = req.data.permissions || [];
 
     if (!userPermissions?.length) {
-      userPermissions = await getUserPermissions(userId);
+      userPermissions = await rbacService.getUserPermissions(userId);
     } else {
       userPermissions = new Set(userPermissions);
     }
@@ -36,7 +29,7 @@ export const authorize = ({
 
     if (permissions.length) {
       const hasAllPermissions = permissions.every((p, i) =>
-        hasPermission([...userPermissions], p),
+        rbacService.hasPermission([...userPermissions], p),
       );
 
       if (!hasAllPermissions) {
@@ -51,7 +44,7 @@ export const authorize = ({
     let targetUserId = null;
 
     if (ownership) {
-      targetUserId = await resolveOwnership(req, ownership);
+      targetUserId = await rbacService.resolveOwnership(req, ownership);
     }
 
     if (enforceOwnership) {
@@ -68,8 +61,8 @@ export const authorize = ({
     if (enforceHierarchy && targetUserId) {
       const targetUserRoles = await getUserRoles(targetUserId);
 
-      const currentLevel = getHighestRoleLevel(req.data.roles);
-      const targetLevel = getHighestRoleLevel(targetUserRoles);
+      const currentLevel = rbacService.getHighestRoleLevel(req.data.roles);
+      const targetLevel = rbacService.getHighestRoleLevel(targetUserRoles);
 
       if (
         allowSameLevel
@@ -83,7 +76,7 @@ export const authorize = ({
       }
     }
 
-    checkConditions(conditions, req);
+    rbacService.checkConditions(conditions, req);
 
     next();
   });

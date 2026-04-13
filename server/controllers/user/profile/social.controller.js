@@ -4,7 +4,7 @@ import SocialLink from "../../../models/user/profile/social.model.js";
 import { regexPropertiesValidator } from "../../../validators/common.validator.js";
 import { asyncHandler, toTitleCase } from "../../../utils/common.utils.js";
 import AppError from "../../../services/error/error.service.js";
-import { successResponseHandler } from "../../../services/response/response.service.js";
+import { responseService } from "../../../services/response/response.service.js";
 
 export const getSocialLinks = asyncHandler(async (req, res) => {
   let links = await SocialLink.findOne({ user: req.data.userId }).lean();
@@ -13,7 +13,7 @@ export const getSocialLinks = asyncHandler(async (req, res) => {
     links = await SocialLink.create({ user: req.data.userId });
   }
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "SOCIAL LINKS FETCH SUCCESS",
     message: "Social links fetched successfully!",
     data: { socialLinks: links },
@@ -42,7 +42,7 @@ export const getSocialLinksByUser = asyncHandler(async (req, res) => {
     });
   }
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "SOCIAL LINKS FETCH SUCCESS",
     message: "Social links fetched successfully!",
     data: { socialLinks: links },
@@ -97,7 +97,7 @@ export const updateSocialLinks = asyncHandler(async (req, res) => {
     });
   }
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "SOCIAL LINKS UPDATE SUCCESS",
     message: "Social links updated successfully!",
     data: { socialLinks },
@@ -138,7 +138,7 @@ export const deleteSocialLink = asyncHandler(async (req, res) => {
     });
   }
 
-  successResponseHandler(req, res, {
+  responseService.successResponseHandler(req, res, {
     status: "SOCIAL LINK DELETE SUCCESS",
     message: `${toTitleCase(platform)} link removed successfully!`,
     data: { socialLinks: updatedSocialLinks },

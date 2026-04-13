@@ -4,7 +4,7 @@ import {
   VAPID_PUBLIC_KEY,
 } from "../../constants/env.constants.js";
 import { httpStatusConfig } from "../../config/http.config.js";
-import { successResponseHandler } from "../../services/response/response.service.js";
+import { responseService } from "../../services/response/response.service.js";
 import PushNotificationSubscription from "../../models/push/push.notification.model.js";
 
 const vapidEmail = process.env.VAPID_EMAIL || "mailto:admin@example.com";
@@ -23,7 +23,7 @@ export const subscribe = async (req, res, next) => {
       { upsert: true, returnDocument: "after", runValidators: true },
     );
 
-    successResponseHandler(req, res, {
+    responseService.successResponseHandler(req, res, {
       status: "SUBSCRIPTION SUCCESS",
       statusCode: httpStatusConfig.created.statusCode,
       message: "Subscribed to push notifications successfully!",
