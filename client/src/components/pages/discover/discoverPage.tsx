@@ -5,7 +5,7 @@ import AppSidebar from "@/components/layout/appSidebar";
 import BottomNav from "@/components/layout/bottomNav";
 import ActionBar from "@/components/discover/actionBar";
 import SwipeCard from "@/components/discover/swipeCard";
-import HeaderNew from "@/components/layout/header";
+import Header from "@/components/layout/header";
 
 type Profile = {
   id: number;
@@ -75,7 +75,7 @@ const DiscoverPage = () => {
 
   return (
     <div className="flex flex-col bg-bg-page h-dvh overflow-hidden text-text-primary">
-      <HeaderNew
+      <Header
         type="default"
         isSidebarOpen={isSidebarOpen}
         setIsSidebarOpen={setIsSidebarOpen}

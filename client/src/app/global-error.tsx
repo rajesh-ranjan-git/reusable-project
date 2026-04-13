@@ -1,6 +1,7 @@
 "use client";
 
 import "@/app/globals.css";
+import "@/lib/logger/logger";
 import Image from "next/image";
 import { MdError } from "react-icons/md";
 import {

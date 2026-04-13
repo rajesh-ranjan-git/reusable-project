@@ -6,7 +6,7 @@ import BottomNav from "@/components/layout/bottomNav";
 import ActivitySection from "@/components/profile/activitySection";
 import ProfileHeader from "@/components/profile/profileHeader";
 import TechStack from "@/components/profile/techStack";
-import HeaderNew from "@/components/layout/header";
+import Header from "@/components/layout/header";
 import { useState } from "react";
 
 type User = {
@@ -91,7 +91,7 @@ const UserProfilePage = () => {
 
   return (
     <div className="flex flex-col bg-bg h-dvh overflow-hidden text-text-primary">
-      <HeaderNew
+      <Header
         type="default"
         isSidebarOpen={isSidebarOpen}
         setIsSidebarOpen={setIsSidebarOpen}

@@ -31,10 +31,10 @@ const HeroSection = () => {
           Start Matching Now
           <FaArrowRight size={18} />
         </Link>
-        <button className="px-6 py-3 text-lg btn btn-secondary">
+        <Link href={"/chat"} className="px-6 py-3 text-lg btn btn-secondary">
           <LuCode size={18} />
-          View Documentation
-        </button>
+          Go To Chats
+        </Link>
       </div>
 
       <div className="inline-flex items-center gap-3 mt-8 px-5 py-2.5 glass rounded-(--border-radius-pill)">
