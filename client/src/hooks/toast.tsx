@@ -149,7 +149,6 @@ const ToastItem: React.FC<{
   index: number;
   position: ToastPosition;
 }> = ({ toast, onRemove, index, position }) => {
-  logger.info("toast.toastProgressPosition:", toast.toastProgressPosition);
   const [shouldExit, setShouldExit] = useState(false);
   const [progress, setProgress] = useState(100);
   const config = variantConfig[toast.variant];

@@ -1,3 +1,4 @@
+import { httpStatusConfig } from "@/config/http.config";
 import { HOST_API_URL } from "@/constants/env.constants";
 
 export interface ResponseMetadata {
@@ -98,20 +99,30 @@ export async function apiHandler<TResponse = unknown, TBody = unknown>(
   let res: Response;
   try {
     res = await fetch(url, init);
-  } catch (networkError) {
-    throw new ApiError({
-      success: false,
-      status: "NetworkError",
-      code: "NETWORK ERROR",
-      statusCode: 0,
-      message:
-        networkError instanceof Error
-          ? networkError.message
-          : "A network error occurred.",
-      details: null,
-      timestamp: new Date().toISOString(),
-      metadata: null,
-    });
+  } catch (error) {
+    if (error instanceof Error && navigator.onLine) {
+      throw new ApiError({
+        success: false,
+        status: httpStatusConfig.serviceUnavailable.message,
+        code: httpStatusConfig.serviceUnavailable.message,
+        statusCode: httpStatusConfig.serviceUnavailable.statusCode,
+        message: "Something went wrong at our end, please try again later!",
+        details: null,
+        timestamp: new Date().toISOString(),
+        metadata: null,
+      });
+    } else {
+      throw new ApiError({
+        success: false,
+        status: "NETWORK UNAVAILABLE",
+        code: "NETWORK UNAVAILABLE",
+        statusCode: httpStatusConfig.serviceUnavailable.statusCode,
+        message: "Please check your internet connection!",
+        details: null,
+        timestamp: new Date().toISOString(),
+        metadata: null,
+      });
+    }
   }
 
   let json: ApiResponse<TResponse>;
@@ -120,10 +131,10 @@ export async function apiHandler<TResponse = unknown, TBody = unknown>(
   } catch (error) {
     throw new ApiError({
       success: false,
-      status: "ParseError",
-      code: "INVALID JSON",
-      statusCode: res.status,
-      message: "Server returned a non-JSON response.",
+      status: httpStatusConfig.serviceUnavailable.message,
+      code: httpStatusConfig.serviceUnavailable.message,
+      statusCode: httpStatusConfig.serviceUnavailable.statusCode,
+      message: "Something went wrong at our end, please try again later!",
       details: null,
       timestamp: new Date().toISOString(),
       metadata: null,

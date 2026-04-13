@@ -19,7 +19,7 @@ const AuthWrapper = ({ children }: ReactNodeProps) => {
         message: response.message ?? "",
         variant: "success",
       });
-    } else {
+    } else if (Number(response.statusCode) > 500) {
       showToast({
         title: toTitleCase(response.code),
         message: response.message ?? "",
