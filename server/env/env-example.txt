@@ -5,15 +5,15 @@ DOTENV_CONFIG_QUIET=true
 NODE_ENV=development
 
 # Ports
-BACKEND_PORT=1995
+HOST_PORT=1995
 CLIENT_PORT=1997
 
 # Versions
-BACKEND_VERSION=v1
+HOST_VERSION=v1
 CLIENT_VERSION=v1
 
 # URLs
-BACKEND_URL=http://localhost:1995
+HOST_URL=http://localhost:1995
 CLIENT_URL=http://localhost:1997
 
 # Secret Keys

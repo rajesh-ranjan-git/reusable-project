@@ -7,8 +7,10 @@ const ServiceWorkerRegister = () => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
         .register("/serviceWorker/serviceWorker.js")
-        .then(() => console.log("SW registered"))
-        .catch((err) => console.log("SW error", err));
+        .then(() => logger.info("Service Worker registered successfully!"))
+        .catch((err) =>
+          logger.error("Unable to register Service Worker:", err),
+        );
     }
   }, []);
 

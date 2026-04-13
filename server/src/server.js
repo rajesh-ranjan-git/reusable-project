@@ -4,11 +4,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import "../services/logger/logger.service.js";
 import { setDbAdapter } from "../services/logger/logger.service.js";
-import {
-  BACKEND_PORT,
-  BACKEND_URL,
-  CLIENT_URL,
-} from "../constants/env.constants.js";
+import { HOST_PORT, HOST_URL, CLIENT_URL } from "../constants/env.constants.js";
 import { httpStatusConfig } from "../config/http.config.js";
 import connectDB from "../db/db.connect.js";
 import authRouter from "../routes/user/auth/auth.routes.js";
@@ -32,7 +28,7 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: [BACKEND_URL, CLIENT_URL],
+    origin: [HOST_URL, CLIENT_URL],
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   }),
@@ -77,9 +73,9 @@ const server = http.createServer(app);
 
 initializeSocket(server);
 
-app.listen(BACKEND_PORT, async () => {
+app.listen(HOST_PORT, async () => {
   await connectDB();
   setDbAdapter(async (entry) => Log.create(entry));
-  logger.info(`📢  Server is running at ${BACKEND_URL}`);
-  await bannerService.showBanner(BACKEND_PORT);
+  logger.info(`📢  Server is running at ${HOST_URL}`);
+  await bannerService.showBanner(HOST_PORT);
 });

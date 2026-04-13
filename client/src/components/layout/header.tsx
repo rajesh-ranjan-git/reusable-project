@@ -1,6 +1,6 @@
 "use client";
 
-import { MouseEvent, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { LuBell, LuMenu, LuSearch, LuX } from "react-icons/lu";
@@ -10,10 +10,16 @@ import AppSidebar from "@/components/layout/appSidebar";
 import HeaderNotificationMenu from "@/components/shared/headerNotificationMenu";
 import HeaderProfileMenu from "@/components/shared/headerProfileMenu";
 import { HeaderProps } from "@/types/propTypes";
+import { testAction } from "@/lib/actions/actions";
+import { useToast } from "@/hooks/toast";
+import { toTitleCase } from "@/utils/common.utils";
+import { ApiResponse } from "@/lib/api/apiHandler";
 
 const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isNotificationMenuOpen, setIsNotificationMenuOpen] = useState(false);
+
+  const { showToast } = useToast();
 
   const toggleProfileMenu = (e: MouseEvent) => {
     e.stopPropagation();
@@ -36,6 +42,28 @@ const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
     setIsNotificationMenuOpen(!isNotificationMenuOpen);
     setIsProfileMenuOpen(false);
   };
+
+  const testAPI = async () => {
+    const response: ApiResponse = await testAction();
+
+    if (response.success) {
+      showToast({
+        title: toTitleCase(response.status),
+        message: response.message ?? "",
+        variant: "success",
+      });
+    } else {
+      showToast({
+        title: toTitleCase(response.code),
+        message: response.message ?? "",
+        variant: "error",
+      });
+    }
+  };
+
+  useEffect(() => {
+    testAPI();
+  }, []);
 
   return (
     <>

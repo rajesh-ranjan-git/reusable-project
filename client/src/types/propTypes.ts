@@ -3,7 +3,7 @@ import { HeaderTypes, StorageTypes } from "@/types/types";
 
 export interface HeaderProps {
   type: HeaderTypes;
-  isSidebarOpen: boolean;
+  isSidebarOpen?: boolean;
   setIsSidebarOpen?: Dispatch<SetStateAction<boolean>>;
 }
 

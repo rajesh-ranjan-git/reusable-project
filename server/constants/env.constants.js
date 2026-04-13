@@ -12,12 +12,12 @@ const envFile =
 
 dotenv.config({ path: envFile });
 
-export const BACKEND_PORT = process.env.BACKEND_PORT;
-export const BACKEND_URL = process.env.BACKEND_URL;
+export const MODE = process.env.NODE_ENV;
+
+export const HOST_PORT = process.env.HOST_PORT;
+export const HOST_URL = process.env.HOST_URL;
 export const CLIENT_PORT = process.env.CLIENT_PORT;
 export const CLIENT_URL = process.env.CLIENT_URL;
-
-export const MODE = process.env.NODE_ENV;
 
 export const EMAIL_FROM_ADDRESS = process.env.SMTP_FROM;
 export const SMTP_HOST = process.env.SMTP_HOST;

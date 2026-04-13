@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 import User from "../../models/user/auth/user.model.js";
-import { BACKEND_URL, CLIENT_URL } from "../../constants/env.constants.js";
+import { HOST_URL, CLIENT_URL } from "../../constants/env.constants.js";
 import AppError from "../error/error.service.js";
 import { tokenService } from "../auth/token.service.js";
 
@@ -32,7 +32,7 @@ export const generateRoomId = async (users) => {
 export const initializeSocket = (server) => {
   const io = new Server(server, {
     cors: {
-      origin: [BACKEND_URL, CLIENT_URL],
+      origin: [HOST_URL, CLIENT_URL],
       credentials: true,
     },
   });

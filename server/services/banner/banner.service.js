@@ -1,7 +1,7 @@
 import figlet from "figlet";
 import gradient from "gradient-string";
 import boxen from "boxen";
-import { BACKEND_PORT, MODE } from "../../constants/env.constants.js";
+import { HOST_PORT, MODE } from "../../constants/env.constants.js";
 import { appConfig } from "../../config/common.config.js";
 import {
   bannerFontsConfig,
@@ -10,7 +10,7 @@ import {
 import { getDateToShow } from "../../utils/date.utils.js";
 import { getRandomItem, toTitleCase } from "../../utils/common.utils.js";
 
-const systemInfo = (port = BACKEND_PORT) => {
+const systemInfo = (port = HOST_PORT) => {
   const info = `
     Node: ${process.version}
     Port: ${port}
@@ -26,7 +26,7 @@ const systemInfo = (port = BACKEND_PORT) => {
 };
 
 class BannerService {
-  async showBanner(port = BACKEND_PORT) {
+  async showBanner(port = HOST_PORT) {
     try {
       const banner = getRandomItem(bannerThemesConfig);
       const bannerGradient = gradient(banner.gradient);
