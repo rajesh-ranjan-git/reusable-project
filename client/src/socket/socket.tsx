@@ -1,5 +1,5 @@
 import io, { Socket } from "socket.io-client";
-import { BASE_HOST_URL } from "@/lib/api/apiUtils";
+import { HOST_URL } from "@/lib/api/apiUtils";
 
 interface SocketConfig {
   token: string;
@@ -16,7 +16,7 @@ export const createSocketConnection = ({ token }: SocketConfig): Socket => {
     },
   };
 
-  return io(BASE_HOST_URL, {
+  return io(HOST_URL, {
     ...baseConfig,
     ...(!isLocal && { path: "/api/socket.io" }),
   });
