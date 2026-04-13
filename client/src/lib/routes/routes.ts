@@ -1,21 +1,21 @@
 export const defaultRoutes = {
-  home: "/",
-  discover: "discover",
+  landing: "/",
+  discover: "/discover",
 };
 
 export const authRoutes = {
-  register: "register",
-  login: "login",
-  forgotPassword: "forgot-password",
+  register: "/register",
+  login: "/login",
+  forgotPassword: "/forgot-password",
 };
 
 export const profileRoutes = {
-  profile: "profile",
+  profile: "/profile",
 };
 
 export const chatRoutes = {
-  chat: "chat",
+  chat: "/chat",
 };
 export const adminRoutes = {
-  dashboard: "dashboard",
+  dashboard: "/dashboard",
 };

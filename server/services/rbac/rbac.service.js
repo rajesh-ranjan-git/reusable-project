@@ -31,7 +31,7 @@ class RBACService {
       ],
     });
 
-    return extractPermissions(userRoles);
+    return this.extractPermissions(userRoles);
   }
 
   extractPermissions(roles) {

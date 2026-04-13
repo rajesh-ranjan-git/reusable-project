@@ -22,8 +22,6 @@ export const useDeviceWidthCheck = (): DeviceWidth => {
     const checkWidth = () => {
       const width = window.innerWidth;
 
-      logger.info("debug width:", width);
-
       setDevice({
         isMobileWidth: width <= MOBILE_MAX_WIDTH,
         isTabletWidth: width > MOBILE_MAX_WIDTH && width <= TABLET_MAX_WIDTH,
