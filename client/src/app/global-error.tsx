@@ -1,7 +1,7 @@
 "use client";
 
 import "@/app/globals.css";
-import "@/lib/logger/logger";
+import "@/services/logger/logger";
 import Image from "next/image";
 import { MdError } from "react-icons/md";
 import { alkatra, arima, inter, poppins, tourney } from "@/config/font.config";

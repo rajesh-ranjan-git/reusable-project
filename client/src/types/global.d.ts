@@ -1,4 +1,4 @@
-import { logger as loggerInstance } from "@/lib/logger/logger";
+import { logger as loggerInstance } from "@/services/logger/logger";
 
 declare global {
   var logger: typeof loggerInstance;

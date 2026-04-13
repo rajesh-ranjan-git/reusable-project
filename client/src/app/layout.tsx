@@ -1,9 +1,9 @@
 import "@/app/globals.css";
-import "@/lib/logger/logger";
+import "@/services/logger/logger";
 import type { Metadata, Viewport } from "next";
 import { alkatra, arima, inter, poppins, tourney } from "@/config/font.config";
 import { ReactNodeProps } from "@/types/propTypes";
-import Banner from "@/lib/banner/banner";
+import Banner from "@/services/banner/banner";
 import ServiceWorkerRegister from "@/components/serviceWorker/serviceWorkerRegister";
 import Orb from "@/components/background/orb";
 import { ToastProvider } from "@/hooks/toast";
