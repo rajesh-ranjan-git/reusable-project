@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FaArrowRight, FaStar } from "react-icons/fa6";
-import { LuChevronRight, LuCode } from "react-icons/lu";
+import { LuChevronRight, LuMessageSquare } from "react-icons/lu";
 
 const HeroSection = () => {
   return (
@@ -32,7 +32,7 @@ const HeroSection = () => {
           <FaArrowRight size={18} />
         </Link>
         <Link href={"/chat"} className="px-6 py-3 text-lg btn btn-secondary">
-          <LuCode size={18} />
+          <LuMessageSquare size={18} />
           Go To Chats
         </Link>
       </div>
