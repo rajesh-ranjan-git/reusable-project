@@ -53,7 +53,7 @@ const PaymentPage = () => {
 
       <main className="mx-auto px-4 md:px-8 py-8 md:py-16 max-w-5xl">
         <div className="mb-10 md:text-left text-center">
-          <h1 className="mb-2 font-bold text-white text-3xl md:text-4xl">
+          <h1 className="mb-2 font-bold text-text-primary text-3xl md:text-4xl">
             Complete your upgrade
           </h1>
           <p className="text-text-secondary">

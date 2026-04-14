@@ -22,34 +22,33 @@ const OrderSummary = ({
   const { name, planType, price, tax, discount, total } = planDetails;
 
   return (
-    <div className="shadow-lg border border-white/5 md:border-white/10 rounded-2xl h-full overflow-hidden">
-      {/* Mobile Toggle */}
+    <div className="h-full overflow-hidden glass-heavy">
       <div
-        className="md:hidden flex justify-between items-center bg-white/5 hover:bg-white/10 p-4 transition-colors cursor-pointer"
+        className="md:hidden flex justify-between items-center p-4 transition-colors cursor-pointer"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <span className="flex items-center gap-2 font-medium text-white text-sm">
+        <span className="flex items-center gap-2 font-medium text-text-primary text-sm">
           Show order summary
           {isExpanded ? <LuChevronUp size={16} /> : <LuChevronDown size={16} />}
         </span>
-        <span className="font-bold text-white">${total.toFixed(2)}</span>
+        <span className="font-bold text-text-primary">${total.toFixed(2)}</span>
       </div>
 
       {(isExpanded || !isMobile) && (
-        <div className="space-y-6 p-6 md:p-8">
+        <div className="space-y-6 p-6 md:p-8 glass">
           <div className="flex justify-between items-start">
             <div>
-              <h3 className="mb-1 font-bold text-white text-xl">
+              <h3 className="mb-1 font-arima font-bold text-text-primary text-xl tracking-wide">
                 DevMatch {name}
               </h3>
               <p className="text-text-secondary text-sm">{planType} billing</p>
             </div>
-            <span className="font-semibold text-white text-lg">
+            <span className="font-semibold text-text-primary text-lg">
               ${price.toFixed(2)}
             </span>
           </div>
 
-          <div className="bg-white/10 w-full h-px"></div>
+          <hr />
 
           <div className="space-y-3 text-sm">
             <div className="flex justify-between text-text-secondary">
@@ -57,7 +56,7 @@ const OrderSummary = ({
               <span>${price.toFixed(2)}</span>
             </div>
             {discount > 0 && (
-              <div className="flex justify-between text-green-400">
+              <div className="flex justify-between text-status-success-text">
                 <span>Discount applied</span>
                 <span>-${discount.toFixed(2)}</span>
               </div>
@@ -68,7 +67,7 @@ const OrderSummary = ({
             </div>
           </div>
 
-          <div className="bg-white/10 w-full h-px"></div>
+          <hr />
 
           <div className="flex justify-between items-end">
             <div>
@@ -81,7 +80,7 @@ const OrderSummary = ({
             </div>
           </div>
 
-          <div className="bg-primary/10 mt-6 p-4 border border-primary/20 rounded-lg">
+          <div className="mt-6 p-4 glass">
             <p className="text-text-secondary text-xs leading-relaxed">
               Your subscription will renew automatically. You can cancel at any
               time from your account settings.

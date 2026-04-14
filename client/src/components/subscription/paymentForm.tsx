@@ -1,6 +1,6 @@
 import { ChangeEvent, SubmitEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import { LuCreditCard, LuLock, LuShieldCheck } from "react-icons/lu";
+import { LuCreditCard, LuLock, LuShieldCheck, LuUser } from "react-icons/lu";
 import { TbLoader3 } from "react-icons/tb";
 
 const PaymentForm = () => {
@@ -44,65 +44,62 @@ const PaymentForm = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-surface/50 shadow-xl p-6 md:p-8 border border-white/5 md:border-white/10 rounded-2xl"
-    >
-      <div className="flex flex-col gap-6">
+    <form onSubmit={handleSubmit} className="p-6 md:p-8 glass-heavy">
+      <div className="flex flex-col gap-4">
         <div>
-          <h2 className="mb-1 font-bold text-white text-xl">Payment Method</h2>
+          <h2 className="mb-1 font-bold text-text-primary text-xl">
+            Payment Method
+          </h2>
           <p className="text-text-secondary text-sm">
             Enter your credit or debit card details below.
           </p>
         </div>
 
-        {/* Existing / Saved Card UI Dummy */}
-        <div className="flex items-center gap-3 bg-white/5 hover:bg-white/10 p-4 border border-primary/40 rounded-xl transition-colors cursor-pointer">
-          <div className="bg-bg border-4 border-primary rounded-full w-5 h-5 shrink-0"></div>
-          <div className="flex justify-center items-center bg-white/10 rounded w-10 h-6 font-bold text-[10px] text-white">
-            VISA
-          </div>
-          <span className="flex-1 -mt-0.5 font-medium text-white text-sm">
+        <div className="flex items-center gap-3 p-4 rounded-xl transition-colors cursor-pointer glass-interactive">
+          <div className="bg-glass-bg-strong border-4 border-accent-purple-dark rounded-full w-5 h-5 shrink-0"></div>
+          <div className="badge badge-gradient">VISA</div>
+          <span className="flex-1 -mt-0.5 font-medium text-text-primary text-sm">
             •••• 4242
           </span>
           <span className="text-text-secondary text-xs">12/26</span>
         </div>
 
-        <div className="relative flex items-center py-2">
-          <div className="border-white/10 border-t grow"></div>
+        <div className="relative flex items-center">
+          <div className="divider-gradient-to-left grow"></div>
           <span className="mx-4 font-semibold text-text-secondary text-xs uppercase tracking-widest shrink-0">
             Or New Card
           </span>
-          <div className="border-white/10 border-t grow"></div>
+          <div className="divider-gradient-to-right grow"></div>
         </div>
 
         <div className="space-y-4">
           <div>
-            <label className="block mb-1.5 ml-1 font-medium text-text-secondary text-xs">
-              Cardholder Name
-            </label>
-            <input
-              type="text"
-              placeholder="Jane Doe"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="bg-black/20 px-4 py-3 border border-white/10 focus:border-primary rounded-xl focus:outline-none focus:ring-1 focus:ring-primary w-full placeholder-text-secondary/50 text-white text-sm transition-colors"
-              required
-            />
+            <label className="ml-1 text-xs">Cardholder Name</label>
+
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Jane Doe"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="pl-10 rounded-xl bg-accent-purple-light/40"
+              />
+              <LuUser
+                className="top-1/2 left-4 absolute text-text-secondary -translate-y-1/2"
+                size={18}
+              />
+            </div>
           </div>
 
           <div>
-            <label className="block mb-1.5 ml-1 font-medium text-text-secondary text-xs">
-              Card Number
-            </label>
+            <label className="ml-1 text-xs">Card Number</label>
             <div className="relative">
               <input
                 type="text"
                 placeholder="0000 0000 0000 0000"
                 value={cardNumber}
                 onChange={handleCardNumberChange}
-                className="bg-black/20 px-4 py-3 pl-11 border border-white/10 focus:border-primary rounded-xl focus:outline-none focus:ring-1 focus:ring-primary w-full font-mono text-white text-sm tracking-widest transition-colors"
-                required
+                className="pl-10 rounded-xl bg-accent-purple-light/40"
               />
               <LuCreditCard
                 className="top-1/2 left-4 absolute text-text-secondary -translate-y-1/2"
@@ -113,29 +110,23 @@ const PaymentForm = () => {
 
           <div className="gap-4 grid grid-cols-2">
             <div>
-              <label className="block mb-1.5 ml-1 font-medium text-text-secondary text-xs">
-                Expiry Date
-              </label>
+              <label className="ml-1 text-xs">Expiry Date</label>
               <input
                 type="text"
                 placeholder="MM/YY"
                 value={expiry}
                 onChange={handleExpiryChange}
-                className="bg-black/20 px-4 py-3 border border-white/10 focus:border-primary rounded-xl focus:outline-none focus:ring-1 focus:ring-primary w-full font-mono text-white text-sm text-center transition-colors"
-                required
+                className="rounded-xl text-center bg-accent-purple-light/40"
               />
             </div>
             <div>
-              <label className="block mb-1.5 ml-1 font-medium text-text-secondary text-xs">
-                CVC
-              </label>
+              <label className="ml-1 text-xs">CVV</label>
               <input
                 type="text"
                 placeholder="123"
                 value={cvv}
                 onChange={handleCvvChange}
-                className="bg-black/20 px-4 py-3 border border-white/10 focus:border-primary rounded-xl focus:outline-none focus:ring-1 focus:ring-primary w-full font-mono text-white text-sm text-center transition-colors"
-                required
+                className="rounded-xl text-center bg-accent-purple-light/40"
               />
             </div>
           </div>
@@ -144,7 +135,7 @@ const PaymentForm = () => {
         <button
           type="submit"
           disabled={loading}
-          className="flex justify-center items-center gap-2 bg-primary hover:bg-indigo-600 active:bg-indigo-700 disabled:opacity-70 shadow-lg shadow-primary/20 mt-4 py-3.5 rounded-xl w-full font-medium text-white text-sm uppercase tracking-wider transition-all disabled:cursor-not-allowed"
+          className="flex justify-center items-center gap-2 py-3 border border-transparent group-hover:border-accent-purple-light rounded-xl w-full font-medium text-text-on-accent transition-all btn btn-primary"
         >
           {loading ? (
             <TbLoader3 size={20} className="animate-spin" />
@@ -156,8 +147,8 @@ const PaymentForm = () => {
         </button>
 
         <div className="flex justify-center items-center gap-2 mt-2 text-text-secondary">
-          <LuShieldCheck size={16} className="text-green-500" />
-          <span className="font-medium text-green-500/80 text-xs uppercase tracking-wider">
+          <LuShieldCheck size={16} className="text-status-success-text" />
+          <span className="font-medium text-status-success-text text-xs uppercase tracking-wider">
             Secured Payments
           </span>
         </div>
