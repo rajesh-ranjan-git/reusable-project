@@ -166,14 +166,21 @@ export const listPropertiesValidator = (propertyName, propertyValue) => {
     };
   }
 
-  if (typeof propertyValue !== "string") {
+  if (typeof propertyValue === "string") {
     propertyValue = [propertyValue.trim().toLowerCase()];
   }
 
   if (Array.isArray(propertyValue)) {
     propertyValue = propertyValue
-      .filter((value) => stringPropertiesValidator(value).isPropertyValid)
+      .filter((value) => typeof value === "string")
       .map((value) => value.trim().toLowerCase());
+
+    if (propertyValue.length < 1) {
+      return {
+        isPropertyValid: false,
+        message: `${toTitleCase(propertyName)} must be a list of strings!`,
+      };
+    }
   }
 
   return {

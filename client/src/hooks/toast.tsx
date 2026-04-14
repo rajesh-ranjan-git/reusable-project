@@ -12,7 +12,7 @@ import { FiCheckCircle, FiAlertCircle } from "react-icons/fi";
 import { TbAlertTriangle } from "react-icons/tb";
 import { FaInfoCircle } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
-import { useDeviceWidthCheck } from "./useDeviceCheck";
+import useScreenWidthCheck from "@/hooks/useScreenWidthCheck";
 
 export const TOAST_VARIANTS = {
   success: "success",
@@ -274,7 +274,7 @@ const ToastContainer: React.FC<{
 export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { isDesktopWidth } = useDeviceWidthCheck();
+  const { isDesktopScreenWidth } = useScreenWidthCheck();
 
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [position, setPosition] = useState<ToastPosition>(
@@ -304,9 +304,11 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     setPosition(
-      isDesktopWidth ? TOAST_POSITIONS.bottomRight : TOAST_POSITIONS.topCenter,
+      isDesktopScreenWidth
+        ? TOAST_POSITIONS.bottomRight
+        : TOAST_POSITIONS.topCenter,
     );
-  }, [isDesktopWidth]);
+  }, [isDesktopScreenWidth]);
 
   return (
     <ToastContext.Provider

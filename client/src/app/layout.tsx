@@ -10,7 +10,7 @@ import { ToastProvider } from "@/hooks/toast";
 import ThemeManager from "@/components/theme/themeManager";
 import Flash from "@/components/flash/flash";
 import ErrorWrapper from "@/components/errors/errorWrapper";
-import AuthWrapper from "@/components/errors/authWrapper";
+import AuthWrapper from "@/components/auth/authWrapper";
 
 export const metadata: Metadata = {
   title: {

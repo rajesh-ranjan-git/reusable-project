@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, SubmitEvent, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -18,7 +18,15 @@ import { FcGoogle } from "react-icons/fc";
 import { FaRegEye } from "react-icons/fa";
 import { staticImages } from "@/config/common.config";
 import SocialButton from "@/components/auth/socialButton";
-import { authRoutes, chatRoutes, defaultRoutes } from "@/lib/routes/routes";
+import { authRoutes, defaultRoutes } from "@/lib/routes/routes";
+import Form from "next/form";
+import useInputFieldValidator from "@/hooks/useInputFieldValidation";
+import FormErrorMessage from "@/components/errors/formErrorMessage";
+import {
+  emailValidator,
+  nameValidator,
+  passwordValidator,
+} from "@/validators/auth.validator";
 
 const DecorativeRings = () => (
   <div className="z-(--z-background) absolute inset-0 flex justify-center items-center overflow-hidden pointer-events-none">
@@ -53,25 +61,57 @@ const AuthPage = () => {
 
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    email: "",
-    firstName: "",
-    lastName: "",
-    password: "",
-    username: "",
+
+  const emailInput = useInputFieldValidator<string>({
+    initialValue: "",
+    validate: (val) => {
+      const { isEmailValid, message } = emailValidator(val);
+
+      if (!isEmailValid)
+        return message ?? "Please provide a valid email address!";
+
+      return "";
+    },
   });
 
-  const handleChange = (field: string, value: string) =>
-    setFormData((prev) => ({ ...prev, [field]: value }));
+  const passwordInput = useInputFieldValidator<string>({
+    initialValue: "",
+    validate: (val) => {
+      const { isPasswordValid, message } = passwordValidator(val);
 
-  const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      router.push(chatRoutes.chat);
-    }, 1500);
-  };
+      if (!isPasswordValid) return message ?? "Please provide your password!";
+
+      return "";
+    },
+  });
+
+  const firstNameInput = useInputFieldValidator<string>({
+    initialValue: "",
+    validate: (val) => {
+      const { isNameValid, message } = nameValidator(val, "firstName");
+      if (!isNameValid) return message ?? "Please provide your password!";
+
+      return "";
+    },
+  });
+
+  const lastNameInput = useInputFieldValidator<string>({
+    initialValue: "",
+    validate: (val) => {
+      const { isNameValid, message } = nameValidator(val, "lastName");
+
+      if (!isNameValid) return message ?? "Please provide your password!";
+
+      return "";
+    },
+  });
+
+  // const initialState = { message: "" };
+
+  // const [state, formAction, isPending] = useActionState(
+  //   pathname.includes(authRoutes.login) ? loginAction : registerAction,
+  //   initialState,
+  // );
 
   const handleToggleMode = () => {
     const nextIsLogin = !isLoginState;
@@ -94,6 +134,13 @@ const AuthPage = () => {
     },
     exit: { opacity: 0, scale: 0.95, transition: { duration: 0.4 } },
   };
+
+  useEffect(() => {
+    emailInput.reset();
+    passwordInput.reset();
+    firstNameInput.reset();
+    lastNameInput.reset();
+  }, [pathname]);
 
   return (
     <LayoutGroup>
@@ -182,7 +229,7 @@ const AuthPage = () => {
                   className="absolute inset-0 flex justify-center items-center px-4 sm:px-6 md:px-8 py-2 sm:py-4 md:py-6 w-full overflow-y-auto custom-scrollbar"
                 >
                   <div className="flex flex-col my-auto py-2 md:py-4 w-full max-w-md">
-                    <form onSubmit={handleSubmit}>
+                    <Form action={() => {}} autoComplete="false">
                       <h2 className="mb-4 text-center">Login</h2>
 
                       <div className="relative flex flex-col gap-1 mb-2">
@@ -190,25 +237,29 @@ const AuthPage = () => {
                         <input
                           type="text"
                           placeholder="you@example.com"
-                          value={formData.email}
+                          value={emailInput.raw}
                           className="pr-9"
-                          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                            handleChange("email", e.target.value)
+                          onInput={(e) =>
+                            emailInput.handleInput(e.currentTarget.value)
                           }
+                          onBlur={emailInput.handleBlur}
                         />
                         <LuUser className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2" />
                       </div>
+
+                      <FormErrorMessage error={emailInput.error} />
 
                       <div className="relative flex flex-col gap-1 mb-2">
                         <label className="ml-2">Password</label>
                         <input
                           type={showPassword ? "text" : "password"}
                           placeholder="Password"
-                          value={formData.password}
+                          value={passwordInput.raw}
                           className="pr-9"
-                          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                            handleChange("password", e.target.value)
+                          onInput={(e) =>
+                            passwordInput.handleInput(e.currentTarget.value)
                           }
+                          onBlur={passwordInput.handleBlur}
                         />
                         {showPassword ? (
                           <LuEyeClosed
@@ -222,6 +273,8 @@ const AuthPage = () => {
                           />
                         )}
                       </div>
+
+                      <FormErrorMessage error={passwordInput.error} />
 
                       <div className="flex justify-center mt-1 md:mt-2 mb-4 md:mb-6">
                         <Link
@@ -243,7 +296,7 @@ const AuthPage = () => {
                           "Login"
                         )}
                       </button>
-                    </form>
+                    </Form>
 
                     <div className="mt-4 md:mt-8 text-text-secondary text-sm text-center">
                       or login with social platforms
@@ -287,49 +340,65 @@ const AuthPage = () => {
                   className="absolute inset-0 flex justify-center items-center px-4 sm:px-6 md:px-8 py-2 sm:py-4 md:py-6 w-full overflow-y-auto custom-scrollbar"
                 >
                   <div className="flex flex-col my-auto py-2 w-full max-w-md">
-                    <form onSubmit={handleSubmit}>
+                    <Form action={() => {}} autoComplete="false">
                       <h2 className="mb-2 text-center">Register</h2>
 
                       <div className="relative flex flex-col gap-1 mb-2">
                         <label className="ml-2">Email</label>
                         <input
-                          type="email"
+                          type="text"
                           placeholder="you@example.com"
-                          value={formData.email}
+                          value={emailInput.raw}
                           className="pr-9"
-                          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                            handleChange("email", e.target.value)
+                          onInput={(e) =>
+                            emailInput.handleInput(e.currentTarget.value)
                           }
+                          onBlur={emailInput.handleBlur}
                         />
                         <LuMail className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2" />
                       </div>
 
+                      <FormErrorMessage error={emailInput.error} />
+
                       <div className="flex gap-1 md:gap-2">
-                        <div className="relative flex flex-col gap-1 mb-2">
-                          <label className="ml-2">First Name</label>
-                          <input
-                            type="text"
-                            placeholder="First Name"
-                            value={formData.firstName}
-                            className="pr-9"
-                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                              handleChange("firstName", e.target.value)
-                            }
-                          />
-                          <LuUser className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2" />
+                        <div className="flex flex-col w-full">
+                          <div className="relative flex flex-col gap-1 mb-2">
+                            <label className="ml-2">First Name</label>
+                            <input
+                              type="text"
+                              placeholder="First Name"
+                              value={firstNameInput.raw}
+                              className="pr-9"
+                              onInput={(e) =>
+                                firstNameInput.handleInput(
+                                  e.currentTarget.value,
+                                )
+                              }
+                              onBlur={firstNameInput.handleBlur}
+                            />
+                            <LuUser className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2" />
+                          </div>
+
+                          <FormErrorMessage error={firstNameInput.error} />
                         </div>
-                        <div className="relative flex flex-col gap-1 mb-2">
-                          <label className="ml-2">Last Name</label>
-                          <input
-                            type="text"
-                            placeholder="Last Name"
-                            value={formData.lastName}
-                            className="pr-9"
-                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                              handleChange("lastName", e.target.value)
-                            }
-                          />
-                          <LuUser className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2" />
+
+                        <div className="flex flex-col w-full">
+                          <div className="relative flex flex-col gap-1 mb-2">
+                            <label className="ml-2">Last Name</label>
+                            <input
+                              type="text"
+                              placeholder="Last Name"
+                              value={lastNameInput.raw}
+                              className="pr-9"
+                              onInput={(e) =>
+                                lastNameInput.handleInput(e.currentTarget.value)
+                              }
+                              onBlur={lastNameInput.handleBlur}
+                            />
+                            <LuUser className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2" />
+                          </div>
+
+                          <FormErrorMessage error={lastNameInput.error} />
                         </div>
                       </div>
 
@@ -338,11 +407,12 @@ const AuthPage = () => {
                         <input
                           type={showPassword ? "text" : "password"}
                           placeholder="Password"
-                          value={formData.password}
+                          value={passwordInput.raw}
                           className="pr-9"
-                          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                            handleChange("password", e.target.value)
+                          onInput={(e) =>
+                            passwordInput.handleInput(e.currentTarget.value)
                           }
+                          onBlur={passwordInput.handleBlur}
                         />
                         {showPassword ? (
                           <LuEyeClosed
@@ -356,6 +426,8 @@ const AuthPage = () => {
                           />
                         )}
                       </div>
+
+                      <FormErrorMessage error={passwordInput.error} />
 
                       <div className="mt-1 mb-4 text-text-secondary text-xs text-center leading-relaxed">
                         By signing up, you agree to our&nbsp;
@@ -386,7 +458,7 @@ const AuthPage = () => {
                           "Register"
                         )}
                       </button>
-                    </form>
+                    </Form>
 
                     <div className="mt-4 md:mt-5 text-text-secondary text-sm text-center">
                       or register with social platforms

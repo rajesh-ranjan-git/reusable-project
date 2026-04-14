@@ -512,7 +512,7 @@ export const emailValidator = (email) => {
   if (!EMAIL_REGEX.test(incomingEmail)) {
     return {
       isEmailValid: false,
-      message: "Please provide a valid email!",
+      message: "Please provide a valid emai addressl",
     };
   }
 

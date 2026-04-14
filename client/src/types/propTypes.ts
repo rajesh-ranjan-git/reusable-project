@@ -29,7 +29,7 @@ export interface BannerProps {
 }
 
 export interface FormErrorMessageProps {
-  errors: string[] | null;
+  error: string | null;
   className?: string;
 }
 
