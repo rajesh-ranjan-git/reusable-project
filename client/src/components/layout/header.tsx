@@ -113,7 +113,9 @@ const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
 
         {type === "landing" ? (
           <div className="flex items-center gap-2">
-            <span className="shadow-md badge badge-blue">v1.0</span>
+            <span className="hidden md:flex shadow-md badge badge-blue">
+              v1.0
+            </span>
 
             <ThemeToggle />
 
