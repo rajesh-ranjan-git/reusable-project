@@ -14,6 +14,12 @@ import {
 } from "react-icons/lu";
 import { staticImages } from "@/config/common.config";
 import { IoHomeOutline } from "react-icons/io5";
+import {
+  adminRoutes,
+  chatRoutes,
+  defaultRoutes,
+  profileRoutes,
+} from "@/lib/routes/routes";
 
 type HeaderProfileMenuProps = {
   isOpen: boolean;
@@ -90,7 +96,7 @@ const HeaderProfileMenu = ({
 
           <ul>
             <li
-              onClick={() => handleNavigation("/profile")}
+              onClick={() => handleNavigation(profileRoutes.profile)}
               className="flex items-center gap-3 hover:bg-glass-bg-subtle px-4 py-1 w-full text-left transition-colors"
             >
               <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
@@ -101,7 +107,7 @@ const HeaderProfileMenu = ({
               </p>
             </li>
             <li
-              onClick={() => handleNavigation("/")}
+              onClick={() => handleNavigation(defaultRoutes.landing)}
               className="flex items-center gap-2 hover:bg-glass-bg-subtle px-4 py-1 w-full text-left transition-colors"
             >
               <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
@@ -112,7 +118,7 @@ const HeaderProfileMenu = ({
               </p>
             </li>
             <li
-              onClick={() => handleNavigation("/discover")}
+              onClick={() => handleNavigation(defaultRoutes.discover)}
               className="flex items-center gap-3 hover:bg-glass-bg-subtle px-4 py-1 w-full text-left transition-colors"
             >
               <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
@@ -121,7 +127,7 @@ const HeaderProfileMenu = ({
               <p className="text-text-primary text-sm leading-snug">Discover</p>
             </li>
             <li
-              onClick={() => handleNavigation("/chat")}
+              onClick={() => handleNavigation(chatRoutes.chat)}
               className="flex items-center gap-3 hover:bg-glass-bg-subtle px-4 py-1 w-full text-left transition-colors"
             >
               <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
@@ -141,7 +147,7 @@ const HeaderProfileMenu = ({
               </p>
             </li>
             <li
-              onClick={() => handleNavigation("/admin")}
+              onClick={() => handleNavigation(adminRoutes.dashboard)}
               className="flex items-center gap-3 hover:bg-glass-bg-subtle px-4 py-1 w-full text-left transition-colors"
             >
               <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
@@ -169,7 +175,7 @@ const HeaderProfileMenu = ({
           <ul>
             <li
               onClick={() => {
-                router.push("/");
+                router.push(defaultRoutes.landing);
                 onClose();
               }}
               className="flex justify-center items-center gap-2 hover:bg-status-error-bg px-4 py-1 w-full text-status-error-text text-left cursor-pointer"

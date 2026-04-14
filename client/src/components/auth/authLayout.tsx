@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { staticImages } from "@/config/common.config";
+import { defaultRoutes } from "@/lib/routes/routes";
 
 type AuthLayoutProps = {
   children: ReactNode;
@@ -15,7 +16,7 @@ const AuthLayout = ({ children, title, subtitle }: AuthLayoutProps) => {
       <div className="z-(--z-raised) relative w-full max-w-md">
         <div className="mb-8 text-center">
           <Link
-            href="/discover"
+            href={defaultRoutes.discover}
             className="group inline-flex justify-center items-center gap-2 mb-6"
           >
             <Image

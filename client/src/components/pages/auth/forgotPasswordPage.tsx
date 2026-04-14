@@ -6,6 +6,7 @@ import { FiCheckCircle } from "react-icons/fi";
 import { LuArrowLeft } from "react-icons/lu";
 import { TbLoader3 } from "react-icons/tb";
 import AuthLayout from "@/components/auth/authLayout";
+import { authRoutes } from "@/lib/routes/routes";
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState("");
@@ -39,7 +40,7 @@ const ForgotPasswordPage = () => {
           </p>
 
           <Link
-            href="/login"
+            href={authRoutes.login}
             className="flex justify-center items-center gap-2 mt-8 text-text-secondary hover:text-text-primary text-sm hover:scale-105 transition-colors"
           >
             <LuArrowLeft size={16} />
@@ -71,7 +72,7 @@ const ForgotPasswordPage = () => {
           </button>
 
           <Link
-            href="/login"
+            href={authRoutes.login}
             className="flex justify-center items-center gap-2 mt-8 text-text-secondary hover:text-text-primary text-sm hover:scale-105 transition-colors"
           >
             <LuArrowLeft size={16} />

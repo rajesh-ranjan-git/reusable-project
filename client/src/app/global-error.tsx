@@ -10,7 +10,6 @@ import { ToastProvider } from "@/hooks/toast";
 import ThemeManager from "@/components/theme/themeManager";
 import Orb from "@/components/background/orb";
 import Flash from "@/components/flash/flash";
-import AppSidebar from "@/components/layout/appSidebar";
 import ReloadButton from "@/components/ui/buttons/reloadButton";
 import Header from "@/components/layout/header";
 import { useState } from "react";
@@ -37,10 +36,6 @@ const GlobalError = () => {
             />
 
             <main className="relative flex flex-1 overflow-hidden">
-              <div className="hidden xl:flex">
-                <AppSidebar />
-              </div>
-
               <div className="relative flex flex-col flex-1 justify-center items-center gap-4 bg-status-error-bg p-2 pb-20 md:pb-6 overflow-hidden">
                 <div className="relative flex justify-center w-full overflow-hidden">
                   <Image

@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { LuHeart, LuMessageSquare, LuUserPlus } from "react-icons/lu";
+import { chatRoutes, profileRoutes } from "@/lib/routes/routes";
 
 type HeaderNotificationMenuProps = {
   isOpen: boolean;
@@ -51,7 +52,7 @@ const HeaderNotificationMenu = ({
       time: "2m ago",
       icon: LuHeart,
       color: "text-pink-500",
-      path: "/chat",
+      path: chatRoutes.chat,
     },
     {
       id: 2,
@@ -60,7 +61,7 @@ const HeaderNotificationMenu = ({
       time: "1h ago",
       icon: LuMessageSquare,
       color: "text-blue-400",
-      path: "/chat",
+      path: chatRoutes.chat,
     },
     {
       id: 3,
@@ -69,7 +70,7 @@ const HeaderNotificationMenu = ({
       time: "2h ago",
       icon: LuUserPlus,
       color: "text-primary",
-      path: "/profile",
+      path: `${profileRoutes.profile}`,
     },
   ];
 

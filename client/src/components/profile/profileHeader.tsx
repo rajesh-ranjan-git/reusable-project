@@ -15,6 +15,7 @@ import { FaEdit, FaLink } from "react-icons/fa";
 import { FiMoreHorizontal } from "react-icons/fi";
 import ImageUploadMenu from "@/components/shared/imageUploadMenu";
 import CameraModal from "@/components/shared/cameraModal";
+import { chatRoutes } from "@/lib/routes/routes";
 
 type User = {
   name: string;
@@ -172,7 +173,7 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
                 </button>
                 <button
                   className="flex items-center gap-2 p-3 focus:ring-1 focus:ring-accent-purple-light glass"
-                  onClick={() => router.push("/chat")}
+                  onClick={() => router.push(chatRoutes.chat)}
                 >
                   <LuMessageSquare size={16} />
                 </button>

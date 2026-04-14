@@ -1,6 +1,6 @@
 "use client";
 
-import { MouseEvent, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { LuBell, LuMenu, LuSearch, LuX } from "react-icons/lu";
@@ -10,10 +10,17 @@ import AppSidebar from "@/components/layout/appSidebar";
 import HeaderNotificationMenu from "@/components/shared/headerNotificationMenu";
 import HeaderProfileMenu from "@/components/shared/headerProfileMenu";
 import { HeaderProps } from "@/types/propTypes";
+import { adminRoutes, authRoutes, defaultRoutes } from "@/lib/routes/routes";
+import { usePathname } from "next/navigation";
+import { toTitleCase } from "@/utils/common.utils";
 
 const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
+  const [currentAdminPath, setCurrentAdminPath] = useState<string | null>(null);
+
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isNotificationMenuOpen, setIsNotificationMenuOpen] = useState(false);
+
+  const pathname = usePathname();
 
   const toggleProfileMenu = (e: MouseEvent) => {
     e.stopPropagation();
@@ -37,6 +44,12 @@ const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
     setIsProfileMenuOpen(false);
   };
 
+  useEffect(() => {
+    if (type === "admin") {
+      setCurrentAdminPath(toTitleCase(pathname.split("/")[2]));
+    }
+  }, [pathname]);
+
   return (
     <>
       <header
@@ -55,11 +68,19 @@ const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
           )}
 
           {type === "admin" ? (
-            <Link href="/admin" className="group flex items-center gap-2">
-              <h1 className="pt-1.5 font-arima md:text-3xl">Dashboard</h1>
+            <Link
+              href={adminRoutes.dashboard}
+              className="group flex items-center gap-2"
+            >
+              <h1 className="pt-1.5 font-arima md:text-3xl">
+                {currentAdminPath}
+              </h1>
             </Link>
           ) : (
-            <Link href="/discover" className="group flex items-center gap-2">
+            <Link
+              href={defaultRoutes.discover}
+              className="group flex items-center gap-2"
+            >
               <Image
                 src={staticImages.mainLogo.src}
                 alt={staticImages.mainLogo.alt}
@@ -119,12 +140,12 @@ const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
 
             <ThemeToggle />
 
-            <Link href="/login" className="text-sm btn btn-secondary">
+            <Link href={authRoutes.login} className="text-sm btn btn-secondary">
               Log in
             </Link>
 
             <Link
-              href="/discover"
+              href={defaultRoutes.discover}
               className="hidden md:block text-text-on-accent text-sm btn btn-primary"
             >
               Open App

@@ -1,6 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
+import { defaultRoutes } from "@/lib/routes/routes";
 
 export const setCookies = async (cookiesData: string[]) => {
   const cookieStore = await cookies();
@@ -10,7 +11,7 @@ export const setCookies = async (cookiesData: string[]) => {
     const [nameValue, ...attributes] = cookie.split(";").map((s) => s.trim());
     const [name, value] = nameValue.split("=");
 
-    const options: any = { path: "/" };
+    const options: any = { path: defaultRoutes.landing };
     attributes.forEach((attr) => {
       const [key, val] = attr.split("=");
       const lowerKey = key.toLowerCase();

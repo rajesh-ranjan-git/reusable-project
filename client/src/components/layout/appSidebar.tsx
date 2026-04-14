@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { LuMessageCircle, LuSearch, LuUserPlus } from "react-icons/lu";
 import { staticImages } from "@/config/common.config";
+import { chatRoutes } from "@/lib/routes/routes";
 
 interface AppSidebarProps {
   setIsSidebarOpen?: Dispatch<SetStateAction<boolean>>;
@@ -203,7 +204,7 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
                         setIsSidebarOpen(false);
                       }
 
-                      router.push("/chat");
+                      router.push(chatRoutes.chat);
                     }}
                     className="p-0 w-8 h-8 font-medium text-status-info-text text-sm"
                   >

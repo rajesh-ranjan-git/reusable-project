@@ -1,5 +1,6 @@
 "use client";
 
+import { chatRoutes, defaultRoutes, profileRoutes } from "@/lib/routes/routes";
 import { useRouter } from "next/navigation";
 import { LuCompass, LuMessageSquare, LuUser } from "react-icons/lu";
 
@@ -8,15 +9,25 @@ const BottomNav = ({ activeTab = "chats", hidden = false }) => {
   if (hidden) return null;
 
   const tabs = [
-    { id: "discover", icon: LuCompass, label: "Discover", path: "/discover" },
+    {
+      id: "discover",
+      icon: LuCompass,
+      label: "Discover",
+      path: defaultRoutes.discover,
+    },
     {
       id: "chats",
       icon: LuMessageSquare,
       label: "Chats",
       badge: 3,
-      path: "/chat",
+      path: chatRoutes.chat,
     },
-    { id: "profile", icon: LuUser, label: "Profile", path: "/profile" },
+    {
+      id: "profile",
+      icon: LuUser,
+      label: "Profile",
+      path: profileRoutes.profile,
+    },
   ];
 
   return (

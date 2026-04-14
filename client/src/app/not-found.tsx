@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { IoIosWarning } from "react-icons/io";
 import { staticImages } from "@/config/common.config";
-import AppSidebar from "@/components/layout/appSidebar";
 import GoBackButton from "@/components/ui/buttons/goBackButton";
 import Header from "@/components/layout/header";
 import { useState } from "react";
@@ -19,10 +18,6 @@ const NotFound = () => {
         setIsSidebarOpen={setIsSidebarOpen}
       />
       <main className="relative flex flex-1 overflow-hidden">
-        <div className="hidden xl:flex">
-          <AppSidebar />
-        </div>
-
         <div className="relative flex flex-col flex-1 justify-center items-center gap-4 bg-status-warning-bg p-2 pb-20 md:pb-6 overflow-hidden">
           <div className="relative flex justify-center w-full overflow-hidden">
             <Image

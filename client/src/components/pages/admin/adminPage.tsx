@@ -13,10 +13,20 @@ import AdminSidebar from "@/components/admin/adminSidebar";
 import ChartCard from "@/components/admin/chartCard";
 import StatCard from "@/components/admin/statCard";
 import Header from "@/components/layout/header";
+import { AdminPageProps } from "@/types/propTypes";
+import { toTitleCase } from "@/utils/common.utils";
+import { adminRoutes } from "@/lib/routes/routes";
+import { notFound } from "next/navigation";
 
-const AdminDashboard = () => {
+const AdminPage = ({ type }: AdminPageProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+
+  if (!type || !Object.keys(adminRoutes).includes(type.toLowerCase())) {
+    logger.debug("type:", type);
+    logger.debug("Object.keys(adminRoutes):", Object.keys(adminRoutes));
+    return notFound();
+  }
 
   return (
     <div className="flex bg-bg-page selection:bg-primary/30 min-h-dvh overflow-hidden text-text-primary">
@@ -28,7 +38,7 @@ const AdminDashboard = () => {
       />
 
       <div
-        className={`flex flex-col flex-1 md:ml-18 w-full h-dvh overflow-hidden ${!collapsed ? "lg:ml-64" : ""}`}
+        className={`flex flex-col flex-1 md:ml-18 w-full h-dvh overflow-hidden ${!collapsed ? "md:ml-64" : ""}`}
       >
         <Header
           type="admin"
@@ -40,10 +50,10 @@ const AdminDashboard = () => {
           <div className="space-y-6 md:space-y-8 mx-auto pb-10 max-w-7xl">
             <div className="flex sm:flex-row flex-col justify-between sm:items-end gap-4">
               <div>
-                <h1 className="md:text-4xl">Overview</h1>
+                <h1 className="md:text-4xl">{toTitleCase(type)}</h1>
                 <p className="mt-1">Monitor platform metrics and activity.</p>
               </div>
-              <button className="ibtn btn-secondary">
+              <button className="btn btn-secondary">
                 <LuDownload size={16} />
                 Generate Report
               </button>
@@ -91,4 +101,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
+export default AdminPage;

@@ -14,27 +14,24 @@ import {
   LuX,
 } from "react-icons/lu";
 import { staticImages } from "@/config/common.config";
+import { adminRoutes, defaultRoutes } from "@/lib/routes/routes";
+import { AdminSidebarProps } from "@/types/propTypes";
 
 const AdminSidebar = ({
   isSidebarOpen,
   setIsSidebarOpen,
   collapsed,
   setCollapsed,
-}: {
-  isSidebarOpen: boolean;
-  setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
-  collapsed: boolean;
-  setCollapsed: Dispatch<SetStateAction<boolean>>;
-}) => {
+}: AdminSidebarProps) => {
   const pathname = usePathname();
   const router = useRouter();
 
   const navItems = [
-    { label: "Overview", icon: FaHome, path: "/admin" },
-    { label: "Users", icon: LuUsers, path: "/admin/users" },
-    { label: "Analytics", icon: IoBarChart, path: "/admin/analytics" },
-    { label: "Reports", icon: LuFileText, path: "/admin/reports" },
-    { label: "Settings", icon: LuSettings, path: "/admin/settings" },
+    { label: "Dashboard", icon: FaHome, path: adminRoutes.dashboard },
+    { label: "Users", icon: LuUsers, path: adminRoutes.users },
+    { label: "Analytics", icon: IoBarChart, path: adminRoutes.analytics },
+    { label: "Reports", icon: LuFileText, path: adminRoutes.reports },
+    { label: "Settings", icon: LuSettings, path: adminRoutes.settings },
   ];
 
   return (
@@ -56,7 +53,7 @@ const AdminSidebar = ({
         <div className="relative flex justify-between items-center px-4 border-glass-border border-b h-16">
           {!collapsed && (
             <Link
-              href="/admin"
+              href={adminRoutes.dashboard}
               className="flex items-center gap-2 overflow-hidden"
             >
               <div className="flex justify-center items-center rounded-full w-8 h-8 shrink-0">
@@ -131,7 +128,7 @@ const AdminSidebar = ({
         <div className="px-3 py-2 border-glass-border border-t">
           <button
             className={`group flex justify-center items-center gap-3 hover:bg-status-error-bg p-2 border border-transparent hover:border-status-error-border overflow-hidden text-text-secondary hover:text-status-error-text transition-colors ${collapsed ? "rounded-full w-max" : "rounded-lg w-full"}`}
-            onClick={() => router.push("/")}
+            onClick={() => router.push(defaultRoutes.landing)}
           >
             <LuLogOut size={20} className="group-hover:scale-110 shrink-0" />
             {!collapsed && (

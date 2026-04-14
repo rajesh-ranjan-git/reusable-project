@@ -17,5 +17,9 @@ export const chatRoutes = {
   chat: "/chat",
 };
 export const adminRoutes = {
-  dashboard: "/dashboard",
+  dashboard: "/admin/dashboard",
+  users: "/admin/users",
+  analytics: "/admin/analytics",
+  reports: "/admin/reports",
+  settings: "/admin/settings",
 };

@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { LuGithub, LuLinkedin, LuTwitter } from "react-icons/lu";
 import { staticImages } from "@/config/common.config";
+import { defaultRoutes } from "@/lib/routes/routes";
 
 const Footer = () => {
   return (
@@ -10,7 +11,7 @@ const Footer = () => {
         <div className="gap-12 grid grid-cols-1 md:grid-cols-4 mb-16">
           <div className="md:col-span-1">
             <Link
-              href="/discover"
+              href={defaultRoutes.discover}
               className="group flex items-center gap-2 mb-6"
             >
               <Image

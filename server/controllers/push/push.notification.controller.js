@@ -39,7 +39,7 @@ export const sendPushNotification = async (subscription) => {
     JSON.stringify({
       title: "🔥 New Update",
       body: "Something important happened!",
-      url: "/admin",
+      url: "/admin/dashboard",
     }),
   );
 };

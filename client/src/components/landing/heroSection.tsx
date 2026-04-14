@@ -1,3 +1,4 @@
+import { chatRoutes, defaultRoutes } from "@/lib/routes/routes";
 import Link from "next/link";
 import { FaArrowRight, FaStar } from "react-icons/fa6";
 import { LuChevronRight, LuMessageSquare } from "react-icons/lu";
@@ -7,7 +8,7 @@ const HeroSection = () => {
     <section className="pt-30 text-center animate-fade-in container">
       <div className="flex justify-center mb-4">
         <Link
-          href={"/discover"}
+          href={defaultRoutes.discover}
           className="flex items-center gap-1.5 shadow-md hover:shadow-lg w-max transition-shadow ease-in-out badge badge-gradient"
         >
           <FaStar className="text-status-success-text" />
@@ -25,13 +26,16 @@ const HeroSection = () => {
       </p>
       <div className="flex flex-wrap justify-center items-center gap-3">
         <Link
-          href={"/discover"}
+          href={defaultRoutes.discover}
           className="gap-2 px-7 py-3 text-lg btn btn-primary"
         >
           Start Matching Now
           <FaArrowRight size={18} />
         </Link>
-        <Link href={"/chat"} className="px-6 py-3 text-lg btn btn-secondary">
+        <Link
+          href={chatRoutes.chat}
+          className="px-6 py-3 text-lg btn btn-secondary"
+        >
           <LuMessageSquare size={18} />
           Go To Chats
         </Link>

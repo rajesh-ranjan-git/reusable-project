@@ -18,6 +18,7 @@ import { FcGoogle } from "react-icons/fc";
 import { FaRegEye } from "react-icons/fa";
 import { staticImages } from "@/config/common.config";
 import SocialButton from "@/components/auth/socialButton";
+import { authRoutes, chatRoutes, defaultRoutes } from "@/lib/routes/routes";
 
 const DecorativeRings = () => (
   <div className="z-(--z-background) absolute inset-0 flex justify-center items-center overflow-hidden pointer-events-none">
@@ -45,7 +46,9 @@ const AuthPage = () => {
   const pathname = usePathname();
   const router = useRouter();
 
-  const [isLoginState, setIsLoginState] = useState(pathname !== "/register");
+  const [isLoginState, setIsLoginState] = useState(
+    pathname !== authRoutes.register,
+  );
   const isLogin = isLoginState;
 
   const [loading, setLoading] = useState(false);
@@ -66,7 +69,7 @@ const AuthPage = () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      router.push("/chat");
+      router.push(chatRoutes.chat);
     }, 1500);
   };
 
@@ -74,7 +77,11 @@ const AuthPage = () => {
     const nextIsLogin = !isLoginState;
     setIsLoginState(nextIsLogin);
 
-    window.history.pushState(null, "", nextIsLogin ? "/login" : "/register");
+    window.history.pushState(
+      null,
+      "",
+      nextIsLogin ? `${authRoutes.login}` : `${authRoutes.register}`,
+    );
   };
 
   const formVariants: Variants = {
@@ -110,7 +117,7 @@ const AuthPage = () => {
               className="flex flex-col items-center gap-6 space-y-2 md:space-y-6 w-full max-w-xs md:max-w-xs"
             >
               <Link
-                href="/"
+                href={defaultRoutes.landing}
                 className="group flex flex-row md:flex-col justify-center items-center gap-3 md:gap-4 mb-0 md:mb-2"
               >
                 <div className="flex justify-center items-center shadow-glass-bg shadow-lg rounded-full w-12 md:w-20 h-12 md:h-20 group-hover:scale-105 transition-transform shrink-0">

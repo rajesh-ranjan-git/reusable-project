@@ -2,6 +2,7 @@ import { ChangeEvent, SubmitEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { LuCreditCard, LuLock, LuShieldCheck, LuUser } from "react-icons/lu";
 import { TbLoader3 } from "react-icons/tb";
+import { chatRoutes } from "@/lib/routes/routes";
 
 const PaymentForm = () => {
   const [cardNumber, setCardNumber] = useState("");
@@ -39,7 +40,7 @@ const PaymentForm = () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      router.push("/chat");
+      router.push(chatRoutes.chat);
     }, 2000);
   };
 
