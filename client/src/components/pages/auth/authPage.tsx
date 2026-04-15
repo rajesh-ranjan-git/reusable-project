@@ -182,7 +182,6 @@ const AuthPage = () => {
   };
 
   useEffect(() => {
-    logger.debug("debug status:", status);
     if (state && state.status === "IDLE") return;
 
     if (!state?.success) {

@@ -104,9 +104,6 @@ export const loginAction = async (
   const loginField = formData.get("loginField");
   const password = formData.get("password");
 
-  logger.debug("debug loginField:", loginField);
-  logger.debug("debug password:", password);
-
   const errors: AuthFormStateType["errors"] = {};
 
   let validatedUserName: string | undefined;
