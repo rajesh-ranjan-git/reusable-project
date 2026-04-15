@@ -1,7 +1,7 @@
 "use client";
 
 import { useToast } from "@/hooks/toast";
-import { fetchMe } from "@/lib/actions/actions";
+import { fetchMe, refreshTokens } from "@/lib/actions/actions";
 import { authRoutes, defaultRoutes } from "@/lib/routes/routes";
 import { useAppStore } from "@/store/store";
 import { ReactNodeProps } from "@/types/propTypes";
@@ -15,6 +15,10 @@ type FetchMeResponseType = {
   };
 };
 
+type RefreshResponseType = {
+  accessToken: string;
+};
+
 const AuthWrapper = ({ children }: ReactNodeProps) => {
   const [isChecking, setIsChecking] = useState(true);
 
@@ -23,7 +27,10 @@ const AuthWrapper = ({ children }: ReactNodeProps) => {
 
   const { showToast } = useToast();
 
-  const { loggedInUserId, setLoggedInUserId } = useAppStore();
+  const loggedInUserId = useAppStore((state) => state.loggedInUserId);
+  const setLoggedInUserId = useAppStore((state) => state.setLoggedInUserId);
+  const accessToken = useAppStore((state) => state.accessToken);
+  const setAccessToken = useAppStore((state) => state.setAccessToken);
 
   useEffect(() => {
     let isMounted = true;
@@ -36,12 +43,33 @@ const AuthWrapper = ({ children }: ReactNodeProps) => {
       const isPublicRoute = isAuthRoute || pathname === defaultRoutes.landing;
 
       if (!isPublicRoute) {
-        if (loggedInUserId) {
+        if (loggedInUserId && accessToken) {
           if (isMounted) setIsChecking(false);
           return;
         }
 
-        const response = await fetchMe();
+        let token = accessToken;
+
+        if (!token) {
+          const refreshResponse = await refreshTokens();
+
+          if (refreshResponse?.success) {
+            const refreshData = refreshResponse.data as RefreshResponseType;
+
+            token = refreshData.accessToken;
+            setAccessToken(token);
+          } else {
+            showToast({
+              title: "SESSION EXPIRED",
+              message: "Your session has expired, please login again!",
+              variant: "error",
+            });
+
+            router.push(authRoutes.login);
+          }
+        }
+
+        const response = await fetchMe(token as string);
 
         if (response?.success) {
           const data = response.data as FetchMeResponseType;
@@ -73,7 +101,14 @@ const AuthWrapper = ({ children }: ReactNodeProps) => {
     return () => {
       isMounted = false;
     };
-  }, [pathname, router, loggedInUserId, setLoggedInUserId]);
+  }, [
+    pathname,
+    router,
+    loggedInUserId,
+    accessToken,
+    setLoggedInUserId,
+    setAccessToken,
+  ]);
 
   if (isChecking) {
     return null;

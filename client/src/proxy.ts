@@ -17,7 +17,7 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const token = request.cookies.get("accessToken")?.value ?? null;
+  const token = request.cookies.get("refreshToken")?.value ?? null;
 
   const isAuthRoute = Object.values(authRoutes).some((route) =>
     pathname.startsWith(route),

@@ -18,18 +18,20 @@ export interface ApiSuccessResponse<T = unknown> {
   metadata: ResponseMetadata | null;
 }
 
-export interface ApiErrorResponse {
+export interface ApiErrorResponse<T = unknown> {
   success: false;
   status: string;
   code: string;
   statusCode: number;
   message: string;
-  details: unknown | null;
+  details: T | null;
   timestamp: string;
   metadata: ResponseMetadata | null;
 }
 
-export type ApiResponse<T = unknown> = ApiSuccessResponse<T> | ApiErrorResponse;
+export type ApiResponse<T = unknown> =
+  | ApiSuccessResponse<T>
+  | ApiErrorResponse<T>;
 
 export class ApiError extends Error {
   public readonly statusCode: number;

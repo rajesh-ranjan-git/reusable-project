@@ -13,6 +13,7 @@ import { HeaderProps } from "@/types/propTypes";
 import { adminRoutes, authRoutes, defaultRoutes } from "@/lib/routes/routes";
 import { usePathname } from "next/navigation";
 import { toTitleCase } from "@/utils/common.utils";
+import { useAppStore } from "@/store/store";
 
 const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
   const [currentAdminPath, setCurrentAdminPath] = useState<string | null>(null);
@@ -21,6 +22,8 @@ const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
   const [isNotificationMenuOpen, setIsNotificationMenuOpen] = useState(false);
 
   const pathname = usePathname();
+
+  const loggedInUserId = useAppStore((state) => state.loggedInUserId);
 
   const toggleProfileMenu = (e: MouseEvent) => {
     e.stopPropagation();
@@ -132,7 +135,7 @@ const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
           </div>
         )}
 
-        {type === "landing" ? (
+        {!loggedInUserId ? (
           <div className="flex items-center gap-2">
             <span className="hidden md:flex shadow-md badge badge-blue">
               v1.0

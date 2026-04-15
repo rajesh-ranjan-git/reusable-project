@@ -34,6 +34,7 @@ import {
   registerAction,
 } from "@/lib/actions/authActions";
 import { useToast } from "@/hooks/toast";
+import { useAppStore } from "@/store/store";
 
 const DecorativeRings = () => (
   <div className="z-(--z-background) absolute inset-0 flex justify-center items-center overflow-hidden pointer-events-none">
@@ -67,6 +68,8 @@ const AuthPage = () => {
   const isLogin = isLoginState;
 
   const [showPassword, setShowPassword] = useState(false);
+
+  const setLoggedInUserId = useAppStore((state) => state.setLoggedInUserId);
 
   const { showToast } = useToast();
 
@@ -191,6 +194,8 @@ const AuthPage = () => {
         variant: "error",
       });
     } else {
+      setLoggedInUserId(state.data.user.id);
+
       showToast({
         title: state.status,
         message:

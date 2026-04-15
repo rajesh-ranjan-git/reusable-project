@@ -130,10 +130,10 @@ export const oauthCallback = (provider) =>
 
     res.cookie("refreshToken", tokens.refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
       expires: tokens.refreshTokenExpiry,
-      path: "/api/v1",
+      path: "/",
     });
 
     const redirectUrl = `${CLIENT_URL}/auth/oauth/callback?accessToken=${tokens.accessToken}`;

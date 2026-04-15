@@ -19,12 +19,12 @@ type FieldErrors = {
   lastName?: string | null;
 };
 
-export type AuthFormStateType<T = unknown> =
+export type AuthFormStateType<T = any> =
   | (ApiSuccessResponse<T> & {
       inputs?: Record<string, FormDataEntryValue>;
       errors?: never;
     })
-  | (ApiErrorResponse & {
+  | (ApiErrorResponse<T> & {
       inputs?: Record<string, FormDataEntryValue>;
       errors?: FieldErrors;
     });
