@@ -89,7 +89,7 @@ const HeaderNotificationMenu = ({
             <h4 className="font-poppins text-center">Notifications</h4>
           </div>
 
-          <ul className="max-h-75 overflow-y-auto custom-scrollbar">
+          <ul className="max-h-75 overflow-y-auto">
             {notifications.length > 0 ? (
               notifications.map((notification) => {
                 const Icon = notification.icon;

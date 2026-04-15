@@ -22,10 +22,7 @@ import { getRemainingTime } from "../../utils/date.utils.js";
 import { ROLES } from "../../constants/roles.constants.js";
 
 class AuthService {
-  async register(
-    { email, password, userName, firstName, lastName },
-    ipAddress,
-  ) {
+  register = async ({ email, password, firstName, lastName }, ipAddress) => {
     const existingAccount = await Account.findOne({ email, provider: "local" });
     if (existingAccount) {
       throw AppError.conflict({
@@ -35,18 +32,11 @@ class AuthService {
       });
     }
 
-    const existingProfile = await Profile.findOne({
-      userName: userName.toLowerCase(),
+    const userName = await this._generateUniqueUsername({
+      email,
+      firstName,
+      lastName,
     });
-
-    if (existingProfile) {
-      throw AppError.conflict({
-        message:
-          "This userName is already in use, please use a different userName!",
-        code: "USER ALREADY EXISTS",
-        details: { userName },
-      });
-    }
 
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
 
@@ -71,7 +61,7 @@ class AuthService {
 
     await Profile.create({
       user: user._id,
-      userName: userName.toLowerCase(),
+      userName,
       firstName,
       lastName,
     });
@@ -94,11 +84,14 @@ class AuthService {
 
     return {
       userId: user._id.toString(),
-      message: "User registered successfully!",
+      message: "User registered successfully, please login to continue!",
     };
-  }
+  };
 
-  async login({ userName, email, password }, { ipAddress, device, userAgent }) {
+  login = async (
+    { userName, email, password },
+    { ipAddress, device, userAgent },
+  ) => {
     let profile;
     if (userName) {
       profile = await Profile.findOne({
@@ -211,18 +204,18 @@ class AuthService {
     });
 
     return { user, tokens };
-  }
+  };
 
-  async logout(userId, refreshToken, ipAddress) {
+  logout = async (userId, refreshToken, ipAddress) => {
     await sessionService.revokeSession(refreshToken);
     await activityService.logActivity({
       userId: userId,
       action: "user_logout",
       ipAddress,
     });
-  }
+  };
 
-  async verifyEmail(token) {
+  verifyEmail = async (token) => {
     const verificationRecord = await VerificationToken.findOne({
       token,
       type: "email_verification",
@@ -256,9 +249,9 @@ class AuthService {
     });
 
     return { message: "Your email has been verified successfully!" };
-  }
+  };
 
-  async resendVerificationEmail(email) {
+  resendVerificationEmail = async (email) => {
     const account = await Account.findOne({
       email: email.toLowerCase(),
       provider: "local",
@@ -294,9 +287,9 @@ class AuthService {
     return {
       message: "If that email exists, a verification link has been sent!",
     };
-  }
+  };
 
-  async forgotPassword(email, ipAddress) {
+  forgotPassword = async (email, ipAddress) => {
     const account = await Account.findOne({
       email: email.toLowerCase(),
       provider: "local",
@@ -327,9 +320,9 @@ class AuthService {
       message:
         "If that email is registered, you will receive a password reset link!",
     };
-  }
+  };
 
-  async resetPassword(token, newPassword) {
+  resetPassword = async (token, newPassword) => {
     const record = await VerificationToken.findOne({
       token,
       type: "password_reset",
@@ -396,9 +389,9 @@ class AuthService {
     return {
       message: "Password has been reset successfully!",
     };
-  }
+  };
 
-  async updatePassword(userId, currentPassword, newPassword, ipAddress) {
+  updatePassword = async (userId, currentPassword, newPassword, ipAddress) => {
     const account = await Account.findOne({ user: userId, provider: "local" });
     if (!account) {
       throw AppError.notFound({
@@ -442,9 +435,9 @@ class AuthService {
     });
 
     return { message: "Password updated successfully!" };
-  }
+  };
 
-  async refreshTokens(refreshToken) {
+  refreshTokens = async (refreshToken) => {
     const payload = tokenService.verifyRefreshToken(refreshToken);
     const session = await sessionService.getSessionByToken(refreshToken);
 
@@ -506,9 +499,9 @@ class AuthService {
     await User.findByIdAndUpdate(payload.userId, { lastSeen: new Date() });
 
     return tokens;
-  }
+  };
 
-  async _createVerificationToken(userId, type) {
+  _createVerificationToken = async (userId, type) => {
     const token = crypto.randomUUID();
     const expiresAt = new Date(
       Date.now() +
@@ -517,9 +510,9 @@ class AuthService {
 
     await VerificationToken.create({ user: userId, token, type, expiresAt });
     return token;
-  }
+  };
 
-  async _handleFailedLogin(account) {
+  _handleFailedLogin = async (account) => {
     const updates = { $inc: { loginAttempts: 1 } };
 
     if (account.loginAttempts + 1 >= MAX_LOGIN_ATTEMPTS) {
@@ -527,7 +520,57 @@ class AuthService {
     }
 
     await account.updateOne(updates);
-  }
+  };
+
+  _generateRandomSuffix = (length = 4) => {
+    const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+    let result = "";
+
+    for (let i = 0; i < length; i++) {
+      result += chars[Math.floor(Math.random() * chars.length)];
+    }
+
+    return result;
+  };
+
+  _normalizeUsername = (value) => {
+    return value
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, "")
+      .slice(0, 12);
+  };
+
+  _generateUniqueUsername = async ({ email, firstName, lastName }) => {
+    let base = "";
+
+    if (firstName) {
+      base = firstName + (lastName || "");
+    } else {
+      base = email.split("@")[0];
+    }
+
+    base = this._normalizeUsername(base);
+
+    if (!base) base = "user";
+
+    let userName = "";
+    let isUnique = false;
+
+    while (!isUnique) {
+      const suffix = this._generateRandomSuffix(4);
+      userName = `${base}${suffix}`;
+
+      const existingProfile = await Profile.findOne({
+        userName: userName,
+      });
+
+      if (!existingProfile) {
+        isUnique = true;
+      }
+    }
+
+    return userName;
+  };
 }
 
 export const authService = new AuthService();

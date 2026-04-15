@@ -2,38 +2,39 @@ import {
   emailValidator,
   nameValidator,
   passwordValidator,
-  userNameValidator,
 } from "@/validators/auth.validator";
-import { api } from "@/lib/api/apiHandler";
-import { apiUrls } from "../api/apiUtils";
+import {
+  api,
+  ApiErrorResponse,
+  ApiSuccessResponse,
+} from "@/lib/api/apiHandler";
+import { apiUrls } from "@/lib/api/apiUtils";
 
-type AuthFormStateType = {
-  success?: boolean;
-  title: string;
-  message: string;
-  inputs?: Record<string, FormDataEntryValue>;
-  errors?: {
-    email?: string | null;
-    password?: string | null;
-    firstName?: string | null;
-    lastName?: string | null;
-  };
-  data?: any;
+type FieldErrors = {
+  email?: string | null;
+  password?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
 };
+
+export type AuthFormStateType<T = unknown> =
+  | (ApiSuccessResponse<T> & {
+      inputs?: Record<string, FormDataEntryValue>;
+      errors?: never;
+    })
+  | (ApiErrorResponse & {
+      inputs?: Record<string, FormDataEntryValue>;
+      errors?: FieldErrors;
+    });
 
 export const registerAction = async (
   prevState: AuthFormStateType,
   formData: FormData,
-) => {
+): Promise<AuthFormStateType> => {
   const email = formData.get("email");
   const password = formData.get("password");
   const firstName = formData.get("firstName");
   const lastName = formData.get("lastName");
-
-  logger.debug("debug from registerAction email:", email);
-  logger.debug("debug from registerAction password:", password);
-  logger.debug("debug from registerAction firstName:", firstName);
-  logger.debug("debug from registerAction lastName:", lastName);
 
   const errors: AuthFormStateType["errors"] = {};
 
@@ -42,65 +43,34 @@ export const registerAction = async (
   );
   errors.email = emailError ?? null;
 
-  logger.debug("debug from registerAction validatedEmail:", validatedEmail);
-  logger.debug("debug from registerAction emailError:", emailError);
-
   const { validatedPassword, message: passwordError } = passwordValidator(
     password as string,
   );
   errors.password = passwordError ?? null;
-
-  logger.debug(
-    "debug from registerAction validatedPassword:",
-    validatedPassword,
-  );
-  logger.debug("debug from registerAction passwordError:", passwordError);
-
   const { validatedName: validatedFirstName, message: firstNameError } =
     nameValidator(firstName, "firstName");
   errors.firstName = firstNameError ?? null;
-
-  logger.debug(
-    "debug from registerAction validatedFirstName:",
-    validatedFirstName,
-  );
-  logger.debug("debug from registerAction firstNameError:", firstNameError);
 
   const { validatedName: validatedLastName, message: lastNameError } =
     nameValidator(lastName, "lastName");
   errors.lastName = lastNameError ?? null;
 
-  logger.debug(
-    "debug from registerAction validatedLastName:",
-    validatedLastName,
-  );
-  logger.debug("debug from registerAction lastNameError:", lastNameError);
-  logger.debug("debug from registerAction errors:", errors);
-  logger.debug(
-    "debug from registerAction Object.values(errors):",
-    Object.values(errors),
-  );
-  logger.debug(
-    "debug from registerAction Object.values(errors).filter((error) => error !== null):",
-    Object.values(errors).filter((error) => error !== null),
-  );
-  logger.debug(
-    "debug from registerAction Object.values(errors).filter((error) => error !== null).length:",
-    Object.values(errors).filter((error) => error !== null).length,
-  );
-
-  if (Object.values(errors).filter((error) => error !== null).length > 0) {
+  if (Object.values(errors).some((error) => error !== null)) {
     return {
-      message: "REGISTRATION FAILED",
-      errors,
       success: false,
+      status: "VALIDATION FAILED",
+      code: "REGISTRATION FAILED",
+      statusCode: 422,
+      message: "Please provide valid inputs to register!",
+      details: errors,
+      timestamp: new Date().toISOString(),
+      metadata: null,
+      errors,
       inputs: Object.fromEntries(formData),
     };
   }
-  logger.debug("debug from registerAction before register request try block");
 
   try {
-    logger.debug("debug from registerAction before register request");
     const response = await api.post(apiUrls.auth.register, {
       email: validatedEmail,
       password: validatedPassword,
@@ -108,33 +78,17 @@ export const registerAction = async (
       lastName: validatedLastName,
     });
 
-    logger.debug("debug from registerAction response:", response);
-
-    return {
-      success: response.success ?? true,
-      title: response.status ?? "REGISTRATION SUCCESS",
-      message:
-        response.message ??
-        "User registered successfully, please login to continue!",
-      data: response.data ?? null,
-    };
-  } catch (error) {
-    // if (response.success === false) {
-    //   return {
-    //     success: response?.success ?? false,
-    //     title: response?.code ?? "REGISTRATION FAILED",
-    //     message:
-    //       response?.message ?? "Unable to register user, please try again!",
-    //     details: response.details ?? null,
-    //   };
-    // }
-
-    logger.debug("debug from registerAction error:", error);
-
+    return { ...response };
+  } catch (error: any) {
     return {
       success: false,
-      title: "REGISTRATION FAILED",
-      message: "Unable to register user, please try again!",
+      status: error?.status ?? "REGISTRATION FAILED",
+      code: error?.code ?? "REGISTRATION FAILED",
+      statusCode: error?.statusCode ?? 500,
+      message: error?.message ?? "Unable to register user, please try again!",
+      details: error?.details ?? null,
+      timestamp: new Date().toISOString(),
+      metadata: error?.metadata ?? null,
       inputs: Object.fromEntries(formData),
     };
   }

@@ -953,6 +953,15 @@
     color: var(--text-primary);
   }
 
+  .no-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
   @keyframes fade-in {
     from {
       opacity: 0;

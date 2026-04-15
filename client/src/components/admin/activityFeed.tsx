@@ -63,7 +63,7 @@ const ActivityFeed = () => {
         <button className="btn btn-ghost">View all</button>
       </div>
 
-      <div className="flex-1 space-y-2 pr-2 overflow-y-auto custom-scrollbar">
+      <div className="flex-1 space-y-2 pr-2 overflow-y-auto">
         {activities.map((item) => {
           const Icon = item.icon;
           return (

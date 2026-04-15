@@ -25,7 +25,7 @@ const FilterModal = ({ isOpen, onClose }: FilterModalProps) => {
           </button>
         </div>
 
-        <div className="space-y-8 p-6 max-h-[60vh] overflow-y-auto custom-scrollbar">
+        <div className="space-y-8 p-6 max-h-[60vh] overflow-y-auto">
           <div>
             <div className="flex justify-between mb-4">
               <label className="font-medium text-text-primary text-sm">

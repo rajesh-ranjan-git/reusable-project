@@ -92,7 +92,7 @@ const AdminSidebar = ({
           </button>
         </div>
 
-        <nav className="flex flex-col flex-1 gap-2 px-3 py-6 overflow-y-auto custom-scrollbar">
+        <nav className="flex flex-col flex-1 gap-2 px-3 py-6 overflow-y-auto">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive =

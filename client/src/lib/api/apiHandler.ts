@@ -41,7 +41,7 @@ export class ApiError extends Error {
 
   constructor(response: ApiErrorResponse) {
     super(response.message);
-    this.name = response.status ?? "ApiError";
+    this.name = response.status ?? "API Error";
     this.statusCode = response.statusCode;
     this.code = response.code;
     this.details = response.details;

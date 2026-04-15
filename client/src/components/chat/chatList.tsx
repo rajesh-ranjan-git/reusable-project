@@ -125,7 +125,7 @@ const ChatList = ({ selectedChatId, onSelectChat }: ChatListProps) => {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto custom-scrollbar">
+      <div className="flex-1 overflow-y-auto">
         {mockChats.map((chat) => (
           <button
             key={chat.id}

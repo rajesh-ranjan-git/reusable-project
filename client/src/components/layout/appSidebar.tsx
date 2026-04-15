@@ -80,7 +80,7 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
           />
         </div>
       </div>
-      <div className="flex-1 p-2 overflow-y-auto custom-scrollbar">
+      <div className="flex-1 p-2 overflow-y-auto">
         <div className="mb-2">
           <h6 className="mb-3 font-poppins text-text-secondary uppercase tracking-wider">
             Requests

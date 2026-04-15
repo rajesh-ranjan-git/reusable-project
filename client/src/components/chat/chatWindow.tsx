@@ -141,7 +141,7 @@ const ChatWindow = ({ chat, onBack }: ChatWindowProps) => {
         </div>
       </div>
 
-      <div className="z-(--z-base) relative flex flex-col flex-1 p-4 pb-20 md:pb-4 overflow-y-auto custom-scrollbar">
+      <div className="z-(--z-base) relative flex flex-col flex-1 p-4 pb-20 md:pb-4 overflow-y-auto">
         <div className="my-4 font-medium text-text-secondary text-xs text-center">
           Yesterday
         </div>

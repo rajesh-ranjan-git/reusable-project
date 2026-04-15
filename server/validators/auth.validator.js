@@ -21,20 +21,6 @@ import {
 
 export const validateRegister = (data) => {
   const {
-    isUserNameValid,
-    message: userNameErrorMessage,
-    validatedUserName,
-  } = userNameValidator(data.userName);
-
-  if (!isUserNameValid) {
-    throw AppError.unprocessable({
-      message: userNameErrorMessage,
-      code: "USERNAME VALIDATION FAILED",
-      details: { userName: data.userName },
-    });
-  }
-
-  const {
     isEmailValid,
     message: emailErrorMessage,
     validatedEmail,
@@ -91,7 +77,6 @@ export const validateRegister = (data) => {
   }
 
   return {
-    userName: validatedUserName,
     email: validatedEmail,
     password: validatedPassword,
     firstName: validatedFirstName,
@@ -132,7 +117,7 @@ export const validateLogin = (data) => {
     isPasswordValid,
     message: passwordErrorMessage,
     validatedPassword,
-  } = passwordValidator(data.password);
+  } = passwordValidator(password);
 
   if (!isPasswordValid) {
     throw AppError.unprocessable({

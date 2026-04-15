@@ -196,7 +196,7 @@ const ToastItem: React.FC<{
         damping: 40,
         mass: 1,
       }}
-      className={`${config.cn} relative backdrop-blur-sm min-w-80 max-w-84 md:max-w-96 overflow-hidden alert p-0`}
+      className={`${config.cn} relative backdrop-blur-lg min-w-80 max-w-84 md:max-w-96 overflow-hidden alert p-0`}
       style={{
         marginBottom: index > 0 ? "8px" : "0",
       }}
@@ -216,9 +216,7 @@ const ToastItem: React.FC<{
         <Icon className={`${config.iconColor} alert-icon`} size={20} />
 
         <div>
-          <p className="font-arima text-lg tracking-wider alert-title">
-            {toast.title}
-          </p>
+          <p className="font-poppins text-lg alert-title">{toast.title}</p>
           <p className={`${config.text} opacity-90 m-0 text-sm`}>
             {toast.message}
           </p>

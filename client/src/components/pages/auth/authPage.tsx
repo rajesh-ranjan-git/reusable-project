@@ -27,7 +27,7 @@ import {
   nameValidator,
   passwordValidator,
 } from "@/validators/auth.validator";
-import { registerAction } from "@/lib/actions/authActions";
+import { AuthFormStateType, registerAction } from "@/lib/actions/authActions";
 import { useToast } from "@/hooks/toast";
 
 const DecorativeRings = () => (
@@ -110,12 +110,31 @@ const AuthPage = () => {
     },
   });
 
-  const initialState = { message: "" };
+  const initialState: AuthFormStateType = {
+    success: false,
+    status: "IDLE",
+    code: "INITIAL",
+    statusCode: 0,
+    message: "",
+    details: null,
+    timestamp: new Date().toISOString(),
+    metadata: null,
+    errors: {},
+    inputs: {},
+  };
 
-  const [state, formAction, isPending] = useActionState(
-    pathname === authRoutes.register ? registerAction : null,
-    initialState,
-  );
+  const action = async (
+    prevState: AuthFormStateType,
+    formData: FormData,
+  ): Promise<AuthFormStateType> => {
+    if (pathname === authRoutes.register) {
+      return registerAction(prevState, formData);
+    }
+
+    return prevState;
+  };
+
+  const [state, formAction, isPending] = useActionState(action, initialState);
 
   const handleToggleMode = () => {
     const nextIsLogin = !isLoginState;
@@ -140,18 +159,23 @@ const AuthPage = () => {
   };
 
   useEffect(() => {
+    if (state && state.status === "IDLE") return;
+
     if (!state?.success) {
       showToast({
-        title: state.title,
+        title: state.code,
         message: state.message,
         variant: "error",
       });
+    } else {
+      showToast({
+        title: state.status,
+        message:
+          state.message ??
+          "User registered successfully, please login to continue!",
+        variant: "success",
+      });
     }
-
-    logger.debug(
-      "debug from authPage useEffect state after form submit : ",
-      state,
-    );
   }, [state]);
 
   useEffect(() => {
@@ -245,7 +269,7 @@ const AuthPage = () => {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="absolute inset-0 flex justify-center items-center px-4 sm:px-6 md:px-8 py-2 sm:py-4 md:py-6 w-full overflow-y-auto custom-scrollbar"
+                  className="absolute inset-0 flex justify-center items-center px-4 sm:px-6 md:px-8 py-2 sm:py-4 md:py-6 w-full overflow-y-auto no-scrollbar"
                 >
                   <div className="flex flex-col my-auto py-2 md:py-4 w-full max-w-md">
                     <Form action={() => {}} autoComplete="false">
@@ -356,7 +380,7 @@ const AuthPage = () => {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="absolute inset-0 flex justify-center items-center px-4 sm:px-6 md:px-8 py-2 sm:py-4 md:py-6 w-full overflow-y-auto custom-scrollbar"
+                  className="absolute inset-0 flex justify-center items-center px-4 sm:px-6 md:px-8 py-2 sm:py-4 md:py-6 w-full overflow-y-auto no-scrollbar"
                 >
                   <div className="flex flex-col my-auto py-2 w-full max-w-md">
                     <Form action={formAction} autoComplete="false">
@@ -379,16 +403,6 @@ const AuthPage = () => {
                       </div>
 
                       <FormErrorMessage error={emailInput.error} />
-
-                      <FormErrorMessage
-                        error={
-                          !state?.success &&
-                          state?.errors &&
-                          state?.errors?.userName
-                            ? state?.errors?.userName
-                            : null
-                        }
-                      />
 
                       <div className="flex gap-1 md:gap-2">
                         <div className="flex flex-col w-full">

@@ -60,7 +60,7 @@ const comparisonData: ComparisonData = {
 
 const ComparisonTable = () => {
   return (
-    <div className="hidden md:block mx-auto mt-30 max-w-250 overflow-x-auto custom-scrollbar">
+    <div className="hidden md:block mx-auto mt-30 max-w-250 overflow-x-auto">
       <div className="mb-12 text-center">
         <h2 className="mb-4">Compare all features</h2>
         <p>Everything you need to know to make the right choice.</p>

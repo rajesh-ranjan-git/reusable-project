@@ -23,8 +23,6 @@ const AdminPage = ({ type }: AdminPageProps) => {
   const [collapsed, setCollapsed] = useState(false);
 
   if (!type || !Object.keys(adminRoutes).includes(type.toLowerCase())) {
-    logger.debug("type:", type);
-    logger.debug("Object.keys(adminRoutes):", Object.keys(adminRoutes));
     return notFound();
   }
 
@@ -46,7 +44,7 @@ const AdminPage = ({ type }: AdminPageProps) => {
           setIsSidebarOpen={setIsSidebarOpen}
         />
 
-        <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-y-auto custom-scrollbar">
+        <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-y-auto">
           <div className="space-y-6 md:space-y-8 mx-auto pb-10 max-w-7xl">
             <div className="flex sm:flex-row flex-col justify-between sm:items-end gap-4">
               <div>

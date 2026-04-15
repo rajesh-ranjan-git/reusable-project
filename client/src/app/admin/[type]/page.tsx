@@ -3,8 +3,6 @@ import { AdminProps } from "@/types/propTypes";
 
 const Admin = async ({ params }: AdminProps) => {
   const { type } = await params;
-  logger.debug("params:", params);
-  logger.debug("type:", type);
 
   return <AdminPage type={type} />;
 };
