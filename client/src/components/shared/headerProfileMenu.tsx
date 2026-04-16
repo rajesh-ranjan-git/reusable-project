@@ -167,7 +167,7 @@ const HeaderProfileMenu = ({
           </div>
 
           <ul>
-            {loggedInUser?.role === "ADMIN" && (
+            {loggedInUser?.role.includes("ADMIN") && (
               <ProfileMenuItem
                 item={adminDashboardMenuItem.dashboard}
                 handleNavigation={handleNavigation}

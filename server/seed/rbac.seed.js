@@ -69,7 +69,7 @@ const seedRBAC = async () => {
 
     const { userId: superAdminUserId } = await authService.register({
       email: "super.admin@server.com",
-      password: "Super.Admin@00",
+      password: "SuperAdmin@0",
       userName: "super_admin",
     });
 
