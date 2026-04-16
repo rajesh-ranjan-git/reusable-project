@@ -54,7 +54,11 @@ export const useAppStore = create<AppState>()(
     {
       name: "app-storage",
       version: 1,
-      partialize: (state) => ({}),
+      partialize: (state) => ({
+        activeTheme: state.activeTheme,
+        accessToken: state.accessToken,
+        loggedInUser: state.loggedInUser,
+      }),
     },
   ),
 );

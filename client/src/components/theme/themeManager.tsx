@@ -2,47 +2,26 @@
 
 import { useEffect } from "react";
 import { themeConfig } from "@/config/common.config";
-import { ThemeTypes } from "@/types/types";
-import { useWebStorage } from "@/hooks/useWebStorage";
 import { useAppStore } from "@/store/store";
 
 const ThemeManager = () => {
-  const [storedValue, setWebStorageValue] = useWebStorage<ThemeTypes>({
-    key: "activeTheme",
-    value: themeConfig.dark,
-  });
-
   const activeTheme = useAppStore((state) => state.activeTheme);
-  const setActiveTheme = useAppStore((state) => state.setActiveTheme);
 
   useEffect(() => {
-    if (storedValue && storedValue !== activeTheme) {
-      setActiveTheme(storedValue);
-    }
-  }, []);
+    if (!activeTheme) return;
 
-  useEffect(() => {
     const isDark = activeTheme === themeConfig.dark;
 
-    document.documentElement.setAttribute(
-      "data-theme",
-      isDark ? "dark" : "light",
-    );
+    const root = document.documentElement;
 
-    document.documentElement.classList.toggle(themeConfig.dark, isDark);
-    document.documentElement.classList.toggle(themeConfig.light, !isDark);
+    root.setAttribute("data-theme", isDark ? "dark" : "light");
 
-    if (storedValue !== activeTheme) {
-      setWebStorageValue(activeTheme);
-    }
+    root.classList.toggle(themeConfig.dark, isDark);
+    root.classList.toggle(themeConfig.light, !isDark);
 
     return () => {
-      document.documentElement.removeAttribute("data-theme");
-
-      document.documentElement.classList.remove(
-        themeConfig.dark,
-        themeConfig.light,
-      );
+      root.removeAttribute("data-theme");
+      root.classList.remove(themeConfig.dark, themeConfig.light);
     };
   }, [activeTheme]);
 
