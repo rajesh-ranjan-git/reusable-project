@@ -6,6 +6,8 @@ import {
   updateUsername,
   updateGender,
   uploadProfileImage,
+  updateSkills,
+  updateExperience,
 } from "../../../controllers/user/profile/profile.controller.js";
 import { requestMiddleware } from "../../../middlewares/request.middleware.js";
 import { authenticate } from "../../../middlewares/authenticate.middleware.js";
@@ -69,6 +71,20 @@ profileRouter.post(
   authenticate,
   authorize({ permissions: [PERMISSIONS.PROFILE_UPDATE_OWN] }),
   uploadProfileImage,
+);
+profileRouter.post(
+  "/profile/skills",
+  requestMiddleware({ requireBody: true }),
+  authenticate,
+  authorize({ permissions: [PERMISSIONS.PROFILE_UPDATE_OWN] }),
+  updateSkills,
+);
+profileRouter.post(
+  "/profile/experience",
+  requestMiddleware({ requireBody: true }),
+  authenticate,
+  authorize({ permissions: [PERMISSIONS.PROFILE_UPDATE_OWN] }),
+  updateExperience,
 );
 
 export default profileRouter;

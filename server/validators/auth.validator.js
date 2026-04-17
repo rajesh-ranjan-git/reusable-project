@@ -197,18 +197,7 @@ export const validateUpdateProfile = (data) => {
     });
   }
 
-  const {
-    firstName,
-    lastName,
-    nickName,
-    bio,
-    maritalStatus,
-    jobProfile,
-    company,
-    experience,
-    skills,
-    interests,
-  } = data;
+  const { firstName, lastName, nickName, bio, maritalStatus, interests } = data;
 
   const validatedProperties = {};
   const errors = {};
@@ -278,71 +267,6 @@ export const validateUpdateProfile = (data) => {
           .toLowerCase();
       }
     });
-  }
-
-  const {
-    isPropertyValid: isJobProfileValid,
-    message: jobProfileErrorMessage,
-    validatedProperty: validatedJobProfile,
-  } = stringPropertiesValidator(
-    "jobProfile",
-    jobProfile,
-    propertyConstraints.minStringLength,
-    propertyConstraints.maxStringLength,
-  );
-
-  if (isJobProfileValid && validatedJobProfile) {
-    validatedProperties["jobProfile"] = validatedJobProfile;
-  } else if (jobProfileErrorMessage) {
-    errors["jobProfile"] =
-      jobProfileErrorMessage ?? "Unable to update job profile!";
-  }
-
-  const {
-    isPropertyValid: isCompanyValid,
-    message: companyErrorMessage,
-    validatedProperty: validatedCompany,
-  } = stringPropertiesValidator(
-    "company",
-    company,
-    propertyConstraints.minStringLength,
-    propertyConstraints.maxStringLength,
-  );
-
-  if (isCompanyValid && validatedCompany) {
-    validatedProperties["company"] = validatedCompany;
-  } else if (companyErrorMessage) {
-    errors["company"] = companyErrorMessage ?? "Unable to update company!";
-  }
-
-  const {
-    isPropertyValid: isExperienceValid,
-    message: experienceErrorMessage,
-    validatedProperty: validatedExperience,
-  } = numberPropertiesValidator(
-    "experience",
-    experience,
-    propertyConstraints.minExperience,
-    propertyConstraints.maxExperience,
-  );
-
-  if (isExperienceValid && validatedExperience) {
-    validatedProperties["experience"] = validatedExperience;
-  } else if (experienceErrorMessage) {
-    errors["experience"] =
-      experienceErrorMessage ?? "Unable to update experience!";
-  }
-
-  const {
-    isPropertyValid: isSkillsValid,
-    message: skillsErrorMessage,
-    validatedProperty: validatedSkills,
-  } = listPropertiesValidator("skills", skills);
-
-  if (isSkillsValid && validatedSkills) {
-    validatedProperties["skills"] = validatedSkills;
-  } else if (skillsErrorMessage) {
-    errors["skills"] = skillsErrorMessage ?? "Unable to update skills!";
   }
 
   const {

@@ -53,16 +53,75 @@ const profileSchema = new mongoose.Schema(
     cover: { type: String, default: null },
     coverFileId: { type: String, default: null },
 
-    company: String,
-    jobProfile: String,
-    experience: Number,
+    experiences: [
+      {
+        company: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        role: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        startDate: {
+          type: Date,
+          required: true,
+          validate: {
+            validator: (value) => value < new Date(),
+            message: "Start date must be in the past",
+          },
+        },
+        endDate: {
+          type: Date,
+          default: null,
+          validate: {
+            validator: (value) => !value || value < new Date(),
+            message: "End date must be in the past",
+          },
+        },
+        isCurrent: {
+          type: Boolean,
+          default: false,
+        },
+        description: {
+          type: String,
+          default: "",
+        },
+      },
+    ],
 
     skills: {
-      type: [String],
+      type: [
+        {
+          name: {
+            type: String,
+            required: true,
+            lowercase: true,
+            trim: true,
+          },
+          level: {
+            type: String,
+            enum: ["beginner", "intermediate", "pro"],
+            default: "beginner",
+          },
+        },
+      ],
       set: (val) => {
-        if (Array.isArray(val)) return val.map((s) => s.trim().toLowerCase());
-        if (typeof val === "string") return [val.trim().toLowerCase()];
-        return [];
+        if (!val) return [];
+
+        if (Array.isArray(val) && typeof val[0] === "string") {
+          return val.map((s) => ({
+            name: s.trim().toLowerCase(),
+            level: "beginner",
+          }));
+        }
+
+        return val.map((s) => ({
+          name: s.name?.trim().toLowerCase(),
+          level: s.level || "beginner",
+        }));
       },
     },
 
@@ -106,6 +165,25 @@ profileSchema.virtual("age").get(function () {
   }
 
   return age;
+});
+
+profileSchema.virtual("totalExperience").get(function () {
+  if (!this.experiences?.length) return 0;
+
+  let totalMonths = 0;
+
+  this.experiences.forEach((exp) => {
+    const start = new Date(exp.startDate);
+    const end = exp.endDate ? new Date(exp.endDate) : new Date();
+
+    const months =
+      (end.getFullYear() - start.getFullYear()) * 12 +
+      (end.getMonth() - start.getMonth());
+
+    totalMonths += months;
+  });
+
+  return (totalMonths / 12).toFixed(1);
 });
 
 const Profile = mongoose.model("Profile", profileSchema);
