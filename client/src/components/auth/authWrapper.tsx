@@ -2,6 +2,7 @@
 
 import { useToast } from "@/hooks/toast";
 import { fetchMe, refreshTokens } from "@/lib/actions/actions";
+import { getCookies } from "@/lib/api/cookiesHandler";
 import { authRoutes, defaultRoutes } from "@/lib/routes/routes";
 import { useAppStore } from "@/store/store";
 import { ReactNodeProps } from "@/types/propTypes";
@@ -43,6 +44,15 @@ const AuthWrapper = ({ children }: ReactNodeProps) => {
       );
 
       const isPublicRoute = isAuthRoute || pathname === defaultRoutes.landing;
+
+      if (!isAuthRoute) {
+        const refreshToken = await getCookies("refreshToken");
+
+        if (!refreshToken && pathname === defaultRoutes.landing) {
+          setAccessToken(null);
+          setLoggedInUser(null);
+        }
+      }
 
       if (!isPublicRoute) {
         if (loggedInUser && accessToken) {
