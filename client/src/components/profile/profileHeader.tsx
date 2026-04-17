@@ -23,6 +23,8 @@ import {
 } from "@/helpers/helpers";
 import { uploadImage } from "@/lib/actions/profileActions";
 import { useAppStore } from "@/store/store";
+import { useToast } from "@/hooks/toast";
+import { toTitleCase } from "@/utils/common.utils";
 
 type User = {
   name: string;
@@ -50,12 +52,14 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
   const [objectUrls, setObjectUrls] = useState<string[]>([]);
   const [isImageUploading, setIsImageUploading] = useState(false);
 
-  const accessToken = useAppStore((state) => state.accessToken);
-  const loggedInUser = useAppStore((state) => state.loggedInUser);
-
   const router = useRouter();
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const { showToast } = useToast();
+
+  const accessToken = useAppStore((state) => state.accessToken);
+  const loggedInUser = useAppStore((state) => state.loggedInUser);
 
   const handleUploadClick = (target: ImageTarget) => {
     setCurrentImageTarget(target);
@@ -74,9 +78,15 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     setIsImageUploading(true);
 
-    const image = e.target.files?.[0];
+    const file = e.target.files?.[0];
 
-    if (!image || !currentImageTarget) return;
+    if (!file || !currentImageTarget) return;
+
+    const uniqueName = `${currentImageTarget}-${loggedInUser?.id}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+
+    const image = new File([file], uniqueName, {
+      type: file.type,
+    });
 
     validateImage(image);
 
@@ -87,7 +97,21 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
     if (currentImageTarget === "avatar") setLocalAvatar(imageUrl);
     if (currentImageTarget === "cover") setLocalCover(imageUrl);
 
-    await uploadImage(compressedImage, currentImageTarget, accessToken);
+    const response = await uploadImage(
+      compressedImage,
+      currentImageTarget,
+      accessToken!,
+    );
+
+    if (!response.success) {
+      showToast({
+        title: response.code,
+        message: response.message,
+        variant: "error",
+      });
+
+      setPreviewImage(null);
+    }
 
     setIsImageUploading(false);
   };
@@ -100,16 +124,29 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
     if (currentImageTarget === "avatar") setLocalAvatar(imgSrc);
     if (currentImageTarget === "cover") setLocalCover(imgSrc);
 
-    const image = await dataURLtoImage(
-      imgSrc,
-      `${currentImageTarget}-${loggedInUser?.id}-${Date.now()}.jpg`,
-    );
+    const uniqueName = `${currentImageTarget}-${loggedInUser?.id}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}.jpg`;
+
+    const image = await dataURLtoImage(imgSrc, uniqueName);
 
     validateImage(image);
 
     const compressedImage = await compressImage(image);
 
-    await uploadImage(compressedImage, currentImageTarget, accessToken);
+    const response = await uploadImage(
+      compressedImage,
+      currentImageTarget,
+      accessToken!,
+    );
+
+    if (!response.success) {
+      showToast({
+        title: response.code,
+        message: response.message,
+        variant: "error",
+      });
+
+      setPreviewImage(null);
+    }
 
     setIsImageUploading(false);
   };

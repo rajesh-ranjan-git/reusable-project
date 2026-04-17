@@ -233,21 +233,26 @@ export const updateGender = asyncHandler(async (req, res) => {
 export const uploadProfileImage = async (req, res) => {
   const userId = req.data.userId;
   const file = req.file;
-  const type = req.data.params.type;
+  const incomingType = req.data.params.type;
 
-  if (!file) {
-    throw AppError.unprocessable({
-      message: "Please provide image to upload!",
-      code: "IMAGE UPLOAD FAILED",
-      details: { file },
-    });
-  }
-
-  if (!["avatar", "cover"].includes(type)) {
+  if (
+    typeof incomingType !== "string" ||
+    !["avatar", "cover"].includes(incomingType.toLowerCase())
+  ) {
     throw AppError.unprocessable({
       message: "Please provide a valid image type!",
       code: "IMAGE UPLOAD FAILED",
       details: { type },
+    });
+  }
+
+  const type = incomingType.toLowerCase();
+
+  if (!file) {
+    throw AppError.unprocessable({
+      message: `Please provide ${type} image to update!`,
+      code: `${type.toUpperCase()} UPDATE FAILED`,
+      details: { file },
     });
   }
 
@@ -262,20 +267,19 @@ export const uploadProfileImage = async (req, res) => {
     });
   }
 
-  if (type === "avatar" && profile.avatarFileId) {
-    await googleDriveService.deleteFromDrive(profile.avatarFileId);
-  }
-
-  if (type === "cover" && profile.coverFileId) {
-    await googleDriveService.deleteFromDrive(profile.coverFileId);
-  }
-
   const folderId = await googleDriveService.getUploadFolderId(type);
 
   const { url, fileId } = await googleDriveService.uploadToDrive(
     file,
     folderId,
   );
+
+  if (!url || !fileId) {
+    throw AppError.internal({
+      message: `Failed to update ${type}, please try again!`,
+      code: `${type.toUpperCase()} UPDATE FAILED`,
+    });
+  }
 
   let updateField = {};
   if (type === "avatar") {
@@ -299,10 +303,34 @@ export const uploadProfileImage = async (req, res) => {
     },
   );
 
+  if (type === "avatar" && profile.avatarFileId) {
+    const deleteAvatarResponse = await googleDriveService.deleteFromDrive(
+      profile.avatarFileId,
+    );
+
+    if (!deleteAvatarResponse) {
+      logger.warn(
+        `🚨 [${type.toUpperCase()} DELETE FAILED] Failed to delete old ${type} image!`,
+      );
+    }
+  }
+
+  if (type === "cover" && profile.coverFileId) {
+    const deleteCoverResponse = await googleDriveService.deleteFromDrive(
+      profile.coverFileId,
+    );
+
+    if (!deleteCoverResponse) {
+      logger.warn(
+        `🚨 [${type.toUpperCase()} DELETE FAILED] Failed to delete old ${type} image!`,
+      );
+    }
+  }
+
   responseService.successResponseHandler(req, res, {
-    status: "IMAGE UPLOAD SUCCESS",
+    status: `${type.toUpperCase()} UPDATE SUCCESS`,
     statusCode: httpStatusConfig.created.statusCode,
-    message: `${toTitleCase(type)} image uploaded successfully!`,
-    data: profile,
+    message: `${toTitleCase(type)} updated successfully!`,
+    data: updatedProfile,
   });
 };

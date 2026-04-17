@@ -110,7 +110,7 @@ class GoogleDriveService {
   deleteFromDrive = async (fileId) => {
     if (!fileId) return;
 
-    await this.drive.files.delete({
+    return await this.drive.files.delete({
       fileId,
     });
   };
