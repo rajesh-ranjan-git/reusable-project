@@ -239,6 +239,60 @@ export const updateGender = asyncHandler(async (req, res) => {
   });
 });
 
+export const updateDob = asyncHandler(async (req, res) => {
+  const profile = await Profile.findOne({ user: req.data.userId });
+
+  if (profile.dob)
+    throw AppError.forbidden({
+      message: "Date of birth can only be updated once!",
+      code: "PROFILE UPDATE FAILED",
+    });
+
+  const { dob } = req.data.body;
+
+  if (!dob) {
+    throw AppError.unprocessable({
+      message: "Please provide date of birth to update!",
+      code: "DOB VALIDATION FAILED",
+      details: { dob },
+    });
+  }
+
+  const {
+    isPropertyValid: isDobValid,
+    message: dobErrorMessage,
+    validatedProperty: validatedDob,
+  } = datePropertyValidator("date of birth", dob);
+
+  if (!isDobValid) {
+    throw AppError.unprocessable({
+      message: dobErrorMessage,
+      code: "PROFILE UPDATE FAILED",
+      details: { dob },
+    });
+  }
+
+  const updatedProfile = await Profile.findOneAndUpdate(
+    { user: req.data.userId },
+    { $set: { dob } },
+    { returnDocument: "after", runValidators: true },
+  );
+
+  if (!updatedProfile) {
+    throw AppError.notFound({
+      message: "Profile details not found!",
+      code: "PROFILE NOT FOUND",
+    });
+  }
+
+  return responseService.successResponseHandler(req, res, {
+    status: "PROFILE UPDATE SUCCESS",
+    statusCode: httpStatusConfig.created.statusCode,
+    message: "Date of birth updated successfully!",
+    data: { dob },
+  });
+});
+
 export const uploadProfileImage = async (req, res) => {
   const userId = req.data.userId;
   const file = req.file;

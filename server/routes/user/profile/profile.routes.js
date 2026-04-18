@@ -8,6 +8,7 @@ import {
   uploadProfileImage,
   updateSkills,
   updateExperience,
+  updateDob,
 } from "../../../controllers/user/profile/profile.controller.js";
 import { requestMiddleware } from "../../../middlewares/request.middleware.js";
 import { authenticate } from "../../../middlewares/authenticate.middleware.js";
@@ -63,6 +64,13 @@ profileRouter.post(
   authenticate,
   authorize({ permissions: [PERMISSIONS.PROFILE_UPDATE_OWN] }),
   updateGender,
+);
+profileRouter.post(
+  "/profile/dob",
+  requestMiddleware({ requireBody: true }),
+  authenticate,
+  authorize({ permissions: [PERMISSIONS.PROFILE_UPDATE_OWN] }),
+  updateDob,
 );
 profileRouter.post(
   "/profile/upload/:type",
