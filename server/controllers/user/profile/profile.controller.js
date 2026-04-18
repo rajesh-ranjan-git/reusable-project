@@ -5,11 +5,19 @@ import {
   validateUpdateProfile,
 } from "../../../validators/auth.validator.js";
 import { responseService } from "../../../services/response/response.service.js";
-import { asyncHandler, toTitleCase } from "../../../utils/common.utils.js";
+import {
+  asyncHandler,
+  isPlainObject,
+  toTitleCase,
+} from "../../../utils/common.utils.js";
 import { httpStatusConfig } from "../../../config/http.config.js";
-import { genderProperties } from "../../../config/common.config.js";
+import {
+  genderProperties,
+  propertyConstraints,
+} from "../../../config/common.config.js";
 import { googleDriveService } from "../../../services/drive/google.drive.service.js";
 import { isValidObjectId } from "mongoose";
+import { stringPropertiesValidator } from "../../../validators/common.validator.js";
 
 export const getMyProfile = asyncHandler(async (req, res) => {
   const profile = await Profile.findOne({ user: req.data.userId }).lean();
@@ -345,17 +353,85 @@ export const updateSkills = async (req, res) => {
   }
 
   let normalizedSkills = skills.map((skill) => {
-    if (typeof skill === "string") {
+    const {
+      isPropertyValid: isSkillValid,
+      message: skillErrorMessage,
+      validatedProperty: validatedSkill,
+    } = stringPropertiesValidator(
+      "skill",
+      skill,
+      propertyConstraints.minStringLength,
+      propertyConstraints.maxStringLength,
+    );
+
+    if (!isSkillValid && !isPlainObject(skill)) {
+      throw AppError.unprocessable({
+        message: skillErrorMessage,
+        code: "SKILLS UPDATE FAILED",
+        details: { skills },
+      });
+    }
+
+    if (isSkillValid) {
       return {
-        name: skill.trim().toLowerCase(),
+        name: validatedSkill,
         level: "beginner",
       };
     }
 
+    if (!skill.name || !skill.level) {
+      throw AppError.unprocessable({
+        message: "Skill name and level are required to update skills",
+        code: "SKILLS UPDATE FAILED",
+        details: { skills },
+      });
+    }
+
+    const validateSkillEntry = (key, value) => {
+      if (key === "name") {
+        const { isPropertyValid, message, validatedProperty } =
+          stringPropertiesValidator(
+            "skill names",
+            value,
+            propertyConstraints.minStringLength,
+            propertyConstraints.maxStringLength,
+          );
+
+        if (!isPropertyValid) {
+          throw AppError.unprocessable({
+            message,
+            code: "SKILLS UPDATE FAILED",
+            details: { skills },
+          });
+        }
+
+        return validatedProperty;
+      }
+
+      if (key === "level") {
+        if (!["beginner", "intermediate", "pro"].includes(value)) {
+          throw AppError.unprocessable({
+            message: "Please provide valid skill level to update!",
+            code: "SKILLS UPDATE FAILED",
+            details: { skills },
+          });
+        }
+      }
+
+      return value;
+    };
+
+    const validatedSkills = Object.fromEntries(
+      Object.entries(skill).map(([key, value]) => [
+        key,
+        validateSkillEntry(key, value),
+      ]),
+    );
+
     return {
-      name: skill.name?.trim().toLowerCase(),
-      level: ["beginner", "intermediate", "pro"].includes(skill.level)
-        ? skill.level
+      name: validatedSkills.name?.trim().toLowerCase(),
+      level: ["beginner", "intermediate", "pro"].includes(validatedSkills.level)
+        ? validatedSkills.level
         : "beginner",
     };
   });

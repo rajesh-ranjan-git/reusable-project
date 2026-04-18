@@ -129,25 +129,55 @@ export const stringPropertiesValidator = (
     };
   }
 
-  const trimmedProperty = propertyValue?.trim().toLowerCase();
+  const trimmedProperty = propertyValue.trim();
 
-  if (trimmedProperty.length < minLength) {
+  if (/^\d+(\.\d+)?$/.test(trimmedProperty)) {
+    return {
+      isPropertyValid: false,
+      message: `${toTitleCase(propertyName)} must be a valid text, not a number!`,
+    };
+  }
+
+  if (/^(true|false)$/i.test(trimmedProperty)) {
+    return {
+      isPropertyValid: false,
+      message: `${toTitleCase(propertyName)} must be a valid text, not boolean!`,
+    };
+  }
+
+  if (/^[\[{].*[\]}]$/.test(trimmedProperty)) {
+    return {
+      isPropertyValid: false,
+      message: `${toTitleCase(propertyName)} must be plain text, not an object!`,
+    };
+  }
+
+  if (/^function\s*\(|^\(\)\s*=>/.test(trimmedProperty)) {
+    return {
+      isPropertyValid: false,
+      message: `${toTitleCase(propertyName)} must not be a function!`,
+    };
+  }
+
+  const normalized = trimmedProperty.toLowerCase();
+
+  if (normalized.length < minLength) {
     return {
       isPropertyValid: false,
       message: `${toTitleCase(propertyName)} must be at least ${minLength} characters long!`,
     };
   }
 
-  if (trimmedProperty.length > maxLength) {
+  if (normalized.length > maxLength) {
     return {
       isPropertyValid: false,
-      message: `${toTitleCase(propertyName)} must not less than ${maxLength} characters long!`,
+      message: `${toTitleCase(propertyName)} must not exceed ${maxLength} characters!`,
     };
   }
 
   return {
     isPropertyValid: true,
-    validatedProperty: trimmedProperty,
+    validatedProperty: normalized,
   };
 };
 
