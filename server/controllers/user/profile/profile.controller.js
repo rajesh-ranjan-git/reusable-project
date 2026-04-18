@@ -17,7 +17,10 @@ import {
 } from "../../../config/common.config.js";
 import { googleDriveService } from "../../../services/drive/google.drive.service.js";
 import { isValidObjectId } from "mongoose";
-import { stringPropertiesValidator } from "../../../validators/common.validator.js";
+import {
+  datePropertyValidator,
+  stringPropertiesValidator,
+} from "../../../validators/common.validator.js";
 
 export const getMyProfile = asyncHandler(async (req, res) => {
   const profile = await Profile.findOne({ user: req.data.userId }).lean();
@@ -533,13 +536,110 @@ export const updateExperience = async (req, res) => {
       });
     }
 
+    const {
+      isPropertyValid: isCompanyValid,
+      message: companyErrorMessage,
+      validatedProperty: validatedCompany,
+    } = stringPropertiesValidator(
+      "company",
+      experience?.company,
+      propertyConstraints.minStringLength,
+      propertyConstraints.maxStringLength,
+    );
+
+    if (!isCompanyValid) {
+      throw AppError.unprocessable({
+        message: companyErrorMessage,
+        code: "EXPERIENCE UPDATE FAILED",
+        details: { experience },
+      });
+    }
+
+    const {
+      isPropertyValid: isRoleValid,
+      message: roleErrorMessage,
+      validatedProperty: validatedRole,
+    } = stringPropertiesValidator(
+      "role",
+      experience?.role,
+      propertyConstraints.minStringLength,
+      propertyConstraints.maxStringLength,
+    );
+
+    if (!isRoleValid) {
+      throw AppError.unprocessable({
+        message: roleErrorMessage,
+        code: "EXPERIENCE UPDATE FAILED",
+        details: { experience },
+      });
+    }
+
+    const {
+      isPropertyValid: isStartDateValid,
+      message: startDateErrorMessage,
+      validatedProperty: validatedStartDate,
+    } = datePropertyValidator("start date", experience?.startDate);
+
+    if (!isStartDateValid) {
+      throw AppError.unprocessable({
+        message: startDateErrorMessage,
+        code: "EXPERIENCE UPDATE FAILED",
+        details: { experience },
+      });
+    }
+
+    let validatedEndDate;
+
+    if (experience?.endDate) {
+      const {
+        isPropertyValid: isEndDateValid,
+        message: endDateErrorMessage,
+        validatedProperty,
+      } = datePropertyValidator("end date", experience?.endDate);
+
+      if (!isEndDateValid) {
+        throw AppError.unprocessable({
+          message: endDateErrorMessage,
+          code: "EXPERIENCE UPDATE FAILED",
+          details: { experience },
+        });
+      }
+
+      validatedEndDate = validatedProperty;
+    }
+
+    let validatedDescription;
+
+    if (experience?.description) {
+      const {
+        isPropertyValid: isDescriptionValid,
+        message: descriptionErrorMessage,
+        validatedProperty,
+      } = stringPropertiesValidator(
+        "description",
+        experience?.description,
+        propertyConstraints.minStringLength,
+        propertyConstraints.maxStringLength,
+      );
+
+      if (!isDescriptionValid) {
+        throw AppError.unprocessable({
+          message: descriptionErrorMessage,
+          code: "EXPERIENCE UPDATE FAILED",
+          details: { experience },
+        });
+      }
+
+      validatedDescription = validatedProperty;
+    }
+
     const newExperience = {
-      company: experience.company.trim(),
-      role: experience.role.trim(),
-      startDate: new Date(experience.startDate),
-      endDate: experience.endDate ? new Date(experience.endDate) : null,
-      isCurrent: experience.isCurrent || false,
-      description: experience.description || "",
+      company: validatedCompany,
+      role: validatedRole,
+      startDate: new Date(validatedStartDate),
+      endDate: validatedEndDate ? new Date(validatedEndDate) : null,
+      isCurrent: experience?.isCurrent && experience?.isCurrent === true,
+      description: experience?.description || "",
     };
 
     let updateQuery;

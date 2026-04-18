@@ -70,7 +70,7 @@ const profileSchema = new mongoose.Schema(
           required: true,
           validate: {
             validator: (value) => value < new Date(),
-            message: "Start date must be in the past",
+            message: "Start date must be in the past!",
           },
         },
         endDate: {
@@ -78,7 +78,7 @@ const profileSchema = new mongoose.Schema(
           default: null,
           validate: {
             validator: (value) => !value || value < new Date(),
-            message: "End date must be in the past",
+            message: "End date must be in the past!",
           },
         },
         isCurrent: {

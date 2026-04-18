@@ -12,3 +12,4 @@ export const PHOTO_URL_REGEX =
   /^(https?:\/\/)([a-zA-Z0-9\-._~%]+@)?([a-zA-Z0-9\-._~%]+\.)+[a-zA-Z]{2,}(\/[^\s?#]*)*(\.(jpg|jpeg|png|gif|webp|svg))?(\?[^\s]*)?$/i;
 export const COUNTRY_CODE_REGEX = /^\d{1,3}$/;
 export const PIN_CODE_REGEX = /^\d{6}$/;
+export const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
