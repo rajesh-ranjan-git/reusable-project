@@ -24,6 +24,7 @@ type Options = {
 
 export const useOAuthListener = (options?: Options) => {
   const router = useRouter();
+
   const setLoggedInUser = useAppStore((state) => state.setLoggedInUser);
 
   useEffect(() => {
@@ -47,9 +48,8 @@ export const useOAuthListener = (options?: Options) => {
         } else {
           router.replace(defaultRoutes.landing);
         }
-      } catch (err) {
-        console.error("OAuth Listener Error:", err);
-        options?.onError?.(err);
+      } catch (error) {
+        options?.onError?.(error);
       }
     };
 

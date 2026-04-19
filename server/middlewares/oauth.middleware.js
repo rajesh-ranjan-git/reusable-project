@@ -19,6 +19,10 @@ export const oauthVerifyMiddleware = asyncHandler(async (req, res, next) => {
     const code = req.data.query.code;
 
     token = await oAuthService.getGithubAccessToken(code);
+  } else if (provider === "linkedin") {
+    const code = req.data.query.code;
+
+    token = await oAuthService.getLinkedinAccessToken(code);
   } else {
     token = req.data.body.token;
   }

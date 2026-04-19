@@ -218,7 +218,19 @@ export const oauthCallback = asyncHandler(async (req, res) => {
     path: "/",
   });
 
-  return responseService.redirectResponseHandler(req, res, {
+  if (provider === "github" || provider === "linkedin") {
+    return responseService.redirectResponseHandler(req, res, {
+      status: "LOGIN SUCCESS",
+      message: "Logged in successfully!",
+      data: {
+        user: userFields,
+        accessToken: tokens.accessToken,
+        expiresIn: tokens.accessTokenExpiresIn,
+      },
+    });
+  }
+
+  return responseService.successResponseHandler(req, res, {
     status: "LOGIN SUCCESS",
     message: "Logged in successfully!",
     data: {

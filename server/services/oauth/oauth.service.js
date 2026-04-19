@@ -3,6 +3,9 @@ import {
   GITHUB_OAUTH_CLIENT_ID,
   GITHUB_OAUTH_CLIENT_SECRET,
   GOOGLE_OAUTH_CLIENT_ID,
+  HOST_URL,
+  LINKEDIN_OAUTH_CLIENT_ID,
+  LINKEDIN_OAUTH_CLIENT_SECRET,
 } from "../../constants/env.constants.js";
 
 class OAuthService {
@@ -24,6 +27,31 @@ class OAuthService {
           client_secret: GITHUB_OAUTH_CLIENT_SECRET,
           code,
         }),
+      },
+    );
+
+    const tokenData = await tokenRes.json();
+
+    return tokenData.access_token;
+  };
+
+  getLinkedinAccessToken = async (code) => {
+    const params = new URLSearchParams({
+      grant_type: "authorization_code",
+      code,
+      redirect_uri: `${HOST_URL}/api/v1/oauth/provider/linkedin`,
+      client_id: LINKEDIN_OAUTH_CLIENT_ID,
+      client_secret: LINKEDIN_OAUTH_CLIENT_SECRET,
+    });
+
+    const tokenRes = await fetch(
+      "https://www.linkedin.com/oauth/v2/accessToken",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: params.toString(),
       },
     );
 
@@ -92,25 +120,20 @@ class OAuthService {
     };
   };
 
-  verifyLinkedInToken = async (accessToken) => {
+  verifyLinkedinToken = async (accessToken) => {
     const headers = {
       Authorization: `Bearer ${accessToken}`,
     };
 
-    const [profileRes, emailRes] = await Promise.all([
-      fetch("https://api.linkedin.com/v2/userinfo", { headers }),
-      fetch(
-        "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))",
-        { headers },
-      ),
-    ]);
+    const profileRes = await fetch("https://api.linkedin.com/v2/userinfo", {
+      headers,
+    });
 
     const profileData = await profileRes.json();
-    const emailData = await emailRes.json();
 
     return {
       id: profileData.sub,
-      email: emailData?.elements?.[0]?.["handle~"]?.emailAddress || null,
+      email: profileData.email,
       displayName: profileData.name,
       avatar: profileData.picture,
       accessToken,

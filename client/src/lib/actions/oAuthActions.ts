@@ -10,34 +10,43 @@ declare global {
   }
 }
 
-export const loadGoogleScript = () =>
-  new Promise((resolve) => {
-    const script = document.createElement("script");
-    script.src = "https://accounts.google.com/gsi/client";
-    script.onload = resolve;
-    document.body.appendChild(script);
-  });
+export const loadGoogleScript = () => {
+  try {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = "https://accounts.google.com/gsi/client";
+      script.onload = resolve;
+      document.body.appendChild(script);
+    });
+  } catch (error) {
+    return error;
+  }
+};
 
 export const handleGoogleLogin = () => {
-  return new Promise((resolve, reject) => {
-    if (!window.google || !window.google.accounts) {
-      reject("Google SDK not loaded");
-      return;
-    }
-
-    window.google.accounts.id.initialize({
-      client_id: oAuthConfig.google.clientId,
-      callback: (response: any) => {
-        resolve(response.credential);
-      },
-    });
-
-    window.google.accounts.id.prompt((notification: any) => {
-      if (notification.isNotDisplayed()) {
-        reject("Google login failed");
+  try {
+    return new Promise((resolve, reject) => {
+      if (!window.google || !window.google.accounts) {
+        reject("Google SDK not loaded");
+        return;
       }
+
+      window.google.accounts.id.initialize({
+        client_id: oAuthConfig.google.clientId,
+        callback: (response: any) => {
+          resolve(response.credential);
+        },
+      });
+
+      window.google.accounts.id.prompt((notification: any) => {
+        if (notification.isNotDisplayed()) {
+          reject("Google login failed");
+        }
+      });
     });
-  });
+  } catch (error) {
+    return error;
+  }
 };
 
 export const handleGithubLogin = () => {
@@ -66,7 +75,7 @@ export const handleFacebookLogin = () => {
 export const handleLinkedInLogin = () => {
   const { clientId, redirectUri } = oAuthConfig.linkedin;
 
-  const scope = "openid profile email";
+  const scope = encodeURIComponent("openid profile email");
 
   const url = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`;
 

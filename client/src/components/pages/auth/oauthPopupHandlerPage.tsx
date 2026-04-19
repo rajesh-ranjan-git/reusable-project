@@ -3,7 +3,7 @@
 import { CLIENT_URL } from "@/constants/env.constants";
 import { useEffect } from "react";
 
-const OAuthPopupHandler = () => {
+const OAuthPopupHandlerPage = () => {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const data = JSON.parse(decodeURIComponent(params.get("data") as string));
@@ -20,4 +20,4 @@ const OAuthPopupHandler = () => {
   );
 };
 
-export default OAuthPopupHandler;
+export default OAuthPopupHandlerPage;

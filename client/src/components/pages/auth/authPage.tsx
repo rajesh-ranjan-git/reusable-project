@@ -35,11 +35,7 @@ import {
 } from "@/lib/actions/authActions";
 import { useToast } from "@/hooks/toast";
 import { useAppStore } from "@/store/store";
-import {
-  loadGoogleScript,
-  loginWithProvider,
-  providerLogin,
-} from "@/lib/actions/oAuthActions";
+import { loginWithProvider, providerLogin } from "@/lib/actions/oAuthActions";
 import { LoggedInUserType } from "@/types/types";
 import { useOAuthListener } from "@/hooks/useOAuthListener";
 
@@ -85,6 +81,8 @@ const AuthPage = () => {
   const setLoggedInUser = useAppStore((state) => state.setLoggedInUser);
 
   const { showToast } = useToast();
+
+  useOAuthListener();
 
   const emailInput = useInputFieldValidator<string>({
     initialValue: "",
@@ -219,12 +217,6 @@ const AuthPage = () => {
         setAccessToken(providerLoginData.accessToken);
         setLoggedInUser(providerLoginData.user);
 
-        showToast({
-          title: providerLoginResponse.status,
-          message: providerLoginResponse.message ?? "Legged in successfully!",
-          variant: "success",
-        });
-
         router.push(defaultRoutes.landing);
       }
     }
@@ -265,8 +257,6 @@ const AuthPage = () => {
     firstNameInput.reset();
     lastNameInput.reset();
   }, [pathname, state]);
-
-  useOAuthListener();
 
   return (
     <LayoutGroup>
@@ -445,12 +435,12 @@ const AuthPage = () => {
                         onClick={() => handleProviderLogin("github")}
                         iconOnly
                       />
-                      <SocialButton
+                      {/* <SocialButton
                         provider="Facebook"
                         icon={LuFacebook}
                         onClick={() => handleProviderLogin("facebook")}
                         iconOnly
-                      />
+                      /> */}
                       <SocialButton
                         provider="LinkedIn"
                         icon={LuLinkedin}
@@ -615,12 +605,12 @@ const AuthPage = () => {
                         onClick={() => handleProviderLogin("github")}
                         iconOnly
                       />
-                      <SocialButton
+                      {/* <SocialButton
                         provider="Facebook"
                         icon={LuFacebook}
                         onClick={() => handleProviderLogin("facebook")}
                         iconOnly
-                      />
+                      /> */}
                       <SocialButton
                         provider="LinkedIn"
                         icon={LuLinkedin}
