@@ -102,7 +102,7 @@ class GoogleDriveService {
       },
     });
 
-    const url = `https://drive.google.com/uc?id=${fileId}`;
+    const url = `https://lh3.googleusercontent.com/d/${fileId}`;
 
     return { fileId, url };
   };
