@@ -374,8 +374,8 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
 
           <div className="flex items-center gap-3 pointer-events-auto">
             {isOwnProfile ? (
-              <button className="text-sm btn btn-secondary">
-                <MdOutlineEdit size={16} />
+              <button className="pl-3 text-sm btn btn-secondary">
+                <MdOutlineEdit size={20} />
                 Update Profile
               </button>
             ) : (

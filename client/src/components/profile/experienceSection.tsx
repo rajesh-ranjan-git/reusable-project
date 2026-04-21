@@ -1,4 +1,5 @@
 import { LuBriefcase, LuBuilding2 } from "react-icons/lu";
+import { MdOutlineEdit } from "react-icons/md";
 import { toTitleCase } from "@/utils/common.utils";
 
 type Experience = {
@@ -11,6 +12,7 @@ type Experience = {
 } | null;
 
 type ExperienceSectionProps = {
+  isOwnProfile: boolean;
   experiences: Experience[];
 };
 
@@ -37,10 +39,19 @@ const getDuration = (startDate: string, endDate: string | null): string => {
   return parts.join(" ") || "< 1 mo";
 };
 
-const ExperienceSection = ({ experiences }: ExperienceSectionProps) => {
+const ExperienceSection = ({
+  isOwnProfile,
+  experiences,
+}: ExperienceSectionProps) => {
   return (
-    <div className="mb-6 p-6 glass">
+    <div className="relative mb-6 p-6 glass">
       <h3 className="mb-4 tracking-wider">Work Experience</h3>
+
+      {isOwnProfile ? (
+        <button className="top-2 right-2 absolute px-2 text-sm btn btn-secondary">
+          <MdOutlineEdit size={20} />
+        </button>
+      ) : null}
 
       <div className="space-y-0">
         {experiences?.length > 0

@@ -5,6 +5,7 @@ import {
   LuGitMerge,
   LuStar,
 } from "react-icons/lu";
+import { MdDeleteSweep } from "react-icons/md";
 
 type Activity = {
   type: string;
@@ -13,12 +14,23 @@ type Activity = {
   description: string;
 };
 
-type ActivitySectionProps = { activities: Activity[] };
+type ActivitySectionProps = { isOwnProfile: boolean; activities: Activity[] };
 
-const ActivitySection = ({ activities }: ActivitySectionProps) => {
+const ActivitySection = ({
+  isOwnProfile,
+  activities,
+}: ActivitySectionProps) => {
   return (
-    <div className="mb-8 md:mb-6 p-6 glass">
+    <div className="relative mb-8 md:mb-6 p-6 glass">
       <h3 className="mb-4 tracking-wider">Recent Activities</h3>
+
+      {isOwnProfile ? (
+        <button className="top-2 right-2 absolute pl-3 text-sm btn btn-secondary">
+          <MdDeleteSweep size={20} />
+
+          <span className="hidden md:block">Clear</span>
+        </button>
+      ) : null}
 
       <div className="space-y-0">
         {activities.map((activity, idx) => {

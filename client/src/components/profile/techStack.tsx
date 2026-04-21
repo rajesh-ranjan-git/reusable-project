@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { MdOutlineEdit } from "react-icons/md";
 import { toTitleCase } from "@/utils/common.utils";
 
 type Skill = {
@@ -7,12 +8,18 @@ type Skill = {
   icon?: string;
 };
 
-type TechStackProps = { skills: Skill[] };
+type TechStackProps = { isOwnProfile: boolean; skills: Skill[] };
 
-const TechStack = ({ skills }: TechStackProps) => {
+const TechStack = ({ isOwnProfile, skills }: TechStackProps) => {
   return (
-    <div className="mb-6 p-6 glass">
+    <div className="relative mb-6 p-6 glass">
       <h3 className="mb-4 tracking-wider">Tech Stack & Expertise</h3>
+
+      {isOwnProfile ? (
+        <button className="top-2 right-2 absolute px-2 text-sm btn btn-secondary">
+          <MdOutlineEdit size={20} />
+        </button>
+      ) : null}
 
       <div className="flex flex-wrap gap-3">
         {skills.map((skill) => (

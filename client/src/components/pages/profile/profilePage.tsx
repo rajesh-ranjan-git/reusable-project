@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { MdOutlineEdit } from "react-icons/md";
+import { IoMdAdd } from "react-icons/io";
 import { useAppStore } from "@/store/store";
 import { toTitleCase } from "@/utils/common.utils";
 import { fetchProfile } from "@/lib/actions/profileActions";
@@ -147,27 +149,90 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
           <div className="mx-auto p-4 md:p-8 pb-24 md:pb-8 max-w-7xl">
             <ProfileHeader isOwnProfile={isOwnProfile} user={userProfile} />
 
-            {userProfile?.bio && (
-              <div className="mb-6 p-6 leading-relaxed glass">
+            {userProfile?.bio ? (
+              <div className="relative mb-6 p-6 leading-relaxed glass">
                 <h3 className="mb-4 tracking-wider">About Me</h3>
                 {toTitleCase(userProfile?.bio)}
+
+                {isOwnProfile ? (
+                  <button className="top-2 right-2 absolute px-2 text-sm btn btn-secondary">
+                    <MdOutlineEdit size={20} />
+                  </button>
+                ) : null}
               </div>
-            )}
+            ) : isOwnProfile ? (
+              <div className="relative mb-6 p-6 leading-relaxed glass">
+                <h3 className="mb-4 tracking-wider">About Me</h3>
+                <p className="text-text-muted">Add about to show here...</p>
 
-            {userProfile?.experiences && userProfile.experiences.length > 0 && (
-              <ExperienceSection experiences={userProfile.experiences} />
-            )}
-
-            {userProfile?.skills?.length && userProfile.skills.length > 0 ? (
-              <TechStack skills={userProfile?.skills} />
+                <button className="top-2 right-2 absolute flex items-center gap-2 pl-3 text-sm btn btn-secondary">
+                  <IoMdAdd size={20} />
+                  <span className="hidden md:block">Add</span>
+                </button>
+              </div>
             ) : null}
 
-            {userProfile?.location?.length &&
-              userProfile.location.length > 0 && (
-                <Interests interests={userProfile?.interests} />
-              )}
+            {userProfile?.experiences && userProfile.experiences.length > 0 ? (
+              <ExperienceSection
+                isOwnProfile={isOwnProfile}
+                experiences={userProfile.experiences}
+              />
+            ) : isOwnProfile ? (
+              <div className="relative mb-6 p-6 leading-relaxed glass">
+                <h3 className="mb-4 tracking-wider">Work Experience</h3>
+                <p className="text-text-muted">
+                  Add your work experiences to show here...
+                </p>
 
-            <ActivitySection activities={mockActivities} />
+                <button className="top-2 right-2 absolute flex items-center gap-2 pl-3 text-sm btn btn-secondary">
+                  <IoMdAdd size={20} />
+                  <span className="hidden md:block">Add</span>
+                </button>
+              </div>
+            ) : null}
+
+            {userProfile?.skills?.length && userProfile.skills.length > 0 ? (
+              <TechStack
+                isOwnProfile={isOwnProfile}
+                skills={userProfile?.skills}
+              />
+            ) : isOwnProfile ? (
+              <div className="relative mb-6 p-6 leading-relaxed glass">
+                <h3 className="mb-4 tracking-wider">Tech Stack & Expertise</h3>
+                <p className="text-text-muted">
+                  Add your skills to show here...
+                </p>
+
+                <button className="top-2 right-2 absolute flex items-center gap-2 pl-3 text-sm btn btn-secondary">
+                  <IoMdAdd size={20} />
+                  <span className="hidden md:block">Add</span>
+                </button>
+              </div>
+            ) : null}
+
+            {userProfile?.location?.length ? (
+              <Interests
+                isOwnProfile={isOwnProfile}
+                interests={userProfile?.interests}
+              />
+            ) : isOwnProfile ? (
+              <div className="relative mb-6 p-6 leading-relaxed glass">
+                <h3 className="mb-4 tracking-wider">Interests & Hobbies</h3>
+                <p className="text-text-muted">
+                  Add your interests and hobbies to show here...
+                </p>
+
+                <button className="top-2 right-2 absolute flex items-center gap-2 pl-3 text-sm btn btn-secondary">
+                  <IoMdAdd size={20} />
+                  <span className="hidden md:block">Add</span>
+                </button>
+              </div>
+            ) : null}
+
+            <ActivitySection
+              isOwnProfile={isOwnProfile}
+              activities={mockActivities}
+            />
           </div>
         </div>
       </main>
