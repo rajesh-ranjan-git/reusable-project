@@ -195,7 +195,9 @@ class AuthService {
 
     profile = await Profile.findOne({
       user: user.id,
-    }).select("-_id userName firstName lastName avatar cover");
+    })
+      .select("-_id userName firstName lastName avatar cover")
+      .lean();
 
     const userRoleLevel = await rbacService.getHighestRoleLevel(userRoles);
     const userRoleName = userRoles.reduce(
@@ -208,7 +210,7 @@ class AuthService {
       status: user.status,
       email,
       role: userRoleName,
-      profile,
+      ...profile,
     };
 
     await sessionService.createSession({

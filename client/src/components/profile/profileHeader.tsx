@@ -11,7 +11,7 @@ import {
   LuUserPlus,
   LuX,
 } from "react-icons/lu";
-import { FaEdit, FaLink } from "react-icons/fa";
+import { FaEdit } from "react-icons/fa";
 import { FiMoreHorizontal } from "react-icons/fi";
 import ImageUploadMenu from "@/components/shared/imageUploadMenu";
 import CameraModal from "@/components/shared/cameraModal";
@@ -54,7 +54,6 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
     useState<ImageTarget>(null);
   const [localAvatar, setLocalAvatar] = useState(user?.avatar);
   const [localCover, setLocalCover] = useState(user?.cover);
-  const [objectUrls, setObjectUrls] = useState<string[]>([]);
   const [isImageUploading, setIsImageUploading] = useState(false);
   const [previousImage, setPreviousImage] = useState<string | null>(null);
 
@@ -207,12 +206,6 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
     setLocalAvatar(user?.avatar);
     setLocalCover(user?.cover);
   }, [user]);
-
-  useEffect(() => {
-    return () => {
-      objectUrls.forEach((url) => URL.revokeObjectURL(url));
-    };
-  }, []);
 
   if (!user) return;
 

@@ -24,10 +24,8 @@ export type LoggedInUserType = {
   status: string;
   email: string;
   role: string;
-  profile: {
-    userName: string;
-    firstName: string;
-    lastName: string;
-    avatar: string;
-  } | null;
+  userName: string;
+  firstName: string;
+  lastName: string;
+  avatar: string;
 } | null;

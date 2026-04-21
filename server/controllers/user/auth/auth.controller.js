@@ -262,7 +262,9 @@ export const getMe = asyncHandler(async (req, res) => {
 
   const profile = await Profile.findOne({
     user: user.id,
-  }).select("-_id userName firstName lastName avatar cover");
+  })
+    .select("-_id userName firstName lastName avatar cover")
+    .lean();
 
   const userRoles = await rbacService.getUserRoles(user._id);
   const userRoleLevel = await rbacService.getHighestRoleLevel(userRoles);
@@ -276,7 +278,7 @@ export const getMe = asyncHandler(async (req, res) => {
     status: user.status,
     email,
     role: userRoleName,
-    profile,
+    ...profile,
   };
 
   return responseService.successResponseHandler(req, res, {

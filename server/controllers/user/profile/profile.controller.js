@@ -26,9 +26,43 @@ import {
   uploadToCloudinary,
   uploadToGoogleDrive,
 } from "../../../utils/upload.utils.js";
+import { rbacService } from "../../../services/rbac/rbac.service.js";
+import Account from "../../../models/user/auth/account.model.js";
+import User from "../../../models/user/auth/user.model.js";
 
 export const getMyProfile = asyncHandler(async (req, res) => {
-  const profile = await Profile.findOne({ user: req.data.userId }).lean();
+  const userId = req.data.userId;
+
+  const account = await Account.findOne({ user: userId }).select("-_id email");
+
+  if (!account) {
+    throw AppError.notFound({
+      message: "User account not found!",
+      code: "ACCOUNT NOT FOUND",
+    });
+  }
+
+  const user = await User.findById(userId).select(
+    "-_id emailVerified phoneVerified",
+  );
+
+  if (!user) {
+    throw AppError.notFound({
+      message: "User details not found!",
+      code: "USER NOT FOUND",
+    });
+  }
+
+  const userRoles = await rbacService.getUserRoles(userId);
+  const userHighestRole = await rbacService.getHighestRoleLevel(userRoles);
+  const userRole = userRoles.reduce(
+    (acc, curr) => (curr.priority === userHighestRole ? curr.name : acc),
+    null,
+  );
+
+  const profile = await Profile.findOne({ user: userId })
+    .lean()
+    .select("-_id -user -__v");
 
   if (!profile) {
     throw AppError.notFound({
@@ -37,10 +71,19 @@ export const getMyProfile = asyncHandler(async (req, res) => {
     });
   }
 
+  const userFields = {
+    id: userId,
+    email: account.email,
+    emailVerified: user.emailVerified,
+    phoneVerified: user.phoneVerified,
+    role: userRole,
+    ...profile,
+  };
+
   return responseService.successResponseHandler(req, res, {
     status: "PROFILE FETCH SUCCESS",
     message: "Profile fetched successfully!",
-    data: { profile },
+    data: { user: userFields },
   });
 });
 
@@ -62,7 +105,8 @@ export const getUserProfile = asyncHandler(async (req, res) => {
   }
 
   const profile = await Profile.findOne({ userName: validatedUserName })
-    .populate("user", "status emailVerified lastSeen")
+    .select("-createdAt -updatedAt")
+    .populate("user", "status lastSeen")
     .lean();
 
   if (!profile || profile.user?.status !== "active") {
@@ -72,10 +116,29 @@ export const getUserProfile = asyncHandler(async (req, res) => {
     });
   }
 
+  const userId = profile.user._id;
+
+  const account = await Account.findOne({ user: userId }).select("-_id email");
+
+  if (!account) {
+    throw AppError.notFound({
+      message: "User account not found!",
+      code: "ACCOUNT NOT FOUND",
+    });
+  }
+
+  const { _id, user, __v, ...safeProfile } = profile;
+
+  const userFields = {
+    id: userId,
+    email: account.email,
+    ...safeProfile,
+  };
+
   return responseService.successResponseHandler(req, res, {
     status: "PROFILE FETCH SUCCESS",
     message: "Profile fetched successfully!",
-    data: { profile },
+    data: { user: userFields },
   });
 });
 

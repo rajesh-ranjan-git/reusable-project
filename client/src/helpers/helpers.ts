@@ -16,33 +16,10 @@ type UserProfileType = {
   updatedAt: string | null;
 } | null;
 
-export const normalizeUser = (user: UserProfileType | LoggedInUserType) => {
-  if (!user) return null;
-
-  if ("profile" in user) {
-    return {
-      firstName: user.profile?.firstName ?? null,
-      lastName: user.profile?.lastName ?? null,
-      userName: user.profile?.userName ?? null,
-      email: user.email ?? null,
-    };
-  }
-
-  return {
-    firstName: user.firstName,
-    lastName: user.lastName,
-    userName: user.userName,
-    email: user.email,
-  };
-};
-
 export const getFullName = (user?: UserProfileType | LoggedInUserType) => {
   if (!user) return "John Doe";
 
-  const normalized = normalizeUser(user);
-  if (!normalized) return "John Doe";
-
-  const { firstName, lastName, userName, email } = normalized;
+  const { firstName, lastName, userName, email } = user;
 
   if (firstName && lastName) return toTitleCase(`${firstName} ${lastName}`);
   if (firstName) return toTitleCase(firstName);

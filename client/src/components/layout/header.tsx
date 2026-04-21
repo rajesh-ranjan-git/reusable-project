@@ -180,8 +180,8 @@ const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
               >
                 <Image
                   src={
-                    loggedInUser?.profile?.avatar
-                      ? loggedInUser?.profile?.avatar
+                    loggedInUser?.avatar
+                      ? loggedInUser?.avatar
                       : staticImages.avatarPlaceholder.src
                   }
                   alt={staticImages.avatarPlaceholder.alt}

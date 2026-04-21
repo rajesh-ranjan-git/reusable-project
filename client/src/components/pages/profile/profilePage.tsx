@@ -16,7 +16,7 @@ interface ProfilePageProps {
 }
 
 type UserProfileResponseType = {
-  profile: UserProfileType;
+  user: UserProfileType;
 };
 
 type UserProfileType = {
@@ -138,7 +138,7 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
       if (response.success && response?.data) {
         const data = response?.data as UserProfileResponseType;
 
-        setUserProfile(data.profile);
+        setUserProfile(data.user);
       } else {
         setUserProfile(null);
       }
@@ -148,7 +148,7 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
       if (response.success && response.data) {
         const data = response?.data as UserProfileResponseType;
 
-        setUserProfile(data.profile);
+        setUserProfile(data.user);
       } else {
         setUserProfile(null);
       }
