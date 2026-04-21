@@ -144,11 +144,13 @@ const HeaderProfileMenu = ({
               src={
                 loggedInUser?.avatar
                   ? loggedInUser?.avatar
-                  : loggedInUser
-                    ? getFullName(loggedInUser)
-                    : staticImages.avatarPlaceholder.src
+                  : staticImages.avatarPlaceholder.src
               }
-              alt={staticImages.avatarPlaceholder.alt}
+              alt={
+                loggedInUser
+                  ? getFullName(loggedInUser)
+                  : staticImages.avatarPlaceholder.alt
+              }
               width={100}
               height={100}
               className="shadow-glass-bg shadow-md border border-glass-border hover:border-glass-border-accent rounded-full w-10 h-10 object-cover select-none"

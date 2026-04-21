@@ -187,7 +187,9 @@ export const oauthCallback = asyncHandler(async (req, res) => {
 
   const profile = await Profile.findOne({
     user: userId,
-  }).select("-_id userName firstName lastName avatar cover");
+  })
+    .select("-_id userName firstName lastName avatar cover")
+    .lean();
 
   const userRoleLevel = await rbacService.getHighestRoleLevel(userRoles);
   const userRoleName = userRoles.reduce(
@@ -200,7 +202,7 @@ export const oauthCallback = asyncHandler(async (req, res) => {
     status: user.status,
     email: validatedEmail,
     role: userRoleName,
-    profile,
+    ...profile,
   };
 
   await activityService.logActivity({
