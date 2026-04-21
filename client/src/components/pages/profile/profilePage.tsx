@@ -11,6 +11,7 @@ import ProfileHeader from "@/components/profile/profileHeader";
 import TechStack from "@/components/profile/techStack";
 import Interests from "@/components/profile/interests";
 import ActivitySection from "@/components/profile/activitySection";
+import ExperienceSection from "@/components/profile/experienceSection";
 
 interface ProfilePageProps {
   userName?: string;
@@ -35,12 +36,22 @@ type Social = {
   website?: string;
 } | null;
 
+type Experience = {
+  company: string;
+  role: string;
+  startDate: string;
+  endDate: string | null;
+  isCurrent: boolean;
+  description: string | null;
+} | null;
+
 type UserProfileType = {
   id: string;
   email: string;
   userName: string;
   firstName: string | null;
   lastName: string | null;
+  nickName: string | null;
   avatar: string | null;
   cover: string | null;
   bio: string | null;
@@ -48,65 +59,10 @@ type UserProfileType = {
   skills: Skill[] | null;
   interests: string[] | null;
   social: Social;
+  experiences: Experience[] | null;
   createdAt: string;
   updatedAt: string | null;
 } | null;
-
-type User = {
-  name: string;
-  headline: string;
-  location: string;
-  website: string;
-  joinedDate: string;
-  cover: string;
-  avatar: string;
-  online: boolean;
-};
-
-const mockUser: User = {
-  name: "Alex Merced",
-  headline: "Senior Full Stack Developer specializing in React & Node.js",
-  location: "San Francisco, CA",
-  website: "https://alexmerced.dev",
-  joinedDate: "September 2023",
-  cover:
-    "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80",
-  avatar: "https://i.pravatar.cc/150?u=devmatch",
-  online: true,
-};
-
-const mockSkills: Skill[] = [
-  {
-    name: "React",
-    level: "Expert",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
-  },
-  {
-    name: "TypeScript",
-    level: "Advanced",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg",
-  },
-  {
-    name: "Node.js",
-    level: "Advanced",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
-  },
-  {
-    name: "Tailwind CSS",
-    level: "Expert",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg",
-  },
-  {
-    name: "PostgreSQL",
-    level: "Intermediate",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg",
-  },
-  {
-    name: "Figma",
-    level: "Intermediate",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg",
-  },
-];
 
 const mockActivities = [
   {
@@ -188,7 +144,7 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
         </div>
 
         <div className="flex-1 bg-bg/50 overflow-y-auto">
-          <div className="mx-auto p-4 md:p-8 pb-24 md:pb-8 max-w-200">
+          <div className="mx-auto p-4 md:p-8 pb-24 md:pb-8 max-w-7xl">
             <ProfileHeader isOwnProfile={isOwnProfile} user={userProfile} />
 
             {userProfile?.bio && (
@@ -196,6 +152,10 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
                 <h3 className="mb-4 tracking-wider">About Me</h3>
                 {toTitleCase(userProfile?.bio)}
               </div>
+            )}
+
+            {userProfile?.experiences && userProfile.experiences.length > 0 && (
+              <ExperienceSection experiences={userProfile.experiences} />
             )}
 
             {userProfile?.skills?.length && userProfile.skills.length > 0 ? (

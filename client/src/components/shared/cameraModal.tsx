@@ -61,7 +61,7 @@ const CameraModal = ({ isOpen, onClose, onCapture }: CameraModalProps) => {
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            className="relative flex flex-col w-full max-w-lg overflow-hidden glass"
+            className="relative flex flex-col w-full max-w-2xl overflow-hidden glass"
           >
             <div className="flex items-center p-2">
               <h3 className="pt-1 w-full font-arima font-semibold text-center">
@@ -89,7 +89,7 @@ const CameraModal = ({ isOpen, onClose, onCapture }: CameraModalProps) => {
                       ref={webcamRef}
                       screenshotFormat="image/jpeg"
                       videoConstraints={{ facingMode: "user" }}
-                      className="w-full min-h-75 object-cover"
+                      className="w-full min-h-75 max-h-100 object-cover"
                       onUserMediaError={() => setWebcamError(true)}
                     />
                   ) : (

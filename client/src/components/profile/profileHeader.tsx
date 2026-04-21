@@ -13,7 +13,15 @@ import {
   LuX,
 } from "react-icons/lu";
 import { TbLoader3 } from "react-icons/tb";
-import { FaEdit, FaLink } from "react-icons/fa";
+import {
+  FaFacebook,
+  FaGithub,
+  FaInstagram,
+  FaLink,
+  FaLinkedin,
+  FaTwitter,
+} from "react-icons/fa";
+import { MdOutlineEdit } from "react-icons/md";
 import { FiMoreHorizontal } from "react-icons/fi";
 import { staticImages } from "@/config/common.config";
 import { useAppStore } from "@/store/store";
@@ -22,6 +30,7 @@ import { getDateToShow } from "@/utils/date.utils";
 import {
   compressImage,
   dataURLtoImage,
+  getCurrentJobRole,
   getFullName,
   validateImage,
 } from "@/helpers/helpers";
@@ -46,12 +55,22 @@ type Social = {
   website?: string;
 } | null;
 
+type Experience = {
+  company: string;
+  role: string;
+  startDate: string;
+  endDate: string | null;
+  isCurrent: boolean;
+  description: string | null;
+} | null;
+
 type UserProfileType = {
   id: string;
   email: string;
   userName: string;
   firstName: string | null;
   lastName: string | null;
+  nickName: string | null;
   avatar: string | null;
   cover: string | null;
   bio: string | null;
@@ -59,6 +78,7 @@ type UserProfileType = {
   skills: Skill[] | null;
   interests: string[] | null;
   social: Social;
+  experiences: Experience[] | null;
   createdAt: string;
   updatedAt: string | null;
 } | null;
@@ -69,6 +89,14 @@ type ProfileHeaderProps = {
   isOwnProfile: boolean;
   user: UserProfileType;
 };
+
+const socialIcons = [
+  { key: "github", Icon: FaGithub, label: "GitHub" },
+  { key: "linkedin", Icon: FaLinkedin, label: "LinkedIn" },
+  { key: "twitter", Icon: FaTwitter, label: "Twitter / X" },
+  { key: "instagram", Icon: FaInstagram, label: "Instagram" },
+  { key: "facebook", Icon: FaFacebook, label: "Facebook" },
+] as const;
 
 const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
   const [activeMenu, setActiveMenu] = useState<ImageTarget>(null);
@@ -316,6 +344,7 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
                 <TbLoader3 className="w-6 h-6 animate-spin" />
               </div>
             )}
+
             <div
               className={`absolute bottom-1 right-1 w-4 h-4 rounded-full border-2 border-bg z-(--z-raised) ${user ? "bg-green-500" : "bg-gray-500"}`}
             ></div>
@@ -337,7 +366,7 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
                   onClose={() => setActiveMenu(null)}
                   onUploadClick={() => handleUploadClick("avatar")}
                   onCameraClick={() => handleCameraClick("avatar")}
-                  positionClass="top-full left-0 md:left-auto md:right-0 mt-2"
+                  positionClass="top-full left-0 md:left-auto mt-2"
                 />
               </div>
             )}
@@ -346,7 +375,7 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
           <div className="flex items-center gap-3 pointer-events-auto">
             {isOwnProfile ? (
               <button className="text-sm btn btn-secondary">
-                <FaEdit size={16} />
+                <MdOutlineEdit size={16} />
                 Update Profile
               </button>
             ) : (
@@ -370,12 +399,47 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
         </div>
 
         <div className="pointer-events-auto">
-          <h1 className="font-arima font-extrabold">{getFullName(user)}</h1>
-          {user?.bio && (
+          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <h1 className="font-arima font-extrabold">{getFullName(user)}</h1>
+
+            {user?.nickName ? (
+              <span className="text-text-muted text-base md:text-lg italic">
+                &ldquo;{toTitleCase(user.nickName)}&rdquo;
+              </span>
+            ) : null}
+          </div>
+
+          <p className="mt-0.5 text-text-muted text-sm">@{user.userName}</p>
+
+          {user?.experiences?.length && user?.experiences?.length > 0 ? (
             <p className="mt-1 text-text-secondary text-base md:text-lg">
-              {toTitleCase(user.bio)}
+              {toTitleCase(getCurrentJobRole(user?.experiences) ?? "No role")}
             </p>
-          )}
+          ) : null}
+
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-text-secondary text-sm">
+            {user?.social && (
+              <div className="flex flex-wrap items-center gap-2 mt-4 pointer-events-auto">
+                {socialIcons.map(({ key, Icon, label }) => {
+                  const href =
+                    user.social?.[key as keyof NonNullable<typeof user.social>];
+                  if (!href) return null;
+                  return (
+                    <Link
+                      key={key}
+                      href={href}
+                      target="_blank"
+                      rel="noreferrer"
+                      title={label}
+                      className="flex justify-center items-center w-9 h-9 text-text-secondary hover:text-text-primary hover:scale-105 transition-transform glass"
+                    >
+                      <Icon size={16} />
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </div>
 
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-4 text-text-secondary text-sm">
             {user?.location && (

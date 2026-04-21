@@ -17,12 +17,22 @@ type Social = {
   website?: string;
 } | null;
 
+type Experience = {
+  company: string;
+  role: string;
+  startDate: string;
+  endDate: string | null;
+  isCurrent: boolean;
+  description: string | null;
+} | null;
+
 type UserProfileType = {
   id: string;
   email: string;
   userName: string;
   firstName: string | null;
   lastName: string | null;
+  nickName: string | null;
   avatar: string | null;
   cover: string | null;
   bio: string | null;
@@ -30,6 +40,7 @@ type UserProfileType = {
   skills: Skill[] | null;
   interests: string[] | null;
   social: Social;
+  experiences: Experience[] | null;
   createdAt: string;
   updatedAt: string | null;
 } | null;
@@ -46,6 +57,26 @@ export const getFullName = (user?: UserProfileType | LoggedInUserType) => {
   if (email) return email;
 
   return "John Doe";
+};
+
+export const getCurrentJobRole = (experiences?: Experience[]) => {
+  if (!experiences?.length) return null;
+
+  let latest: Experience | null = null;
+
+  for (const exp of experiences) {
+    if (exp?.isCurrent && exp?.role) return exp.role;
+
+    if (
+      exp?.role &&
+      exp?.startDate &&
+      (!latest || new Date(exp.startDate) > new Date(latest.startDate))
+    ) {
+      latest = exp;
+    }
+  }
+
+  return latest?.role ?? null;
 };
 
 export const validateImage = (image: File) => {
