@@ -9,6 +9,8 @@ import TechStack from "@/components/profile/techStack";
 import Header from "@/components/layout/header";
 import { fetchProfile } from "@/lib/actions/profileActions";
 import { useAppStore } from "@/store/store";
+import { toTitleCase } from "@/utils/common.utils";
+import Interests from "@/components/profile/interests";
 
 interface ProfilePageProps {
   userName?: string;
@@ -18,9 +20,23 @@ type UserProfileResponseType = {
   user: UserProfileType;
 };
 
+type Skill = {
+  name: string;
+  level: string;
+  icon?: string;
+};
+
+type Social = {
+  facebook?: string;
+  instagram?: string;
+  twitter?: string;
+  github?: string;
+  linkedin?: string;
+  website?: string;
+} | null;
+
 type UserProfileType = {
   id: string;
-  user: string;
   email: string;
   userName: string;
   firstName: string | null;
@@ -29,6 +45,9 @@ type UserProfileType = {
   cover: string | null;
   bio: string | null;
   location: string | null;
+  skills: Skill[] | null;
+  interests: string[] | null;
+  social: Social;
   createdAt: string;
   updatedAt: string | null;
 } | null;
@@ -42,12 +61,6 @@ type User = {
   cover: string;
   avatar: string;
   online: boolean;
-};
-
-type Skill = {
-  name: string;
-  level: string;
-  icon: string;
 };
 
 const mockUser: User = {
@@ -178,15 +191,21 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
           <div className="mx-auto p-4 md:p-8 pb-24 md:pb-8 max-w-200">
             <ProfileHeader isOwnProfile={isOwnProfile} user={userProfile} />
 
-            <div className="mb-6 p-6 leading-relaxed glass">
-              <h3 className="mb-4">About Me</h3>
-              I'm a passionate software engineer with 6+ years of experience
-              building scalable web applications. I love bridging the gap
-              between design and engineering. Currently looking for innovative
-              teams building tools for creators or developers. Let's connect!
-            </div>
+            {userProfile?.bio && (
+              <div className="mb-6 p-6 leading-relaxed glass">
+                <h3 className="mb-4 tracking-wider">About Me</h3>
+                {toTitleCase(userProfile?.bio)}
+              </div>
+            )}
 
-            <TechStack skills={mockSkills} />
+            {userProfile?.skills?.length && (
+              <TechStack skills={userProfile?.skills} />
+            )}
+
+            {userProfile?.location?.length && (
+              <Interests interests={userProfile?.interests} />
+            )}
+
             <ActivitySection activities={mockActivities} />
           </div>
         </div>

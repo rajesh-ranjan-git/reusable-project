@@ -1,9 +1,10 @@
+import { toTitleCase } from "@/utils/common.utils";
 import Image from "next/image";
 
 type Skill = {
   name: string;
   level: string;
-  icon: string;
+  icon?: string;
 };
 
 type TechStackProps = { skills: Skill[] };
@@ -11,7 +12,7 @@ type TechStackProps = { skills: Skill[] };
 const TechStack = ({ skills }: TechStackProps) => {
   return (
     <div className="mb-6 p-6 glass">
-      <h3 className="mb-4">Tech Stack & Expertise</h3>
+      <h3 className="mb-4 tracking-wider">Tech Stack & Expertise</h3>
 
       <div className="flex flex-wrap gap-3">
         {skills.map((skill) => (
@@ -29,12 +30,12 @@ const TechStack = ({ skills }: TechStackProps) => {
               />
             )}
             <span className="font-medium text-text-secondary group-hover:text-text-primary text-sm transition-colors">
-              {skill.name}
+              {toTitleCase(skill.name)}
             </span>
             <span
-              className={`ml-1 px-2 py-0.5 text-xs badge  ${skill.level === "Expert" ? "badge-gradient" : skill.level === "Advanced" ? "badge-purple" : skill.level === "Intermediate" ? "badge-blue" : "glass"}`}
+              className={`ml-1 px-2 py-0.5 text-xs badge  ${skill.level === "expert" ? "badge-gradient" : skill.level === "advanced" ? "badge-purple" : skill.level === "intermediate" ? "badge-blue" : "glass"}`}
             >
-              {skill.level}
+              {toTitleCase(skill.level)}
             </span>
           </div>
         ))}

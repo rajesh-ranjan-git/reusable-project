@@ -1,16 +1,16 @@
 import { isValidObjectId } from "mongoose";
 import { socialPlatforms } from "../../../config/common.config.js";
-import SocialLink from "../../../models/user/profile/social.model.js";
+import Social from "../../../models/user/profile/social.model.js";
 import { regexPropertiesValidator } from "../../../validators/common.validator.js";
 import { asyncHandler, toTitleCase } from "../../../utils/common.utils.js";
 import AppError from "../../../services/error/error.service.js";
 import { responseService } from "../../../services/response/response.service.js";
 
 export const getSocialLinks = asyncHandler(async (req, res) => {
-  let links = await SocialLink.findOne({ user: req.data.userId }).lean();
+  let links = await Social.findOne({ user: req.data.userId }).lean();
 
   if (!links) {
-    links = await SocialLink.create({ user: req.data.userId });
+    links = await Social.create({ user: req.data.userId });
   }
 
   return responseService.successResponseHandler(req, res, {
@@ -33,7 +33,7 @@ export const getSocialLinksByUser = asyncHandler(async (req, res) => {
     });
   }
 
-  const links = await SocialLink.findOne({ user: userId }).lean();
+  const links = await Social.findOne({ user: userId }).lean();
   if (!links) {
     throw AppError.notFound({
       message: "No social links found!",
@@ -84,7 +84,7 @@ export const updateSocialLinks = asyncHandler(async (req, res) => {
     });
   }
 
-  const socialLinks = await SocialLink.findOneAndUpdate(
+  const socialLinks = await Social.findOneAndUpdate(
     { user: req.data.userId },
     { $set: updates },
     { returnDocument: "after", upsert: true, runValidators: true },
@@ -116,7 +116,7 @@ export const deleteSocialLink = asyncHandler(async (req, res) => {
     });
   }
 
-  const socialLinks = await SocialLink.findOne({ user: req.data.userId });
+  const socialLinks = await Social.findOne({ user: req.data.userId });
 
   if (!socialLinks[platform]) {
     throw AppError.badRequest({
@@ -125,7 +125,7 @@ export const deleteSocialLink = asyncHandler(async (req, res) => {
     });
   }
 
-  const updatedSocialLinks = await SocialLink.findOneAndUpdate(
+  const updatedSocialLinks = await Social.findOneAndUpdate(
     { user: req.data.userId },
     { $unset: { [platform]: 1 } },
     { returnDocument: "after", runValidators: true },

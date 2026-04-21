@@ -18,7 +18,7 @@ type ActivitySectionProps = { activities: Activity[] };
 const ActivitySection = ({ activities }: ActivitySectionProps) => {
   return (
     <div className="mb-8 md:mb-6 p-6 glass">
-      <h3 className="mb-4">Recent Activities</h3>
+      <h3 className="mb-4 tracking-wider">Recent Activities</h3>
 
       <div className="space-y-0">
         {activities.map((activity, idx) => {

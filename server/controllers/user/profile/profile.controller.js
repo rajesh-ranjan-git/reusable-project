@@ -32,11 +32,14 @@ import Account from "../../../models/user/auth/account.model.js";
 import User from "../../../models/user/auth/user.model.js";
 import { PHONE_REGEX } from "../../../constants/regex.constants.js";
 import Address from "../../../models/user/profile/address.model.js";
+import Social from "../../../models/user/profile/social.model.js";
 
 export const getMyProfile = asyncHandler(async (req, res) => {
   const userId = req.data.userId;
 
-  const account = await Account.findOne({ user: userId }).select("-_id email");
+  const account = await Account.findOne({ user: userId }).select(
+    "-_id email createdAt",
+  );
 
   if (!account) {
     throw AppError.notFound({
@@ -86,6 +89,10 @@ export const getMyProfile = asyncHandler(async (req, res) => {
       .filter(Boolean)
       .join(", ") || null;
 
+  const social = await Social.findOne({ user: userId })
+    .lean()
+    .select("-_id facebook instagram twitter github linkedin youtube website");
+
   const userFields = {
     id: userId,
     email: account.email,
@@ -93,6 +100,8 @@ export const getMyProfile = asyncHandler(async (req, res) => {
     phoneVerified: user.phoneVerified,
     role: userRole,
     location,
+    createdAt: account.createdAt,
+    social,
     ...profile,
   };
 
@@ -134,7 +143,9 @@ export const getUserProfile = asyncHandler(async (req, res) => {
 
   const userId = profile.user._id;
 
-  const account = await Account.findOne({ user: userId }).select("-_id email");
+  const account = await Account.findOne({ user: userId }).select(
+    "-_id email createdAt",
+  );
 
   if (!account) {
     throw AppError.notFound({
@@ -157,10 +168,16 @@ export const getUserProfile = asyncHandler(async (req, res) => {
       .filter(Boolean)
       .join(", ") || null;
 
+  const social = await Social.findOne({ user: userId })
+    .lean()
+    .select("-_id facebook instagram twitter github linkedin youtube website");
+
   const userFields = {
     id: userId,
     email: account.email,
+    createdAt: account.createdAt,
     location,
+    social,
     ...safeProfile,
   };
 

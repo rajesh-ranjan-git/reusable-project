@@ -11,7 +11,7 @@ import {
   LuUserPlus,
   LuX,
 } from "react-icons/lu";
-import { FaEdit } from "react-icons/fa";
+import { FaEdit, FaLink } from "react-icons/fa";
 import { FiMoreHorizontal } from "react-icons/fi";
 import ImageUploadMenu from "@/components/shared/imageUploadMenu";
 import CameraModal from "@/components/shared/cameraModal";
@@ -27,10 +27,27 @@ import { useAppStore } from "@/store/store";
 import { useToast } from "@/hooks/toast";
 import { staticImages } from "@/config/common.config";
 import { TbLoader3 } from "react-icons/tb";
+import { toTitleCase } from "@/utils/common.utils";
+import { getDateToShow } from "@/utils/date.utils";
+import Link from "next/link";
+
+type Skill = {
+  name: string;
+  level: string;
+  icon?: string;
+} | null;
+
+type Social = {
+  facebook?: string;
+  instagram?: string;
+  twitter?: string;
+  github?: string;
+  linkedin?: string;
+  website?: string;
+} | null;
 
 type UserProfileType = {
   id: string;
-  user: string;
   email: string;
   userName: string;
   firstName: string | null;
@@ -39,6 +56,9 @@ type UserProfileType = {
   cover: string | null;
   bio: string | null;
   location: string | null;
+  skills: Skill[] | null;
+  interests: string[] | null;
+  social: Social;
   createdAt: string;
   updatedAt: string | null;
 } | null;
@@ -351,30 +371,38 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
 
         <div className="pointer-events-auto">
           <h1 className="font-arima font-extrabold">{getFullName(user)}</h1>
-          <p className="mt-1 text-text-secondary text-base md:text-lg">
-            {/* {user.bio} */}
-            {getFullName(user)}
-          </p>
+          {user?.bio && (
+            <p className="mt-1 text-text-secondary text-base md:text-lg">
+              {toTitleCase(user.bio)}
+            </p>
+          )}
 
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-4 text-text-secondary text-sm">
-            <div className="flex items-center gap-1.5 hover:text-text-primary transition-colors cursor-pointer">
-              <LuMapPin size={16} />
-              {/* {user.location} */}
-              {getFullName(user)}
-            </div>
-            {/* <a
-              href={user.website}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-1.5 text-primary hover:text-indigo-400 transition-colors"
-            >
-              <FaLink size={16} />
-              {user.website.replace(/^https?:\/\//, "")}
-            </a> */}
-            <div className="flex items-center gap-1.5">
-              <LuCalendar size={16} />
-              Joined {user?.createdAt}
-            </div>
+            {user?.location && (
+              <div className="flex items-center gap-1.5 hover:text-text-primary transition-colors cursor-pointer">
+                <LuMapPin size={16} />
+                {toTitleCase(user.location)}
+              </div>
+            )}
+
+            {user?.social?.website && (
+              <Link
+                href={user.social.website}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-1.5 text-primary hover:text-indigo-400 transition-colors"
+              >
+                <FaLink size={16} />
+                {user.social.website.replace(/^https?:\/\//, "")}
+              </Link>
+            )}
+
+            {user?.createdAt && (
+              <div className="flex items-center gap-1.5">
+                <LuCalendar size={16} />
+                Joined {getDateToShow(user.createdAt)}
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -2,9 +2,23 @@ import { ALLOWED_TYPES, MAX_IMAGE_SIZE } from "@/constants/common.constants";
 import { LoggedInUserType } from "@/types/types";
 import { toTitleCase } from "@/utils/common.utils";
 
+type Skill = {
+  name: string;
+  level: string;
+  icon?: string;
+} | null;
+
+type Social = {
+  facebook?: string;
+  instagram?: string;
+  twitter?: string;
+  github?: string;
+  linkedin?: string;
+  website?: string;
+} | null;
+
 type UserProfileType = {
   id: string;
-  user: string;
   email: string;
   userName: string;
   firstName: string | null;
@@ -13,6 +27,9 @@ type UserProfileType = {
   cover: string | null;
   bio: string | null;
   location: string | null;
+  skills: Skill[] | null;
+  interests: string[] | null;
+  social: Social;
   createdAt: string;
   updatedAt: string | null;
 } | null;
