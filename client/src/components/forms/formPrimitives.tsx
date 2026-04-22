@@ -12,6 +12,7 @@ import {
 } from "react";
 import { LuChevronDown } from "react-icons/lu";
 import { TbLoader3 } from "react-icons/tb";
+import FormErrorMessage from "@/components/forms/formErrorMessage";
 
 type LabelProps = {
   htmlFor?: string;
@@ -60,8 +61,6 @@ export const FormInput = forwardRef<HTMLInputElement, InputProps>(
           {endIcon}
         </div>
       )}
-
-      {error && <p className="mt-1 text-status-error-text text-xs">{error}</p>}
     </div>
   ),
 );
@@ -79,7 +78,8 @@ export const FormTextarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         {...props}
         className={`bg-glass-bg-subtle focus:bg-glass-bg disabled:opacity-50 focus:shadow-focus-ring backdrop-blur-glass-blur-light px-4 py-2.5 border focus:border-glass-border-accent rounded-md outline-none w-full text-text-primary placeholder:text-text-muted text-sm transition-all duration-150 resize-none disabled:cursor-not-allowed ${error ? "border-status-error-border" : "border-glass-border"} ${className}`}
       />
-      {error && <p className="mt-1 text-status-error-text text-xs">{error}</p>}
+
+      <FormErrorMessage error={error ? error : null} />
     </div>
   ),
 );
@@ -198,9 +198,7 @@ export const FormSelect = forwardRef<HTMLDivElement, SelectProps>(
           </div>
         </div>
 
-        {error && (
-          <p className="mt-1 text-status-error-text text-xs">{error}</p>
-        )}
+        <FormErrorMessage error={error ? error : null} />
       </div>
     );
   },
@@ -254,7 +252,7 @@ export const FormField = ({
 
     {hint && !error && <p className="mt-1 text-text-muted text-xs">{hint}</p>}
 
-    {error && <p className="mt-1 text-status-error-text text-xs">{error}</p>}
+    <FormErrorMessage error={error ? error : null} />
   </div>
 );
 
@@ -271,11 +269,7 @@ export const FormCheckbox = ({
     <input
       type="checkbox"
       {...props}
-      className={`
-        w-4 h-4 rounded cursor-pointer
-        accent-accent-purple
-        ${className}
-      `}
+      className={`w-4 h-4 accent-accent-purple cursor-pointer ${className}`}
     />
     <span className="text-text-secondary group-hover:text-text-primary text-sm transition-colors">
       {label}

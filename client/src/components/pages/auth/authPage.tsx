@@ -35,7 +35,7 @@ import { useToast } from "@/hooks/toast";
 import useInputFieldValidator from "@/hooks/useInputFieldValidation";
 import { useOAuthListener } from "@/hooks/useOAuthListener";
 import SocialButton from "@/components/auth/socialButton";
-import FormErrorMessage from "@/components/errors/formErrorMessage";
+import FormErrorMessage from "@/components/forms/formErrorMessage";
 import { loginWithProvider, providerLogin } from "@/lib/actions/oAuthActions";
 
 type ProviderLoginDataType = {

@@ -12,7 +12,7 @@ const FormErrorMessage = ({ error, className }: FormErrorMessageProps) => {
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
-          className={`ml-2 my-2 overflow-hidden text-status-error-text text-sm origin-top ${className}`}
+          className={`my-1 overflow-hidden text-status-error-text text-xs origin-top ${className}`}
         >
           {error}
         </motion.p>
