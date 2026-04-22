@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { LuPlus, LuTrash2, LuBriefcase } from "react-icons/lu";
+import { formatLocalDate } from "@/utils/date.utils";
 import ModalPortal from "@/components/forms/modalPortal";
 import {
   FormField,
@@ -12,7 +13,6 @@ import {
   FormDivider,
   FormDatePicker,
 } from "@/components/forms/formPrimitives";
-import { formatLocalDate } from "@/utils/date.utils";
 
 type Experience = {
   company: string;

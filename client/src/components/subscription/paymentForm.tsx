@@ -1,9 +1,12 @@
 import { ChangeEvent, SubmitEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { LuCreditCard, LuLock, LuShieldCheck, LuUser } from "react-icons/lu";
-import { TbLoader3 } from "react-icons/tb";
 import { chatRoutes } from "@/lib/routes/routes";
-import { FormButton, FormField, FormInput } from "../forms/formPrimitives";
+import {
+  FormButton,
+  FormField,
+  FormInput,
+} from "@/components/forms/formPrimitives";
 
 const PaymentForm = () => {
   const [cardNumber, setCardNumber] = useState("");

@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { LuUser } from "react-icons/lu";
+import { toTitleCase } from "@/utils/common.utils";
 import ModalPortal from "@/components/forms/modalPortal";
 import {
   FormField,
   FormTextarea,
   FormButton,
 } from "@/components/forms/formPrimitives";
-import { toTitleCase } from "@/utils/common.utils";
 
 type AboutFormProps = {
   isOpen: boolean;
