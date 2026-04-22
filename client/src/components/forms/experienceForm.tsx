@@ -10,6 +10,7 @@ import {
   FormCheckbox,
   FormButton,
   FormDivider,
+  FormDatePicker,
 } from "@/components/forms/formPrimitives";
 
 type Experience = {
@@ -198,10 +199,13 @@ const ExperienceForm = ({
                 required
                 error={errors[idx]?.startDate}
               >
-                <FormInput
+                <FormDatePicker
                   id={`startDate-${idx}`}
-                  type="date"
-                  value={exp.startDate ? exp.startDate.substring(0, 10) : ""}
+                  value={
+                    exp.startDate
+                      ? new Date(exp.startDate.substring(0, 10))
+                      : null
+                  }
                   onChange={(e) => update(idx, "startDate", e.target.value)}
                   error={errors[idx]?.startDate}
                 />
@@ -212,11 +216,12 @@ const ExperienceForm = ({
                 htmlFor={`endDate-${idx}`}
                 error={errors[idx]?.endDate}
               >
-                <FormInput
+                <FormDatePicker
                   id={`endDate-${idx}`}
-                  type="date"
                   disabled={exp.isCurrent}
-                  value={exp.endDate ? exp.endDate.substring(0, 10) : ""}
+                  value={
+                    exp.endDate ? new Date(exp.startDate.substring(0, 10)) : ""
+                  }
                   onChange={(e) =>
                     update(idx, "endDate", e.target.value || null)
                   }
