@@ -37,6 +37,7 @@ import { useOAuthListener } from "@/hooks/useOAuthListener";
 import SocialButton from "@/components/auth/socialButton";
 import FormErrorMessage from "@/components/forms/formErrorMessage";
 import { loginWithProvider, providerLogin } from "@/lib/actions/oAuthActions";
+import { FormField, FormInput } from "@/components/forms/formPrimitives";
 
 type ProviderLoginDataType = {
   user: LoggedInUserType;
@@ -236,9 +237,7 @@ const AuthPage = () => {
 
       showToast({
         title: state.status,
-        message:
-          state.message ??
-          "User registered successfully, please login to continue!",
+        message: state.message!,
         variant: "success",
       });
 
@@ -348,52 +347,66 @@ const AuthPage = () => {
                       <h2 className="mb-4 text-center">Login</h2>
 
                       <div className="relative flex flex-col gap-1 mb-2">
-                        <label className="ml-2">Username / Email</label>
-                        <input
-                          type="text"
-                          name="loginField"
-                          placeholder="you@example.com"
-                          autoComplete="off"
-                          value={loginField.raw}
-                          className="pr-9"
-                          onInput={(e) =>
-                            loginField.handleInput(e.currentTarget.value)
-                          }
-                          onBlur={loginField.handleBlur}
-                        />
-                        <LuUser className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2" />
+                        <FormField
+                          label="Username / Email"
+                          htmlFor="loginField"
+                          required
+                          error={loginField.error}
+                        >
+                          <FormInput
+                            id="loginField"
+                            name="loginField"
+                            placeholder="you@example.com"
+                            autoComplete="off"
+                            value={loginField.raw}
+                            className="pr-9"
+                            onInput={(e) =>
+                              loginField.handleInput(e.currentTarget.value)
+                            }
+                            onBlur={loginField.handleBlur}
+                            endIcon={<LuUser />}
+                            error={loginField.error}
+                          />
+                        </FormField>
                       </div>
-
-                      <FormErrorMessage error={loginField.error} />
 
                       <div className="relative flex flex-col gap-1 mb-2">
-                        <label className="ml-2">Password</label>
-                        <input
-                          type={showPassword ? "text" : "password"}
-                          name="password"
-                          placeholder="Password"
-                          autoComplete="off"
-                          value={passwordInput.raw}
-                          className="pr-9"
-                          onInput={(e) =>
-                            passwordInput.handleInput(e.currentTarget.value)
-                          }
-                          onBlur={passwordInput.handleBlur}
-                        />
-                        {showPassword ? (
-                          <LuEyeClosed
-                            className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2"
-                            onClick={() => setShowPassword((prev) => !prev)}
+                        <FormField
+                          label="Password"
+                          htmlFor="password"
+                          required
+                          error={passwordInput.error}
+                        >
+                          <FormInput
+                            type={showPassword ? "text" : "password"}
+                            name="password"
+                            placeholder="Password"
+                            autoComplete="off"
+                            value={passwordInput.raw}
+                            className="pr-9"
+                            onInput={(e) =>
+                              passwordInput.handleInput(e.currentTarget.value)
+                            }
+                            onBlur={passwordInput.handleBlur}
+                            endIcon={
+                              showPassword ? (
+                                <LuEyeClosed
+                                  onClick={() =>
+                                    setShowPassword((prev) => !prev)
+                                  }
+                                />
+                              ) : (
+                                <FaRegEye
+                                  onClick={() =>
+                                    setShowPassword((prev) => !prev)
+                                  }
+                                />
+                              )
+                            }
+                            error={passwordInput.error}
                           />
-                        ) : (
-                          <FaRegEye
-                            className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2"
-                            onClick={() => setShowPassword((prev) => !prev)}
-                          />
-                        )}
+                        </FormField>
                       </div>
-
-                      <FormErrorMessage error={passwordInput.error} />
 
                       <div className="flex justify-center mt-1 md:mt-2 mb-4 md:mb-6">
                         <Link
@@ -463,98 +476,122 @@ const AuthPage = () => {
                       <h2 className="mb-2 text-center">Register</h2>
 
                       <div className="relative flex flex-col gap-1 mb-2">
-                        <label className="ml-2">Email</label>
-                        <input
-                          type="text"
-                          name="email"
-                          placeholder="you@example.com"
-                          autoComplete="off"
-                          value={emailInput.raw}
-                          className="pr-9"
-                          onInput={(e) =>
-                            emailInput.handleInput(e.currentTarget.value)
-                          }
-                          onBlur={emailInput.handleBlur}
-                        />
-                        <LuMail className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2" />
+                        <FormField
+                          label="Email"
+                          htmlFor="email"
+                          required
+                          error={emailInput.error}
+                        >
+                          <FormInput
+                            type="text"
+                            name="email"
+                            placeholder="you@example.com"
+                            autoComplete="off"
+                            value={emailInput.raw}
+                            className="pr-9"
+                            onInput={(e) =>
+                              emailInput.handleInput(e.currentTarget.value)
+                            }
+                            onBlur={emailInput.handleBlur}
+                            endIcon={<LuMail />}
+                            error={emailInput.error}
+                          />
+                        </FormField>
                       </div>
-
-                      <FormErrorMessage error={emailInput.error} />
 
                       <div className="flex gap-1 md:gap-2">
                         <div className="flex flex-col w-full">
                           <div className="relative flex flex-col gap-1 mb-2">
-                            <label className="ml-2">First Name</label>
-                            <input
-                              type="text"
-                              name="firstName"
-                              placeholder="First Name"
-                              autoComplete="off"
-                              value={firstNameInput.raw}
-                              className="pr-9"
-                              onInput={(e) =>
-                                firstNameInput.handleInput(
-                                  e.currentTarget.value,
-                                )
-                              }
-                              onBlur={firstNameInput.handleBlur}
-                            />
-                            <LuUser className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2" />
+                            <FormField
+                              label="First Name"
+                              htmlFor="firstName"
+                              error={firstNameInput.error}
+                            >
+                              <FormInput
+                                type="text"
+                                name="firstName"
+                                placeholder="First Name"
+                                autoComplete="off"
+                                value={firstNameInput.raw}
+                                className="pr-9"
+                                onInput={(e) =>
+                                  firstNameInput.handleInput(
+                                    e.currentTarget.value,
+                                  )
+                                }
+                                onBlur={firstNameInput.handleBlur}
+                                endIcon={<LuUser />}
+                                error={firstNameInput.error}
+                              />
+                            </FormField>
                           </div>
-
-                          <FormErrorMessage error={firstNameInput.error} />
                         </div>
 
                         <div className="flex flex-col w-full">
                           <div className="relative flex flex-col gap-1 mb-2">
-                            <label className="ml-2">Last Name</label>
-                            <input
-                              type="text"
-                              name="lastName"
-                              placeholder="Last Name"
-                              autoComplete="off"
-                              value={lastNameInput.raw}
-                              className="pr-9"
-                              onInput={(e) =>
-                                lastNameInput.handleInput(e.currentTarget.value)
-                              }
-                              onBlur={lastNameInput.handleBlur}
-                            />
-                            <LuUser className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2" />
+                            <FormField
+                              label="Last Name"
+                              htmlFor="lastName"
+                              error={lastNameInput.error}
+                            >
+                              <FormInput
+                                type="text"
+                                name="lastName"
+                                placeholder="Last Name"
+                                autoComplete="off"
+                                value={lastNameInput.raw}
+                                className="pr-9"
+                                onInput={(e) =>
+                                  lastNameInput.handleInput(
+                                    e.currentTarget.value,
+                                  )
+                                }
+                                onBlur={lastNameInput.handleBlur}
+                                endIcon={<LuUser />}
+                                error={lastNameInput.error}
+                              />
+                            </FormField>
                           </div>
-
-                          <FormErrorMessage error={lastNameInput.error} />
                         </div>
                       </div>
 
                       <div className="relative flex flex-col gap-1 mb-2">
-                        <label className="ml-2">Password</label>
-                        <input
-                          type={showPassword ? "text" : "password"}
-                          name="password"
-                          placeholder="Password"
-                          autoComplete="off"
-                          value={passwordInput.raw}
-                          className="pr-9"
-                          onInput={(e) =>
-                            passwordInput.handleInput(e.currentTarget.value)
-                          }
-                          onBlur={passwordInput.handleBlur}
-                        />
-                        {showPassword ? (
-                          <LuEyeClosed
-                            className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2"
-                            onClick={() => setShowPassword((prev) => !prev)}
+                        <FormField
+                          label="Password"
+                          htmlFor="password"
+                          required
+                          error={passwordInput.error}
+                        >
+                          <FormInput
+                            type={showPassword ? "text" : "password"}
+                            name="password"
+                            placeholder="Password"
+                            autoComplete="off"
+                            value={passwordInput.raw}
+                            className="pr-9"
+                            onInput={(e) =>
+                              passwordInput.handleInput(e.currentTarget.value)
+                            }
+                            onBlur={passwordInput.handleBlur}
+                            endIcon={
+                              showPassword ? (
+                                <LuEyeClosed
+                                  onClick={() =>
+                                    setShowPassword((prev) => !prev)
+                                  }
+                                />
+                              ) : (
+                                <FaRegEye
+                                  onClick={() =>
+                                    setShowPassword((prev) => !prev)
+                                  }
+                                />
+                              )
+                            }
+                            error={passwordInput.error}
                           />
-                        ) : (
-                          <FaRegEye
-                            className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2"
-                            onClick={() => setShowPassword((prev) => !prev)}
-                          />
-                        )}
+                        </FormField>
                       </div>
-
-                      <FormErrorMessage error={passwordInput.error} />
 
                       <div className="mt-1 mb-4 text-text-secondary text-xs text-center leading-relaxed">
                         By signing up, you agree to our&nbsp;

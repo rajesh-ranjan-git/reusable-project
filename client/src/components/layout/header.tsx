@@ -14,6 +14,7 @@ import ThemeToggle from "@/components/theme/themeToggle";
 import AppSidebar from "@/components/layout/appSidebar";
 import HeaderNotificationMenu from "@/components/shared/headerNotificationMenu";
 import HeaderProfileMenu from "@/components/shared/headerProfileMenu";
+import { FormInput } from "@/components/forms/formPrimitives";
 
 const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
   const [currentAdminPath, setCurrentAdminPath] = useState<string | null>(null);
@@ -121,16 +122,13 @@ const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
           </nav>
         ) : (
           <div className="hidden md:block relative flex-1 mx-6 max-w-md">
-            <LuSearch className="top-1/2 left-3 absolute w-4 h-4 text-text-secondary -translate-y-1/2" />
-
-            <input
-              type="search"
-              className="pl-9"
+            <FormInput
               placeholder={
                 type === "admin"
                   ? "Search stats, users..."
                   : "Search developers, skills..."
               }
+              startIcon={<LuSearch />}
             />
           </div>
         )}

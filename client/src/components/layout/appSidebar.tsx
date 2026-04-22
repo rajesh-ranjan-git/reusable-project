@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { LuMessageCircle, LuSearch, LuUserPlus } from "react-icons/lu";
 import { staticImages } from "@/config/common.config";
 import { chatRoutes } from "@/lib/routes/routes";
+import { FormInput } from "../forms/formPrimitives";
 
 interface AppSidebarProps {
   setIsSidebarOpen?: Dispatch<SetStateAction<boolean>>;
@@ -72,11 +73,9 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
       </div>
       <div className="md:hidden p-2">
         <div className="relative flex-1 max-w-md">
-          <LuSearch className="top-1/2 left-3 absolute w-4 h-4 text-text-secondary -translate-y-1/2 shrink-0 z-(--z-raised)" />
-          <input
-            type="search"
-            className="py-1 pl-9 rounded-full"
+          <FormInput
             placeholder="Search developers, skills..."
+            startIcon={<LuSearch />}
           />
         </div>
       </div>

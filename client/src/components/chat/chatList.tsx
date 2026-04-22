@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { LuSearch } from "react-icons/lu";
 import { staticImages } from "@/config/common.config";
+import { FormInput } from "@/components/forms/formPrimitives";
 
 type Chat = {
   id: number;
@@ -116,11 +117,9 @@ const ChatList = ({ selectedChatId, onSelectChat }: ChatListProps) => {
       <div className="bg-glass-bg p-4 pb-2 border-glass-border border-b">
         <h4 className="mb-2 font-arima tracking-wider">Messages</h4>
         <div className="relative flex-1 max-w-md">
-          <LuSearch className="top-1/2 left-3 absolute w-4 h-4 text-text-secondary -translate-y-1/2 shrink-0 z-(--z-raised)" />
-          <input
-            type="search"
-            className="py-1 pl-9 rounded-full"
+          <FormInput
             placeholder="Search messages..."
+            startIcon={<LuSearch />}
           />
         </div>
       </div>

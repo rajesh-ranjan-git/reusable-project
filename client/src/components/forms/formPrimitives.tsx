@@ -29,7 +29,7 @@ type LabelProps = {
 export const FormLabel = ({ htmlFor, children, required }: LabelProps) => (
   <label
     htmlFor={htmlFor}
-    className="block mb-1.5 font-semibold text-text-secondary text-xs uppercase tracking-wider"
+    className="block mb-1.5 ml-2 font-semibold text-text-secondary text-xs uppercase tracking-wider"
   >
     {children}
     {required && (
@@ -51,7 +51,9 @@ export const FormInput = forwardRef<HTMLInputElement, InputProps>(
   ({ className = "", startIcon, endIcon, error, ...props }, ref) => (
     <div className="relative w-full">
       {startIcon && (
-        <div className="top-1/2 left-4 absolute text-text-secondary -translate-y-1/2">
+        <div
+          className={`top-1/2 left-4 absolute -translate-y-1/2 ${error ? "text-status-error-text" : "text-text-secondary"}`}
+        >
           {startIcon}
         </div>
       )}
@@ -63,7 +65,9 @@ export const FormInput = forwardRef<HTMLInputElement, InputProps>(
       />
 
       {endIcon && (
-        <div className="top-1/2 right-4 absolute text-text-secondary -translate-y-1/2">
+        <div
+          className={`top-1/2 right-4 absolute -translate-y-1/2 ${error ? "text-status-error-text" : "text-text-secondary"}`}
+        >
           {endIcon}
         </div>
       )}
@@ -239,7 +243,9 @@ export const FormField = ({
 
     <div className="relative">
       {startIcon && (
-        <div className="top-1/2 left-4 absolute text-text-secondary -translate-y-1/2">
+        <div
+          className={`top-1/2 left-4 absolute -translate-y-1/2 ${error ? "text-status-error-text" : "text-text-secondary"}`}
+        >
           {startIcon}
         </div>
       )}
@@ -249,7 +255,9 @@ export const FormField = ({
       </div>
 
       {endIcon && (
-        <div className="top-1/2 right-4 absolute text-text-secondary -translate-y-1/2">
+        <div
+          className={`top-1/2 right-4 absolute -translate-y-1/2 ${error ? "text-status-error-text" : "text-text-secondary"}`}
+        >
           {endIcon}
         </div>
       )}

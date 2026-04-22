@@ -25,6 +25,7 @@ type Options = {
 export const useOAuthListener = (options?: Options) => {
   const router = useRouter();
 
+  const setAccessToken = useAppStore((state) => state.setAccessToken);
   const setLoggedInUser = useAppStore((state) => state.setLoggedInUser);
 
   useEffect(() => {
@@ -38,7 +39,8 @@ export const useOAuthListener = (options?: Options) => {
 
         if (!payload?.data?.accessToken) return;
 
-        const { user } = payload.data;
+        const { accessToken, user } = payload.data;
+        setAccessToken(accessToken);
         setLoggedInUser(user);
 
         options?.onSuccess?.(payload);
