@@ -12,6 +12,7 @@ import {
   FormDivider,
   FormDatePicker,
 } from "@/components/forms/formPrimitives";
+import { formatLocalDate } from "@/utils/date.utils";
 
 type Experience = {
   company: string;
@@ -201,12 +202,10 @@ const ExperienceForm = ({
               >
                 <FormDatePicker
                   id={`startDate-${idx}`}
-                  value={
-                    exp.startDate
-                      ? new Date(exp.startDate.substring(0, 10))
-                      : null
+                  value={exp.startDate ? new Date(exp.startDate) : null}
+                  onChange={(date) =>
+                    update(idx, "startDate", formatLocalDate(date) ?? "")
                   }
-                  onChange={(e) => update(idx, "startDate", e.target.value)}
                   error={errors[idx]?.startDate}
                 />
               </FormField>
@@ -219,11 +218,9 @@ const ExperienceForm = ({
                 <FormDatePicker
                   id={`endDate-${idx}`}
                   disabled={exp.isCurrent}
-                  value={
-                    exp.endDate ? new Date(exp.startDate.substring(0, 10)) : ""
-                  }
-                  onChange={(e) =>
-                    update(idx, "endDate", e.target.value || null)
+                  value={exp.endDate ? new Date(exp.endDate) : null}
+                  onChange={(date) =>
+                    update(idx, "endDate", formatLocalDate(date) ?? "")
                   }
                   error={errors[idx]?.endDate}
                 />
