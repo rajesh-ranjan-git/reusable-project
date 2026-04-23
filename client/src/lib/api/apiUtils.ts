@@ -6,6 +6,7 @@ export const apiUrls = {
     login: "/auth/login",
     logout: "/auth/logout",
   },
+  oAuth: "/oauth/provider",
   profile: {
     fetchProfile: "/user/profile",
     updateProfile: "/user/profile",

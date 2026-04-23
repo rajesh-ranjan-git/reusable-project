@@ -246,8 +246,8 @@ export const validateUpdateProfile = (data) => {
   } = stringPropertiesValidator(
     "bio",
     bio,
-    propertyConstraints.minStringLength,
-    propertyConstraints.maxStringLength,
+    propertyConstraints.minBioLength,
+    propertyConstraints.maxBioLength,
   );
 
   if (isBioValid && validatedBio) {

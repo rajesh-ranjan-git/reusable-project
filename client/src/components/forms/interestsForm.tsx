@@ -120,13 +120,6 @@ const InterestsForm = ({
     initialState,
   );
 
-  useEffect(() => {
-    if (isOpen) {
-      setInterests(initialData);
-      interestInput.reset();
-    }
-  }, [isOpen]);
-
   const addInterest = (value: string) => {
     const trimmed = value.trim().toLowerCase();
 
@@ -167,6 +160,13 @@ const InterestsForm = ({
   );
 
   useEffect(() => {
+    if (isOpen) {
+      setInterests(initialData);
+      interestInput.reset();
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
     if (state && state.status === "IDLE") return;
 
     if (state?.success) {
@@ -203,12 +203,13 @@ const InterestsForm = ({
           >
             Cancel
           </FormButton>
+
           <FormButton
             type="submit"
             variant="primary"
             form="interests-form"
             loading={isPending}
-            disabled={interests.length === 0}
+            disabled={isPending || interests.length === 0}
           >
             Save Changes
           </FormButton>

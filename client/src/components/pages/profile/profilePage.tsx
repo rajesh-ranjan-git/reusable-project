@@ -14,7 +14,7 @@ import TechStack from "@/components/profile/techStack";
 import Interests from "@/components/profile/interests";
 import ActivitySection from "@/components/profile/activitySection";
 import ExperienceSection from "@/components/profile/experienceSection";
-import AboutForm from "@/components/forms/aboutForm";
+import BioForm from "@/components/forms/bioForm";
 import ExperienceForm from "@/components/forms/experienceForm";
 import SkillsForm from "@/components/forms/skillsForm";
 import InterestsForm from "@/components/forms/interestsForm";
@@ -70,7 +70,7 @@ type UserProfileType = {
   updatedAt: string | null;
 } | null;
 
-type CurrentFormType = "about" | "skills" | "interests" | "experience" | null;
+type CurrentFormType = "bio" | "skills" | "interests" | "experience" | null;
 
 const mockActivities = [
   {
@@ -146,13 +146,26 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
 
             {userProfile?.bio ? (
               <div className="relative mb-6 p-6 leading-relaxed glass">
-                <h3 className="mb-4 tracking-wider">About Me</h3>
+                <h3 className="mb-4 tracking-wider">Bio</h3>
                 {toTitleCase(userProfile?.bio)}
+                {userProfile?.bio.trim().split("\n").length > 0
+                  ? userProfile?.bio
+                      .trim()
+                      .split("\n")
+                      .map((bio, idx) => (
+                        <p
+                          key={`${bio.length}-${idx}`}
+                          className="text-text-primary"
+                        >
+                          {toTitleCase(bio)}
+                        </p>
+                      ))
+                  : toTitleCase(userProfile?.bio.trim())}
 
                 {isOwnProfile ? (
                   <button
                     className="top-2 right-2 absolute px-2 text-sm btn btn-secondary"
-                    onClick={() => setCurrentForm("about")}
+                    onClick={() => setCurrentForm("bio")}
                   >
                     <MdOutlineEdit size={20} />
                   </button>
@@ -160,12 +173,12 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
               </div>
             ) : isOwnProfile ? (
               <div className="relative mb-6 p-6 leading-relaxed glass">
-                <h3 className="mb-4 tracking-wider">About Me</h3>
-                <p className="text-text-muted">Add about to show here...</p>
+                <h3 className="mb-4 tracking-wider">Bio</h3>
+                <p className="text-text-muted">Add bio to show here...</p>
 
                 <button
                   className="top-2 right-2 absolute flex items-center gap-2 pl-3 text-sm btn btn-secondary"
-                  onClick={() => setCurrentForm("about")}
+                  onClick={() => setCurrentForm("bio")}
                 >
                   <IoMdAdd size={20} />
                   <span className="hidden md:block">Add</span>
@@ -173,11 +186,20 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
               </div>
             ) : null}
 
-            <AboutForm
-              isOpen={currentForm === "about"}
+            <BioForm
+              isOpen={currentForm === "bio"}
               onClose={() => setCurrentForm(null)}
               initialData={userProfile?.bio ?? ""}
-              onSave={() => {}}
+              onSave={(updatedBio) => {
+                setUserProfile((prev) => {
+                  if (!prev) return prev;
+
+                  return {
+                    ...prev,
+                    bio: updatedBio,
+                  };
+                });
+              }}
             />
 
             {userProfile?.experiences && userProfile.experiences.length > 0 ? (

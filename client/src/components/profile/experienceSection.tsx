@@ -12,7 +12,7 @@ type Experience = {
   description: string | null;
 } | null;
 
-type CurrentFormType = "about" | "skills" | "interests" | "experience" | null;
+type CurrentFormType = "bio" | "skills" | "interests" | "experience" | null;
 
 type ExperienceSectionProps = {
   isOwnProfile: boolean;

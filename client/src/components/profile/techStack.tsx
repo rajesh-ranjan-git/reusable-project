@@ -9,7 +9,7 @@ type Skill = {
   icon?: string;
 };
 
-type CurrentFormType = "about" | "skills" | "interests" | "experience" | null;
+type CurrentFormType = "bio" | "skills" | "interests" | "experience" | null;
 
 type TechStackProps = {
   isOwnProfile: boolean;

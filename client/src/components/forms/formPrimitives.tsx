@@ -29,7 +29,7 @@ type LabelProps = {
 export const FormLabel = ({ htmlFor, children, required }: LabelProps) => (
   <label
     htmlFor={htmlFor}
-    className="block mb-1.5 ml-2 font-semibold text-text-secondary text-xs uppercase tracking-wider"
+    className="block my-1.5 ml-2 font-semibold text-text-secondary text-xs uppercase tracking-wider"
   >
     {children}
     {required && (
@@ -88,8 +88,6 @@ export const FormTextarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         {...props}
         className={`bg-glass-bg-subtle focus:bg-glass-bg disabled:opacity-50 focus:shadow-focus-ring backdrop-blur-glass-blur-light px-4 py-2.5 border focus:border-glass-border-accent rounded-md outline-none w-full text-text-primary placeholder:text-text-muted text-sm transition-all duration-150 resize-none disabled:cursor-not-allowed ${error ? "border-status-error-border" : "border-border-default"} ${className}`}
       />
-
-      <FormErrorMessage error={error ? error : null} />
     </div>
   ),
 );
@@ -206,8 +204,6 @@ export const FormSelect = forwardRef<HTMLDivElement, SelectProps>(
             </ul>
           </div>
         </div>
-
-        <FormErrorMessage error={error ? error : null} />
       </div>
     );
   },
@@ -660,8 +656,6 @@ export const FormDatePicker = ({
           }}
         />
       </div>
-
-      <FormErrorMessage error={error ? error : null} />
     </div>
   );
 };
@@ -911,8 +905,6 @@ export const FormDateRangePicker = ({
           />
         </div>
       </div>
-
-      <FormErrorMessage error={error ? error : null} />
     </div>
   );
 };
@@ -921,7 +913,7 @@ export const FormDivider = ({ label }: { label?: string }) => (
   <div className="flex items-center gap-3 py-1">
     <div className="flex-1 bg-border-subtle h-px" />
     {label && (
-      <span className="font-semibold text-[10px] text-text-muted uppercase tracking-widest">
+      <span className="mt-2 font-semibold text-[10px] text-text-muted uppercase tracking-widest">
         {label}
       </span>
     )}

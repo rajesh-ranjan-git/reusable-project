@@ -116,17 +116,15 @@ export const addressProperties = {
 };
 
 export const propertyConstraints = {
-  minUserNameLength: 1,
+  minUserNameLength: 6,
   maxUserNameLength: 100,
-  minNameLength: 1,
+  minNameLength: 2,
   maxNameLength: 100,
   minPasswordLength: 6,
   maxPasswordLength: 100,
-  minAge: 18,
-  maxAge: 100,
-  minExperience: 0,
-  maxExperience: 70,
   minStringLength: 2,
+  maxBioLength: 300,
+  minBioLength: 2,
   maxStringLength: 100,
   phoneLength: 10,
   pinCodeLength: 6,

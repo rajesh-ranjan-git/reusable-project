@@ -1,3 +1,4 @@
+import { propertyConstraints } from "@/config/common.config";
 import {
   api,
   ApiErrorResponse,
@@ -5,11 +6,15 @@ import {
   ApiSuccessResponse,
 } from "@/lib/api/apiHandler";
 import { apiUrls } from "@/lib/api/apiUtils";
-import { listPropertiesValidator } from "@/validators/common.validator";
+import {
+  listPropertiesValidator,
+  stringPropertiesValidator,
+} from "@/validators/common.validator";
 
 type ImageTarget = "cover" | "avatar" | null;
 
 type FieldErrors = {
+  bio?: string | null;
   interests?: string | null;
 };
 
@@ -56,6 +61,7 @@ export const updateProfile = async (
   prevState: ProfileFormStateType,
   formData: FormData,
 ): Promise<ProfileFormStateType> => {
+  const bio = formData.get("bio");
   const interestsRaw = formData.get("interests");
 
   let interests: string[] = [];
@@ -74,13 +80,22 @@ export const updateProfile = async (
   } = listPropertiesValidator("interests", interests);
   errors.interests = interestsErrorMessage ?? null;
 
+  const { validatedProperty: validatedBio, message: bioErrorMessage } =
+    stringPropertiesValidator(
+      "bio",
+      bio,
+      propertyConstraints.minBioLength,
+      propertyConstraints.maxBioLength,
+    );
+  errors.bio = bioErrorMessage ?? null;
+
   if (Object.values(errors).some((error) => error !== null)) {
     return {
       success: false,
       status: "VALIDATION FAILED",
-      code: "INTERESTS UPDATE FAILED",
+      code: "PROFILE UPDATE FAILED",
       statusCode: 422,
-      message: "Please provide valid interests to update!",
+      message: "Please provide valid details to update!",
       details: errors,
       timestamp: new Date().toISOString(),
       metadata: null,
@@ -93,6 +108,7 @@ export const updateProfile = async (
     const response = await api.patch(
       apiUrls.profile.updateProfile,
       {
+        bio: validatedBio,
         interests: validatedInterests,
       },
       { requireAuth: true },
@@ -103,10 +119,9 @@ export const updateProfile = async (
     return {
       success: false,
       status: error?.status ?? "VALIDATION FAILED",
-      code: error?.code ?? "INTERESTS UPDATE FAILED",
+      code: error?.code ?? "PROFILE UPDATE FAILED",
       statusCode: error?.statusCode ?? 500,
-      message:
-        error?.message ?? "Unable to update interests, please try again!",
+      message: error?.message ?? "Unable to update profile, please try again!",
       details: error?.details ?? null,
       timestamp: new Date().toISOString(),
       metadata: error?.metadata ?? null,
