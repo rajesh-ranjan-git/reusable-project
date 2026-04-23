@@ -35,9 +35,12 @@ import { useToast } from "@/hooks/toast";
 import useInputFieldValidator from "@/hooks/useInputFieldValidation";
 import { useOAuthListener } from "@/hooks/useOAuthListener";
 import SocialButton from "@/components/auth/socialButton";
-import FormErrorMessage from "@/components/forms/formErrorMessage";
 import { loginWithProvider, providerLogin } from "@/lib/actions/oAuthActions";
-import { FormField, FormInput } from "@/components/forms/formPrimitives";
+import {
+  FormButton,
+  FormField,
+  FormInput,
+} from "@/components/forms/formPrimitives";
 
 type ProviderLoginDataType = {
   user: LoggedInUserType;
@@ -360,7 +363,7 @@ const AuthPage = () => {
                             autoComplete="off"
                             value={loginField.raw}
                             className="pr-9"
-                            onInput={(e) =>
+                            onChange={(e) =>
                               loginField.handleInput(e.currentTarget.value)
                             }
                             onBlur={loginField.handleBlur}
@@ -384,7 +387,7 @@ const AuthPage = () => {
                             autoComplete="off"
                             value={passwordInput.raw}
                             className="pr-9"
-                            onInput={(e) =>
+                            onChange={(e) =>
                               passwordInput.handleInput(e.currentTarget.value)
                             }
                             onBlur={passwordInput.handleBlur}
@@ -417,17 +420,15 @@ const AuthPage = () => {
                         </Link>
                       </div>
 
-                      <button
+                      <FormButton
                         type="submit"
+                        variant="primary"
+                        loading={isPending}
                         disabled={isPending}
-                        className="w-full text-text-on-accent transition-all disabled:cursor-not-allowed btn btn-primary"
+                        className="rounded-xl w-full"
                       >
-                        {isPending ? (
-                          <TbLoader3 size={20} className="animate-spin" />
-                        ) : (
-                          "Login"
-                        )}
-                      </button>
+                        Login
+                      </FormButton>
                     </Form>
 
                     <div className="mt-4 md:mt-8 text-text-secondary text-sm text-center">
@@ -489,7 +490,7 @@ const AuthPage = () => {
                             autoComplete="off"
                             value={emailInput.raw}
                             className="pr-9"
-                            onInput={(e) =>
+                            onChange={(e) =>
                               emailInput.handleInput(e.currentTarget.value)
                             }
                             onBlur={emailInput.handleBlur}
@@ -514,7 +515,7 @@ const AuthPage = () => {
                                 autoComplete="off"
                                 value={firstNameInput.raw}
                                 className="pr-9"
-                                onInput={(e) =>
+                                onChange={(e) =>
                                   firstNameInput.handleInput(
                                     e.currentTarget.value,
                                   )
@@ -541,7 +542,7 @@ const AuthPage = () => {
                                 autoComplete="off"
                                 value={lastNameInput.raw}
                                 className="pr-9"
-                                onInput={(e) =>
+                                onChange={(e) =>
                                   lastNameInput.handleInput(
                                     e.currentTarget.value,
                                   )
@@ -569,7 +570,7 @@ const AuthPage = () => {
                             autoComplete="off"
                             value={passwordInput.raw}
                             className="pr-9"
-                            onInput={(e) =>
+                            onChange={(e) =>
                               passwordInput.handleInput(e.currentTarget.value)
                             }
                             onBlur={passwordInput.handleBlur}
@@ -611,17 +612,15 @@ const AuthPage = () => {
                         .
                       </div>
 
-                      <button
+                      <FormButton
                         type="submit"
+                        variant="primary"
+                        loading={isPending}
                         disabled={isPending}
-                        className="w-full text-text-on-accent transition-all disabled:cursor-not-allowed btn btn-primary"
+                        className="rounded-xl w-full"
                       >
-                        {isPending ? (
-                          <TbLoader3 size={20} className="animate-spin" />
-                        ) : (
-                          "Register"
-                        )}
-                      </button>
+                        Register
+                      </FormButton>
                     </Form>
 
                     <div className="mt-4 md:mt-5 text-text-secondary text-sm text-center">

@@ -278,8 +278,17 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
             <InterestsForm
               isOpen={currentForm === "interests"}
               onClose={() => setCurrentForm(null)}
+              onSave={(updatedInterests) => {
+                setUserProfile((prev) => {
+                  if (!prev) return prev;
+
+                  return {
+                    ...prev,
+                    interests: updatedInterests,
+                  };
+                });
+              }}
               initialData={userProfile?.interests ?? []}
-              onSave={() => {}}
             />
 
             <ActivitySection

@@ -121,6 +121,34 @@ export const stringPropertiesValidator = (
 
   const trimmedProperty = propertyValue.trim().toLowerCase();
 
+  if (/^\d+(\.\d+)?$/.test(trimmedProperty)) {
+    return {
+      isPropertyValid: false,
+      message: `${toTitleCase(propertyName)} must be a valid text, not a number!`,
+    };
+  }
+
+  if (/^(true|false)$/i.test(trimmedProperty)) {
+    return {
+      isPropertyValid: false,
+      message: `${toTitleCase(propertyName)} must be a valid text, not boolean!`,
+    };
+  }
+
+  if (/^[\[{].*[\]}]$/.test(trimmedProperty)) {
+    return {
+      isPropertyValid: false,
+      message: `${toTitleCase(propertyName)} must be plain text, not an object!`,
+    };
+  }
+
+  if (/^function\s*\(|^\(\)\s*=>/.test(trimmedProperty)) {
+    return {
+      isPropertyValid: false,
+      message: `${toTitleCase(propertyName)} must not be a function!`,
+    };
+  }
+
   if (trimmedProperty.length < minLength) {
     return {
       isPropertyValid: false,

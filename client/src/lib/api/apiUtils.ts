@@ -9,6 +9,7 @@ export const apiUrls = {
   oAuth: "/oauth/provider",
   profile: {
     fetchProfile: "/user/profile",
+    updateProfile: "/user/profile",
     uploadImageToDrive: "/user/profile/drive/upload",
     uploadImageToCloudinary: "/user/profile/cloudinary/upload",
   },

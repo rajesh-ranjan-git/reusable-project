@@ -216,7 +216,7 @@ export const FormSelect = forwardRef<HTMLDivElement, SelectProps>(
 FormSelect.displayName = "FormSelect";
 
 type FieldProps = {
-  label: string;
+  label?: string;
   htmlFor?: string;
   required?: boolean;
   error?: string;
@@ -237,9 +237,11 @@ export const FormField = ({
   endIcon,
 }: FieldProps) => (
   <div className="w-full">
-    <FormLabel htmlFor={htmlFor} required={required}>
-      {label}
-    </FormLabel>
+    {label && (
+      <FormLabel htmlFor={htmlFor} required={required}>
+        {label}
+      </FormLabel>
+    )}
 
     <div className="relative">
       {startIcon && (

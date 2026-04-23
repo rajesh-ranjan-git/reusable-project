@@ -81,6 +81,7 @@ const ModalPortal = ({
                 )}
               </div>
               <button
+                type="button"
                 onClick={onClose}
                 aria-label="Close modal"
                 className="flex justify-center items-center p-1 rounded-full text-text-secondary hover:text-text-primary hover:scale-105 transition-transform shrink-0 glass"

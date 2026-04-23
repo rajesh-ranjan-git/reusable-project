@@ -1,5 +1,6 @@
 import { HOST_API_URL } from "@/constants/env.constants";
 import { httpStatusConfig } from "@/config/http.config";
+import { useAppStore } from "@/store/store";
 
 export interface ResponseMetadata {
   requestId?: string;
@@ -60,6 +61,7 @@ export interface ApiRequestOptions<TBody = unknown> {
   body?: TBody;
   headers?: Record<string, string>;
   token?: string;
+  requireAuth?: boolean;
   fetchOptions?: RequestInit;
 }
 
@@ -87,8 +89,14 @@ export async function apiHandler<TResponse = unknown, TBody = unknown>(
     headers["Content-Type"] = "application/json";
   }
 
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
+  let authToken = token;
+
+  if (options.requireAuth && !authToken) {
+    authToken = useAppStore.getState().accessToken ?? "";
+  }
+
+  if (authToken) {
+    headers["Authorization"] = `Bearer ${authToken}`;
   }
 
   const init: RequestInit = {

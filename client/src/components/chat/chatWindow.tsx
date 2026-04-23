@@ -165,7 +165,7 @@ const ChatWindow = ({ chat, onBack }: ChatWindowProps) => {
           <textarea
             rows={1}
             ref={textareaRef}
-            onInput={handleInput}
+            onChange={handleInput}
             onKeyDown={handleKeyDown}
             placeholder="Type a message..."
             className="[&::-webkit-scrollbar]:hidden mt-1 pl-4 h-auto [-ms-overflow-style:none] overflow-y-auto resize-none [scrollbar-width:none]"
