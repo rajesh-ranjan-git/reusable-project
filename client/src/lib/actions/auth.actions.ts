@@ -175,3 +175,54 @@ export const logoutAction = async () => {
     return error as ApiErrorResponseType;
   }
 };
+
+export const forgotPasswordAction = async (
+  prevState: FormStateType,
+  formData: FormData,
+): Promise<FormStateType> => {
+  const email = formData.get("email");
+
+  const errors: FormStateType["errors"] = {};
+
+  const { validatedEmail, message: emailError } = emailValidator(
+    email as string,
+  );
+  errors.email = emailError ?? null;
+
+  if (Object.values(errors).some((error) => error !== null)) {
+    return {
+      success: false,
+      status: "VALIDATION FAILED",
+      code: "FORGOT PASSWORD FAILED",
+      statusCode: 422,
+      message: emailError ?? "Please provide valid email to register!",
+      details: errors,
+      timestamp: new Date().toISOString(),
+      metadata: null,
+      errors,
+      inputs: Object.fromEntries(formData),
+    };
+  }
+
+  try {
+    const response = await api.post(apiUrls.auth.forgotPassword, {
+      email: validatedEmail,
+    });
+
+    return { ...response };
+  } catch (error: any) {
+    return {
+      success: false,
+      status: error?.status ?? "FORGOT PASSWORD FAILED",
+      code: error?.code ?? "FORGOT PASSWORD FAILED",
+      statusCode: error?.statusCode ?? 500,
+      message:
+        error?.message ??
+        "Unable to process forgot password request, please try again!",
+      details: error?.details ?? null,
+      timestamp: new Date().toISOString(),
+      metadata: error?.metadata ?? null,
+      inputs: Object.fromEntries(formData),
+    };
+  }
+};
