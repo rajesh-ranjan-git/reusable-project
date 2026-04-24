@@ -1,22 +1,21 @@
 "use client";
 
-import { SubmitEvent, useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect } from "react";
 import Link from "next/link";
+import Form from "next/form";
 import { FiCheckCircle } from "react-icons/fi";
 import { LuArrowLeft, LuMail } from "react-icons/lu";
-import { TbLoader3 } from "react-icons/tb";
+import { initialState } from "@/config/forms.config";
+import { FormStateType } from "@/types/types/actions.types";
 import { emailValidator } from "@/validators/auth.validators";
+import { useToast } from "@/hooks/toast";
 import useInputFieldValidator from "@/hooks/useInputFieldValidation";
+import { forgotPasswordAction } from "@/lib/actions/auth.actions";
 import { authRoutes } from "@/lib/routes/routes";
 import AuthLayout from "@/components/auth/auth.layout";
 import FormField from "@/components/forms/shared/form.field";
 import FormInput from "@/components/forms/shared/form.input";
-import { initialState } from "@/config/forms.config";
-import { FormStateType } from "@/types/types/actions.types";
-import { forgotPasswordAction } from "@/lib/actions/auth.actions";
-import { useToast } from "@/hooks/toast";
 import FormButton from "@/components/forms/shared/form.button";
-import Form from "next/form";
 
 const ForgotPasswordPage = () => {
   const { showToast } = useToast();
