@@ -1,28 +1,11 @@
-"use client";
-
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { CLIENT_URL } from "@/constants/env.constants";
+import { OAuthPayloadType, OptionsType } from "@/types/types/oauth.types";
 import { useAppStore } from "@/store/store";
 import { defaultRoutes } from "@/lib/routes/routes";
 
-type OAuthPayload = {
-  status: string;
-  message: string;
-  data: {
-    user: any;
-    accessToken: string;
-    expiresIn: number;
-  };
-};
-
-type Options = {
-  redirectTo?: string;
-  onSuccess?: (data: OAuthPayload) => void;
-  onError?: (error: any) => void;
-};
-
-export const useOAuthListener = (options?: Options) => {
+export const useOAuthListener = (options?: OptionsType) => {
   const router = useRouter();
 
   const setAccessToken = useAppStore((state) => state.setAccessToken);
@@ -35,7 +18,7 @@ export const useOAuthListener = (options?: Options) => {
           return;
         }
 
-        const payload: OAuthPayload = event.data;
+        const payload: OAuthPayloadType = event.data;
 
         if (!payload?.data?.accessToken) return;
 

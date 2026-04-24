@@ -8,148 +8,28 @@ import {
   useEffect,
 } from "react";
 import { motion } from "motion/react";
-import { FiCheckCircle, FiAlertCircle } from "react-icons/fi";
-import { TbAlertTriangle } from "react-icons/tb";
-import { FaInfoCircle } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
+import {
+  positionStylesConfig,
+  toastPositionsConfig,
+  toastProgressDirectionConfig,
+  toastProgressPositionsConfig,
+  toastVariantsConfig,
+  variantConfig,
+} from "@/config/toast.config";
+import {
+  ToastConfigType,
+  ToastContextType,
+  ToastPositionType,
+  ToastType,
+} from "@/types/types/toast.types";
+import { ToastProps } from "@/types/props/toast.props.types";
+import { getAnimationVariants } from "@/helpers/toast.helpers";
 import useScreenWidthCheck from "@/hooks/useScreenWidthCheck";
-
-export const TOAST_VARIANTS = {
-  success: "success",
-  error: "error",
-  warning: "warning",
-  info: "info",
-} as const;
-
-export const TOAST_POSITIONS = {
-  topLeft: "top-left",
-  topRight: "top-right",
-  topCenter: "top-center",
-  bottomLeft: "bottom-left",
-  bottomRight: "bottom-right",
-  bottomCenter: "bottom-center",
-} as const;
-
-export const TOAST_PROGRESS_POSITIONS = {
-  top: "top",
-  bottom: "bottom",
-} as const;
-
-export const TOAST_PROGRESS_DIRECTIONS = {
-  leftToRight: "left-to-right",
-  rightToLeft: "right-to-left",
-} as const;
-
-type ToastVariant = keyof typeof TOAST_VARIANTS;
-type ToastPosition = (typeof TOAST_POSITIONS)[keyof typeof TOAST_POSITIONS];
-type ToastProgressPosition = keyof typeof TOAST_PROGRESS_POSITIONS;
-type ToastProgressDirection =
-  (typeof TOAST_PROGRESS_DIRECTIONS)[keyof typeof TOAST_PROGRESS_DIRECTIONS];
-
-interface ToastConfig {
-  title: string;
-  message: string;
-  variant?: ToastVariant;
-  duration?: number;
-  toastProgressPosition?: ToastProgressPosition;
-  toastProgressDirection?: ToastProgressDirection;
-}
-
-interface Toast extends ToastConfig {
-  id: string;
-  variant: ToastVariant;
-  duration: number;
-  toastProgressPosition: ToastProgressPosition;
-  toastProgressDirection: ToastProgressDirection;
-}
-
-interface ToastContextType {
-  toasts: Toast[];
-  position: ToastPosition;
-  setPosition: (position: ToastPosition) => void;
-  showToast: (config: ToastConfig) => void;
-  removeToast: (id: string) => void;
-}
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
-const variantConfig = {
-  success: {
-    cn: "alert-success",
-    text: "text-status-success-text",
-    icon: FiCheckCircle,
-    iconColor: "text-status-success-text",
-    progress: "bg-status-success-text",
-  },
-  error: {
-    cn: "alert-error",
-    text: "text-status-error-text",
-    icon: FiAlertCircle,
-    iconColor: "text-status-error-text",
-    progress: "bg-status-error-text",
-  },
-  warning: {
-    cn: "alert-warning",
-    text: "text-status-warning-text",
-    icon: TbAlertTriangle,
-    iconColor: "text-status-warning-text",
-    progress: "bg-status-warning-text",
-  },
-  info: {
-    cn: "alert-info",
-    text: "text-status-info-text",
-    icon: FaInfoCircle,
-    iconColor: "text-status-info-text",
-    progress: "bg-status-info-text",
-  },
-};
-
-const positionStyles: Record<ToastPosition, string> = {
-  "top-left": "top-4 left-4",
-  "top-right": "top-4 right-4",
-  "top-center": "top-4 left-1/2 -translate-x-1/2",
-  "bottom-left": "bottom-4 left-4",
-  "bottom-right": "bottom-4 right-4",
-  "bottom-center": "bottom-4 left-1/2 -translate-x-1/2",
-};
-
-const getAnimationVariants = (position: ToastPosition) => {
-  const isLeft = position.includes("left");
-  const isRight = position.includes("right");
-  const isCenter = position.includes("center");
-
-  let xValue = 0;
-  if (isLeft) xValue = -100;
-  if (isRight) xValue = 100;
-
-  return {
-    initial: {
-      opacity: 0,
-      x: isCenter ? 0 : xValue,
-      y: 0,
-      scale: 0.95,
-    },
-    animate: {
-      opacity: 1,
-      x: 0,
-      y: 0,
-      scale: 1,
-    },
-    exit: {
-      opacity: 0,
-      x: isCenter ? 0 : xValue,
-      y: -10,
-      scale: 0.95,
-    },
-  };
-};
-
-const ToastItem: React.FC<{
-  toast: Toast;
-  onRemove: (id: string) => void;
-  index: number;
-  position: ToastPosition;
-}> = ({ toast, onRemove, index, position }) => {
+const ToastItem = ({ toast, onRemove, index, position }: ToastProps) => {
   const [shouldExit, setShouldExit] = useState(false);
   const [progress, setProgress] = useState(100);
   const config = variantConfig[toast.variant];
@@ -175,7 +55,7 @@ const ToastItem: React.FC<{
   }, [toast.id, toast.duration, onRemove]);
 
   const isLeftToRight =
-    toast.toastProgressDirection === TOAST_PROGRESS_DIRECTIONS.leftToRight;
+    toast.toastProgressDirection === toastProgressDirectionConfig.leftToRight;
 
   const progressContainerStyle = isLeftToRight
     ? { justifyContent: "flex-start" }
@@ -248,13 +128,13 @@ const ToastItem: React.FC<{
 };
 
 const ToastContainer: React.FC<{
-  toasts: Toast[];
-  position: ToastPosition;
+  toasts: ToastType[];
+  position: ToastPositionType;
   onRemove: (id: string) => void;
 }> = ({ toasts, position, onRemove }) => {
   return (
     <div
-      className={`fixed ${positionStyles[position]} z-(--z-toast) flex flex-col`}
+      className={`fixed ${positionStylesConfig[position]} z-(--z-toast) flex flex-col`}
     >
       {toasts.map((toast, index) => (
         <ToastItem
@@ -274,23 +154,24 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const { isDesktopScreenWidth } = useScreenWidthCheck();
 
-  const [toasts, setToasts] = useState<Toast[]>([]);
-  const [position, setPosition] = useState<ToastPosition>(
-    TOAST_POSITIONS.topCenter,
+  const [toasts, setToasts] = useState<ToastType[]>([]);
+  const [position, setPosition] = useState<ToastPositionType>(
+    toastPositionsConfig.topCenter,
   );
 
-  const showToast = useCallback((config: ToastConfig) => {
+  const showToast = useCallback((config: ToastConfigType) => {
     const id = Math.random().toString(36).substr(2, 9);
-    const newToast: Toast = {
+    const newToast: ToastType = {
       id,
       title: config.title,
       message: config.message,
-      variant: config.variant || TOAST_VARIANTS.info,
-      duration: config.duration || 1997,
+      variant: config.variant || toastVariantsConfig.info,
+      duration: config.duration || 3000,
       toastProgressPosition:
-        config.toastProgressPosition || TOAST_PROGRESS_POSITIONS.bottom,
+        config.toastProgressPosition || toastProgressPositionsConfig.bottom,
       toastProgressDirection:
-        config.toastProgressDirection || TOAST_PROGRESS_DIRECTIONS.leftToRight,
+        config.toastProgressDirection ||
+        toastProgressDirectionConfig.leftToRight,
     };
 
     setToasts((prev) => [newToast, ...prev]);
@@ -303,8 +184,8 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     setPosition(
       isDesktopScreenWidth
-        ? TOAST_POSITIONS.bottomRight
-        : TOAST_POSITIONS.topCenter,
+        ? toastPositionsConfig.bottomRight
+        : toastPositionsConfig.topCenter,
     );
   }, [isDesktopScreenWidth]);
 
@@ -325,7 +206,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
 export const useToast = () => {
   const context = useContext(ToastContext);
   if (!context) {
-    throw new Error("useToast must be used within ToastProvider");
+    throw new Error("useToast must be used within ToastProvider!");
   }
   return context;
 };

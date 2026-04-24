@@ -2,14 +2,14 @@ import "@/app/globals.css";
 import "@/services/logger/logger";
 import type { Metadata, Viewport } from "next";
 import { alkatra, arima, inter, poppins, tourney } from "@/config/font.config";
-import { ReactNodeProps } from "@/types/propTypes";
+import { ReactNodeProps } from "@/types/props/common.props.types";
 import Banner from "@/services/banner/banner";
 import { ToastProvider } from "@/hooks/toast";
-import ServiceWorkerRegister from "@/components/serviceWorker/serviceWorkerRegister";
+import ServiceWorker from "@/components/service-worker/service.worker";
 import Orb from "@/components/background/orb";
-import ThemeManager from "@/components/theme/themeManager";
-import ErrorWrapper from "@/components/errors/errorWrapper";
-import AuthWrapper from "@/components/auth/authWrapper";
+import ThemeManager from "@/components/theme/theme.manager";
+import ErrorWrapper from "@/components/errors/error.wrapper";
+import AuthWrapper from "@/components/auth/auth.wrapper";
 
 export const metadata: Metadata = {
   title: {
@@ -32,7 +32,7 @@ const RootLayout = ({ children }: Readonly<ReactNodeProps>) => {
         className={`${alkatra.variable} ${arima.variable} ${inter.variable} ${poppins.variable} ${tourney.variable} antialiased`}
         suppressHydrationWarning
       >
-        <ServiceWorkerRegister />
+        <ServiceWorker />
         <ToastProvider>
           <Banner nodeVersion={process.version} />
           <ThemeManager />

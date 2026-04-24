@@ -1,16 +1,12 @@
 import { useEffect, useState } from "react";
+import { ScreenWidthType } from "@/types/types/hook.types";
+import {
+  MOBILE_MAX_SCREEN_WIDTH,
+  TABLET_MAX_SCREEN_WIDTH,
+} from "@/constants/common.constants";
 
-type ScreenWidth = {
-  isMobileScreenWidth: boolean;
-  isTabletScreenWidth: boolean;
-  isDesktopScreenWidth: boolean;
-};
-
-const MOBILE_MAX_SCREEN_WIDTH = 767;
-const TABLET_MAX_SCREEN_WIDTH = 1023;
-
-const useScreenWidthCheck = (): ScreenWidth => {
-  const [screenWidth, setScreenWidth] = useState<ScreenWidth>({
+const useScreenWidthCheck = (): ScreenWidthType => {
+  const [screenWidth, setScreenWidth] = useState<ScreenWidthType>({
     isMobileScreenWidth: false,
     isTabletScreenWidth: false,
     isDesktopScreenWidth: false,

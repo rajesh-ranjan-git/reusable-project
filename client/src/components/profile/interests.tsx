@@ -1,14 +1,6 @@
 import { MdOutlineEdit } from "react-icons/md";
 import { toTitleCase } from "@/utils/common.utils";
-import { Dispatch, SetStateAction } from "react";
-
-type CurrentFormType = "bio" | "skills" | "interests" | "experience" | null;
-
-interface InterestsProps {
-  isOwnProfile: boolean;
-  interests: string[] | null;
-  setCurrentForm: Dispatch<SetStateAction<CurrentFormType>>;
-}
+import { InterestsProps } from "@/types/props/profile.props.types";
 
 const Interests = ({
   isOwnProfile,

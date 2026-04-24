@@ -1,11 +1,8 @@
 import io, { Socket } from "socket.io-client";
 import { HOST_URL } from "@/constants/env.constants";
+import { SocketConfigType } from "@/types/types/socket.types";
 
-interface SocketConfig {
-  token: string;
-}
-
-export const createSocketConnection = ({ token }: SocketConfig): Socket => {
+export const createSocketConnection = ({ token }: SocketConfigType): Socket => {
   const isLocal = location.hostname === "localhost";
 
   const baseConfig = {

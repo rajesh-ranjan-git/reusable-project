@@ -3,9 +3,9 @@
 import { useState } from "react";
 import Image from "next/image";
 import { IoIosWarning } from "react-icons/io";
-import { staticImages } from "@/config/common.config";
+import { staticImagesConfig } from "@/config/common.config";
 import Header from "@/components/layout/header";
-import GoBackButton from "@/components/ui/buttons/goBackButton";
+import GoBack from "@/components/ui/buttons/go.back";
 
 const NotFound = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -21,8 +21,8 @@ const NotFound = () => {
         <div className="relative flex flex-col flex-1 justify-center items-center gap-4 bg-status-warning-bg p-2 pb-20 md:pb-6 overflow-hidden">
           <div className="relative flex justify-center w-full overflow-hidden">
             <Image
-              src={staticImages.notFoundError.src}
-              alt={staticImages.notFoundError.alt}
+              src={staticImagesConfig.notFoundError.src}
+              alt={staticImagesConfig.notFoundError.alt}
               width={400}
               height={400}
               className="object-contain select-none"
@@ -36,7 +36,7 @@ const NotFound = () => {
             </h3>
           </div>
 
-          <GoBackButton />
+          <GoBack />
         </div>
       </main>
     </div>

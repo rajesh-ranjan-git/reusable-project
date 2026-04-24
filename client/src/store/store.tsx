@@ -1,21 +1,9 @@
-import { Dispatch, SetStateAction } from "react";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { themeConfig } from "@/config/common.config";
-import { LoggedInUserType, ThemeTypes } from "@/types/types";
+import { AppStateType } from "@/types/types/store.types";
 
-type AppState = {
-  activeTheme: ThemeTypes;
-  setActiveTheme: Dispatch<SetStateAction<ThemeTypes>>;
-  accessToken: string | null;
-  setAccessToken: Dispatch<SetStateAction<string | null>>;
-  loggedInUser: LoggedInUserType;
-  setLoggedInUser: Dispatch<SetStateAction<LoggedInUserType>>;
-  isLoggingOut: boolean;
-  setIsLoggingOut: Dispatch<SetStateAction<boolean>>;
-};
-
-export const useAppStore = create<AppState>()(
+export const useAppStore = create<AppStateType>()(
   persist(
     (set) => ({
       activeTheme: themeConfig.dark,

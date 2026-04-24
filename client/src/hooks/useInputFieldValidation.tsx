@@ -1,18 +1,12 @@
 import { useEffect, useState } from "react";
-
-type Validator<T> = (val: T) => string;
-
-type UseInputFieldOptions<T> = {
-  initialValue: T;
-  validate: Validator<T>;
-  parse?: (val: string) => T;
-};
+import { UseInputFieldValidatorReturnType } from "@/types/types/hook.types";
+import { UseInputFieldOptionsProps } from "@/types/props/hooks.props.types";
 
 function useInputFieldValidator<T>({
   initialValue,
   validate,
   parse,
-}: UseInputFieldOptions<T>) {
+}: UseInputFieldOptionsProps<T>): UseInputFieldValidatorReturnType<T> {
   const [value, setValue] = useState<T>(initialValue);
   const [raw, setRaw] = useState<string>(String(initialValue ?? ""));
   const [error, setError] = useState<string>("");

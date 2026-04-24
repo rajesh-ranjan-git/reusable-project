@@ -1,7 +1,7 @@
-import OAuthPopupHandlerPage from "@/components/pages/auth/oauthPopupHandlerPage";
+import OAuthPopupPage from "@/components/pages/auth/oauth.popup.page";
 
-const OAuthPopupHandler = () => {
-  return <OAuthPopupHandlerPage />;
+const OAuthPopup = () => {
+  return <OAuthPopupPage />;
 };
 
-export default OAuthPopupHandler;
+export default OAuthPopup;

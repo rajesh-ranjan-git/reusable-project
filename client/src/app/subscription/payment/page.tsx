@@ -1,4 +1,4 @@
-import PaymentPage from "@/components/pages/subscription/paymentPage";
+import PaymentPage from "@/components/pages/subscription/payment.page";
 
 const Payment = () => {
   return <PaymentPage />;

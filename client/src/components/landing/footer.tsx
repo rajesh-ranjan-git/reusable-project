@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { LuGithub, LuLinkedin, LuTwitter } from "react-icons/lu";
-import { staticImages } from "@/config/common.config";
+import { staticImagesConfig } from "@/config/common.config";
 import { defaultRoutes } from "@/lib/routes/routes";
 
 const Footer = () => {
@@ -15,8 +15,8 @@ const Footer = () => {
               className="group flex items-center gap-2 mb-6"
             >
               <Image
-                src={staticImages.mainLogo.src}
-                alt={staticImages.mainLogo.alt}
+                src={staticImagesConfig.mainLogo.src}
+                alt={staticImagesConfig.mainLogo.alt}
                 width={100}
                 height={100}
                 className="shadow-glass-bg shadow-md rounded-full w-10 md:w-12 h-auto select-none"

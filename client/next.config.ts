@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 import { config as loadEnv } from "dotenv";
 import { existsSync } from "fs";
-import { nodeLogger } from "./src/services/logger/nodeLogger";
+import { nodeLogger } from "./src/services/logger/node.logger";
 
 const mode =
   process.env.NODE_ENV === "production" ? "production" : "development";

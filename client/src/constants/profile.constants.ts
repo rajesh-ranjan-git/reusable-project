@@ -1,0 +1,17 @@
+export const INTEREST_SUGGESTIONS = [
+  "Open Source",
+  "Machine Learning",
+  "UI/UX Design",
+  "Web3",
+  "Game Dev",
+  "Photography",
+  "Music",
+  "Hiking",
+  "Reading",
+  "Taekwondo",
+  "Travel",
+  "Cooking",
+  "Fitness",
+  "Chess",
+  "Writing",
+];

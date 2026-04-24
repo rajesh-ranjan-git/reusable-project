@@ -5,16 +5,16 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { LuBell, LuMenu, LuSearch, LuX } from "react-icons/lu";
-import { staticImages } from "@/config/common.config";
-import { HeaderProps } from "@/types/propTypes";
+import { staticImagesConfig } from "@/config/common.config";
+import { HeaderProps } from "@/types/props/common.props.types";
 import { useAppStore } from "@/store/store";
 import { toTitleCase } from "@/utils/common.utils";
 import { adminRoutes, authRoutes, defaultRoutes } from "@/lib/routes/routes";
-import ThemeToggle from "@/components/theme/themeToggle";
-import AppSidebar from "@/components/layout/appSidebar";
-import HeaderNotificationMenu from "@/components/shared/headerNotificationMenu";
-import HeaderProfileMenu from "@/components/shared/headerProfileMenu";
-import { FormInput } from "@/components/forms/formPrimitives";
+import ThemeToggle from "@/components/theme/theme.toggle";
+import AppSidebar from "@/components/layout/app.sidebar";
+import HeaderNotificationMenu from "@/components/shared/header.notification.menu";
+import HeaderProfileMenu from "@/components/shared/header.profile.menu";
+import FormInput from "@/components/forms/shared/form.input";
 
 const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
   const [currentAdminPath, setCurrentAdminPath] = useState<string | null>(null);
@@ -86,8 +86,8 @@ const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
               className="group flex items-center gap-2"
             >
               <Image
-                src={staticImages.mainLogo.src}
-                alt={staticImages.mainLogo.alt}
+                src={staticImagesConfig.mainLogo.src}
+                alt={staticImagesConfig.mainLogo.alt}
                 width={100}
                 height={100}
                 className={`shadow-glass-bg shadow-md rounded-full w-10 select-none ${type === "landing" ? "md:w-12 md:h-12" : ""}`}
@@ -180,9 +180,9 @@ const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
                   src={
                     loggedInUser?.avatar
                       ? loggedInUser?.avatar
-                      : staticImages.avatarPlaceholder.src
+                      : staticImagesConfig.avatarPlaceholder.src
                   }
-                  alt={staticImages.avatarPlaceholder.alt}
+                  alt={staticImagesConfig.avatarPlaceholder.alt}
                   fill
                   sizes="2.5rem"
                   className="shadow-glass-bg shadow-md rounded-full w-full h-full object-cover select-none"

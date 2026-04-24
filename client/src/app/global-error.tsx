@@ -5,13 +5,13 @@ import "@/services/logger/logger";
 import { useState } from "react";
 import Image from "next/image";
 import { MdError } from "react-icons/md";
-import { staticImages } from "@/config/common.config";
+import { staticImagesConfig } from "@/config/common.config";
 import { alkatra, arima, inter, poppins, tourney } from "@/config/font.config";
 import { ToastProvider } from "@/hooks/toast";
-import ThemeManager from "@/components/theme/themeManager";
+import ThemeManager from "@/components/theme/theme.manager";
 import Orb from "@/components/background/orb";
 import Header from "@/components/layout/header";
-import ReloadButton from "@/components/ui/buttons/reloadButton";
+import Reload from "@/components/ui/buttons/reload";
 
 const GlobalError = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -37,8 +37,8 @@ const GlobalError = () => {
               <div className="relative flex flex-col flex-1 justify-center items-center gap-4 bg-status-error-bg p-2 pb-20 md:pb-6 overflow-hidden">
                 <div className="relative flex justify-center w-full overflow-hidden">
                   <Image
-                    src={staticImages.unexpectedError.src}
-                    alt={staticImages.unexpectedError.alt}
+                    src={staticImagesConfig.unexpectedError.src}
+                    alt={staticImagesConfig.unexpectedError.alt}
                     width={500}
                     height={500}
                     className="object-contain select-none"
@@ -52,7 +52,7 @@ const GlobalError = () => {
                   </h3>
                 </div>
 
-                <ReloadButton />
+                <Reload />
               </div>
             </main>
           </div>

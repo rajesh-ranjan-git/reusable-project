@@ -1,48 +1,23 @@
 import { HOST_API_URL } from "@/constants/env.constants";
 import { httpStatusConfig } from "@/config/http.config";
 import { useAppStore } from "@/store/store";
-
-export interface ResponseMetadata {
-  requestId?: string;
-  path?: string;
-  method?: string;
-  isOperational?: boolean;
-}
-
-export interface ApiSuccessResponse<T = unknown> {
-  success: true;
-  status: string;
-  statusCode: number;
-  message: string | null;
-  data: T;
-  timestamp: string;
-  metadata: ResponseMetadata | null;
-}
-
-export interface ApiErrorResponse<T = unknown> {
-  success: false;
-  status: string;
-  code: string;
-  statusCode: number;
-  message: string;
-  details: T | null;
-  timestamp: string;
-  metadata: ResponseMetadata | null;
-}
-
-export type ApiResponse<T = unknown> =
-  | ApiSuccessResponse<T>
-  | ApiErrorResponse<T>;
+import {
+  ApiErrorResponseType,
+  ApiRequestOptionsType,
+  ApiResponseType,
+  ApiSuccessResponseType,
+  ResponseMetadataType,
+} from "@/types/types/api.types";
 
 export class ApiError extends Error {
   public readonly statusCode: number;
   public readonly code: string;
   public readonly details: unknown | null;
   public readonly timestamp: string;
-  public readonly metadata: ResponseMetadata | null;
-  public readonly raw: ApiErrorResponse;
+  public readonly metadata: ResponseMetadataType | null;
+  public readonly raw: ApiErrorResponseType;
 
-  constructor(response: ApiErrorResponse) {
+  constructor(response: ApiErrorResponseType) {
     super(response.message);
     this.name = response.status ?? "API Error";
     this.statusCode = response.statusCode;
@@ -54,21 +29,10 @@ export class ApiError extends Error {
   }
 }
 
-export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-
-export interface ApiRequestOptions<TBody = unknown> {
-  method?: HttpMethod;
-  body?: TBody;
-  headers?: Record<string, string>;
-  token?: string;
-  requireAuth?: boolean;
-  fetchOptions?: RequestInit;
-}
-
 export async function apiHandler<TResponse = unknown, TBody = unknown>(
   endpoint: string,
-  options: ApiRequestOptions<TBody> = {},
-): Promise<ApiSuccessResponse<TResponse>> {
+  options: ApiRequestOptionsType<TBody> = {},
+): Promise<ApiSuccessResponseType<TResponse>> {
   const {
     method = "GET",
     body,
@@ -141,7 +105,7 @@ export async function apiHandler<TResponse = unknown, TBody = unknown>(
     }
   }
 
-  let json: ApiResponse<TResponse>;
+  let json: ApiResponseType<TResponse>;
   try {
     json = await res.json();
   } catch (error) {
@@ -158,22 +122,22 @@ export async function apiHandler<TResponse = unknown, TBody = unknown>(
   }
 
   if (!res.ok || json.success === false) {
-    throw new ApiError(json as ApiErrorResponse);
+    throw new ApiError(json as ApiErrorResponseType);
   }
 
-  return json as ApiSuccessResponse<TResponse>;
+  return json as ApiSuccessResponseType<TResponse>;
 }
 
 export const api = {
   get: <TResponse = unknown>(
     endpoint: string,
-    options?: Omit<ApiRequestOptions, "method" | "body">,
+    options?: Omit<ApiRequestOptionsType, "method" | "body">,
   ) => apiHandler<TResponse>(endpoint, { ...options, method: "GET" }),
 
   post: <TResponse = unknown, TBody = unknown>(
     endpoint: string,
     body?: TBody,
-    options?: Omit<ApiRequestOptions<TBody>, "method" | "body">,
+    options?: Omit<ApiRequestOptionsType<TBody>, "method" | "body">,
   ) =>
     apiHandler<TResponse, TBody>(endpoint, {
       ...options,
@@ -184,14 +148,14 @@ export const api = {
   put: <TResponse = unknown, TBody = unknown>(
     endpoint: string,
     body?: TBody,
-    options?: Omit<ApiRequestOptions<TBody>, "method" | "body">,
+    options?: Omit<ApiRequestOptionsType<TBody>, "method" | "body">,
   ) =>
     apiHandler<TResponse, TBody>(endpoint, { ...options, method: "PUT", body }),
 
   patch: <TResponse = unknown, TBody = unknown>(
     endpoint: string,
     body?: TBody,
-    options?: Omit<ApiRequestOptions<TBody>, "method" | "body">,
+    options?: Omit<ApiRequestOptionsType<TBody>, "method" | "body">,
   ) =>
     apiHandler<TResponse, TBody>(endpoint, {
       ...options,
@@ -201,6 +165,6 @@ export const api = {
 
   delete: <TResponse = unknown>(
     endpoint: string,
-    options?: Omit<ApiRequestOptions, "method" | "body">,
+    options?: Omit<ApiRequestOptionsType, "method" | "body">,
   ) => apiHandler<TResponse>(endpoint, { ...options, method: "DELETE" }),
 };

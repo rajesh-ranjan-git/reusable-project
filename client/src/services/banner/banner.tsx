@@ -5,9 +5,10 @@ import figlet from "figlet";
 import gradient from "gradient-string";
 import boxen from "boxen";
 import { appConfig } from "@/config/common.config";
+import { toastVariantsConfig } from "@/config/toast.config";
 import { bannerFontsConfig, bannerThemesConfig } from "@/config/banner.config";
-import { BannerProps } from "@/types/propTypes";
-import { TOAST_VARIANTS, useToast } from "@/hooks/toast";
+import { BannerProps } from "@/types/props/common.props.types";
+import { useToast } from "@/hooks/toast";
 import { getRandomItem, toTitleCase } from "@/utils/common.utils";
 import { getDateToShow } from "@/utils/date.utils";
 
@@ -51,7 +52,7 @@ const Banner = ({ nodeVersion }: BannerProps) => {
               showToast({
                 title: "BANNER ERROR",
                 message: "An error occurred while creating console banner",
-                variant: TOAST_VARIANTS.error,
+                variant: toastVariantsConfig.error,
               });
               return;
             }
@@ -70,7 +71,7 @@ const Banner = ({ nodeVersion }: BannerProps) => {
         showToast({
           title: "BANNER ERROR",
           message: "An error occurred while creating console banner",
-          variant: TOAST_VARIANTS.error,
+          variant: toastVariantsConfig.error,
         });
       });
   }, []);

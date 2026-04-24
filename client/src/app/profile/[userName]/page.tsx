@@ -1,12 +1,7 @@
-import ProfilePage from "@/components/pages/profile/profilePage";
+import { ProfileProps } from "@/types/props/profile.props.types";
+import ProfilePage from "@/components/pages/profile/profile.page";
 
-type Props = {
-  params: {
-    userName: string;
-  };
-};
-
-const UserProfile = async ({ params }: Props) => {
+const UserProfile = async ({ params }: ProfileProps) => {
   const { userName } = await params;
 
   return <ProfilePage userName={userName} />;
