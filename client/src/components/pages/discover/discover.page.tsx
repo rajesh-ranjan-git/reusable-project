@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { BATCH_SIZE, PREFETCH_AT } from "@/constants/common.constants";
 import { SwipeDirectionType } from "@/types/types/discover.types";
 import { DiscoverProfilesResponseType } from "@/types/types/response.types";
 import { UserProfileType } from "@/types/types/profile.types";
-import { useAppStore } from "@/store/store";
 import { fetchProfiles } from "@/lib/actions/discover.actions";
 import Header from "@/components/layout/header";
 import AppSidebar from "@/components/layout/app.sidebar";
@@ -14,38 +14,64 @@ import SwipeCard from "@/components/discover/swipe.card";
 
 const DiscoverPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [profiles, setProfiles] = useState<UserProfileType[]>([]);
-  const [page, setPage] = useState(1);
+  const [visibleProfiles, setVisibleProfiles] = useState<UserProfileType[]>([]);
+  const [bufferProfiles, setBufferProfiles] = useState<UserProfileType[]>([]);
 
-  const accessToken = useAppStore((state) => state.accessToken);
+  const pageRef = useRef(1);
+  const isFetchingRef = useRef(false);
 
   const handleSwipe = (direction: SwipeDirectionType, userId?: string) => {
     const targetId =
       userId ??
-      (profiles.length > 0 ? profiles[profiles.length - 1]?.userId : null);
+      (visibleProfiles.length > 0
+        ? visibleProfiles[visibleProfiles.length - 1]?.userId
+        : null);
 
-    if (targetId !== null) {
-      setProfiles((prev) => prev.filter((p) => p?.userId !== targetId));
+    if (targetId) {
+      setVisibleProfiles((prev) => prev.filter((p) => p?.userId !== targetId));
     }
   };
 
-  const loadProfiles = async () => {
-    const response = await fetchProfiles(page);
+  const loadProfiles = async (page: number) => {
+    if (isFetchingRef.current) return;
+    isFetchingRef.current = true;
 
-    if (response.success && response?.data) {
-      const data = response?.data as DiscoverProfilesResponseType;
+    try {
+      const response = await fetchProfiles(pageRef.current);
 
-      setProfiles(data.users);
-    } else {
-      setProfiles([]);
+      if (response.success && response?.data) {
+        const data = response?.data as DiscoverProfilesResponseType;
+        if (bufferProfiles.length <= BATCH_SIZE) {
+          setBufferProfiles((prev) => [...prev, ...data.users]);
+          pageRef.current += 1;
+        }
+      }
+    } finally {
+      isFetchingRef.current = false;
     }
   };
 
   useEffect(() => {
-    if (accessToken) {
-      loadProfiles();
+    if (bufferProfiles.length <= BATCH_SIZE) {
+      loadProfiles(pageRef.current);
     }
-  }, [accessToken]);
+  }, [bufferProfiles]);
+
+  useEffect(() => {
+    if (
+      visibleProfiles.length <= PREFETCH_AT &&
+      bufferProfiles.length >= BATCH_SIZE
+    ) {
+      const nextChunk = bufferProfiles.slice(0, BATCH_SIZE);
+
+      setVisibleProfiles((prev) => [...nextChunk, ...prev]);
+      setBufferProfiles((prev) => prev.slice(BATCH_SIZE));
+    }
+  }, [visibleProfiles, bufferProfiles]);
+
+  useEffect(() => {
+    loadProfiles(pageRef.current);
+  }, []);
 
   return (
     <div className="flex flex-col bg-bg-page h-dvh overflow-hidden text-text-primary">
@@ -62,7 +88,7 @@ const DiscoverPage = () => {
 
         <div className="relative flex flex-col flex-1 justify-center items-center p-4 pb-20 md:pb-6 overflow-hidden">
           <div className="relative flex justify-center items-center w-full max-w-90 md:max-w-md h-137.5 md:h-150">
-            {profiles.length === 0 ? (
+            {visibleProfiles.length === 0 ? (
               <div className="p-8 border w-full text-center glass">
                 <div className="flex justify-center items-center mx-auto mb-4 border border-glass-border-accent rounded-full w-20 h-20 r">
                   <span className="text-3xl">🚀</span>
@@ -76,18 +102,18 @@ const DiscoverPage = () => {
                 </p>
               </div>
             ) : (
-              profiles.map((profile, index) => (
+              visibleProfiles.map((profile, index) => (
                 <SwipeCard
                   key={profile?.userId}
                   profile={profile}
-                  active={index === profiles.length - 1}
+                  active={index === visibleProfiles.length - 1}
                   onSwipe={handleSwipe}
                 />
               ))
             )}
           </div>
 
-          {profiles.length > 0 && <ActionBar onSwipe={handleSwipe} />}
+          {visibleProfiles.length > 0 && <ActionBar onSwipe={handleSwipe} />}
         </div>
       </main>
 

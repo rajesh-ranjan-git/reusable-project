@@ -10,7 +10,7 @@ const discoverRouter = express.Router();
 
 discoverRouter.get(
   "/profiles",
-  requestMiddleware({}),
+  requestMiddleware({ requireQuery: true }),
   authenticate,
   authorize({
     permissions: [PERMISSIONS.PROFILE_READ_ANY],
