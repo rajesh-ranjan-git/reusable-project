@@ -9,10 +9,10 @@ export type RefreshResponseType = {
   accessToken: string;
 };
 
-export type UserProfileResponseType = {
+export type ProfileResponseType = {
   user: UserProfileType;
 };
 
-export type DiscoverProfilesResponseType = {
+export type ProfilesResponseType = {
   users: UserProfileType[];
 };

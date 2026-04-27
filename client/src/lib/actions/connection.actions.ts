@@ -18,3 +18,23 @@ export const connect = async (
     return error as ApiErrorResponseType;
   }
 };
+
+export const fetchConnections = async (): Promise<ApiResponseType> => {
+  try {
+    return await api.get(apiUrls.connection.fetchConnections, {
+      requireAuth: true,
+    });
+  } catch (error) {
+    return error as ApiErrorResponseType;
+  }
+};
+
+export const fetchRequests = async (): Promise<ApiResponseType> => {
+  try {
+    return await api.get(apiUrls.connection.fetchRequests, {
+      requireAuth: true,
+    });
+  } catch (error) {
+    return error as ApiErrorResponseType;
+  }
+};

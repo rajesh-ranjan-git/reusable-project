@@ -1,7 +1,7 @@
 export const apiUrls = {
   auth: {
     refresh: "/auth/refresh",
-    me: "/auth/me",
+    fetchMe: "/auth/me",
     register: "/auth/register",
     login: "/auth/login",
     logout: "/auth/logout",
@@ -21,5 +21,7 @@ export const apiUrls = {
   },
   connection: {
     connect: "/connection/connect",
+    fetchConnections: "/connection/connections",
+    fetchRequests: "/connection/requests",
   },
 };

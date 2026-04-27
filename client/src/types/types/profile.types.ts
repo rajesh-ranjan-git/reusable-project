@@ -79,6 +79,7 @@ export type UserProfileType = {
   experiences?: ExperienceType[] | null;
   totalExperience?: string | null;
   currentJobRole?: string | null;
+  lastSeen?: string | null;
   createdAt: string;
   updatedAt?: string | null;
-} | null;
+};

@@ -12,7 +12,7 @@ export const refreshTokens = async (): Promise<ApiResponseType> => {
 
 export const fetchMe = async (token: string): Promise<ApiResponseType> => {
   try {
-    return await api.get(apiUrls.auth.me, { token, requireAuth: true });
+    return await api.get(apiUrls.auth.fetchMe, { token, requireAuth: true });
   } catch (error) {
     return error as ApiErrorResponseType;
   }

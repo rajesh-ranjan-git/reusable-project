@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { BATCH_SIZE, PREFETCH_AT } from "@/constants/common.constants";
 import { SwipeDirectionType } from "@/types/types/discover.types";
-import { DiscoverProfilesResponseType } from "@/types/types/response.types";
+import { ProfilesResponseType } from "@/types/types/response.types";
 import { UserProfileType } from "@/types/types/profile.types";
 import { fetchProfiles } from "@/lib/actions/discover.actions";
 import Header from "@/components/layout/header";
@@ -70,7 +70,7 @@ const DiscoverPage = () => {
       const response = await fetchProfiles(pageRef.current);
 
       if (response.success && response?.data) {
-        const data = response?.data as DiscoverProfilesResponseType;
+        const data = response?.data as ProfilesResponseType;
         if (bufferProfiles.length <= BATCH_SIZE) {
           setBufferProfiles((prev) => [...prev, ...data.users]);
           pageRef.current += 1;

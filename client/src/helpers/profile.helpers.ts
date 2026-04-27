@@ -6,8 +6,9 @@ import { formatLocalDate } from "@/utils/date.utils";
 export const getFullName = (user?: UserProfileType | LoggedInUserType) => {
   if (!user) return "John Doe";
 
-  const { firstName, lastName, userName, email } = user;
+  const { fullName, firstName, lastName, userName, email } = user;
 
+  if (fullName) return toTitleCase(fullName);
   if (firstName && lastName) return toTitleCase(`${firstName} ${lastName}`);
   if (firstName) return toTitleCase(firstName);
   if (lastName) return toTitleCase(lastName);

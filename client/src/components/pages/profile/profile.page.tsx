@@ -9,7 +9,7 @@ import {
   ExperienceType,
   UserProfileType,
 } from "@/types/types/profile.types";
-import { UserProfileResponseType } from "@/types/types/response.types";
+import { ProfileResponseType } from "@/types/types/response.types";
 import { useAppStore } from "@/store/store";
 import { toTitleCase } from "@/utils/common.utils";
 import { fetchProfile } from "@/lib/actions/profile.actions";
@@ -39,7 +39,7 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
     const response = await fetchProfile(userName);
 
     if (response.success && response?.data) {
-      const data = response?.data as UserProfileResponseType;
+      const data = response?.data as ProfileResponseType;
 
       setUserProfile(data.user);
     } else {

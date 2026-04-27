@@ -472,7 +472,7 @@ export const connections = async (req, res) => {
   const [profiles, total] = await Promise.all([
     Profile.find(filter)
       .populate("user", "status lastSeen")
-      .select("firstName lastName bio experiences")
+      .select("userName firstName lastName avatar bio experiences")
       .skip(skip)
       .limit(limitNum),
     Profile.countDocuments(filter),
@@ -484,9 +484,11 @@ export const connections = async (req, res) => {
     userId: user.user.id,
     lastSeen: user.user.lastSeen,
     ...selectObjectProperties(user, [
+      "userName",
       "firstName",
       "lastName",
       "fullName",
+      "avatar",
       "currentJobRole",
       "bio",
     ]),
@@ -496,7 +498,7 @@ export const connections = async (req, res) => {
     status: "CONNECTIONS FETCH SUCCESS",
     message: "Connections fetched successfully!",
     data: {
-      connections: normalizedUsers,
+      users: normalizedUsers,
       pagination: {
         total,
         page: pageNum,
@@ -534,7 +536,7 @@ export const requests = async (req, res) => {
   const [profiles, total] = await Promise.all([
     Profile.find(filter)
       .populate("user", "status")
-      .select("firstName lastName bio experiences")
+      .select("userName firstName lastName avatar bio experiences")
       .skip(skip)
       .limit(limitNum),
     Profile.countDocuments(filter),
@@ -545,9 +547,11 @@ export const requests = async (req, res) => {
   const normalizedUsers = sanitizeMongoData(users).map((user) => ({
     userId: user.user.id,
     ...selectObjectProperties(user, [
+      "userName",
       "firstName",
       "lastName",
       "fullName",
+      "avatar",
       "currentJobRole",
       "bio",
     ]),
@@ -557,7 +561,7 @@ export const requests = async (req, res) => {
     status: "REQUESTS FETCH SUCCESS",
     message: "Connection requests fetched successfully!",
     data: {
-      requests: normalizedUsers,
+      users: normalizedUsers,
       pagination: {
         total,
         page: pageNum,
