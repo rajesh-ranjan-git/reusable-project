@@ -2,9 +2,11 @@ import "../services/logger/logger.service.js";
 import { setDbAdapter } from "../services/logger/logger.service.js";
 import connectDB from "../db/db.connect.js";
 import Log from "../models/log/log.model.js";
-import Profile from "../models/user/profile/profile.model.js";
-import User from "../models/user/auth/user.model.js";
 import Account from "../models/user/auth/account.model.js";
+import User from "../models/user/auth/user.model.js";
+import Profile from "../models/user/profile/profile.model.js";
+import Social from "../models/user/profile/social.model.js";
+import Address from "../models/user/profile/address.model.js";
 import { authService } from "../services/auth/auth.service.js";
 
 const MAX_USERS = 500;
@@ -206,6 +208,16 @@ const avatarIds = [
   "1500648767791-00dcc994a43e",
   "1544005313-94ddf0286df2",
   "1552058544-f2b08422138a",
+  "1502685104226-ee32379fefbe",
+  "1504593811423-6dd665756598",
+  "1546961329-78bef0414d7c",
+  "1541534401786-2077eed87a72",
+  "1542204625-de293a2f8ff0",
+  "1547425260-76bcadfb4f2c",
+  "1506794778202-cad84cf45f1d",
+  "1508214751196-bcfd4ca60f91",
+  "1521119989659-a83eee488004",
+  "1545167622-3a6ac756afa4",
 ];
 
 const coverIds = [
@@ -219,6 +231,62 @@ const coverIds = [
   "1493246507139-91e8fad9978e",
   "1464822759023-fed622ff2c3b",
   "1519681393784-d120267933ba",
+  "1500530855697-b586d89ba3ee",
+  "1507525428034-b723cf961d3e",
+  "1501785888041-af3ef285b470",
+  "1503264116251-35a269479413",
+  "1504384308090-c894fdcc538d",
+  "1500048993953-d23a436266cf",
+  "1494526585095-c41746248156",
+  "1505761671935-60b3a7427bad",
+  "1502082553048-f009c37129b9",
+  "1496307042754-b4aa456c4a2d",
+];
+
+const cities = [
+  "New York",
+  "San Francisco",
+  "Chicago",
+  "Austin",
+  "Seattle",
+  "Boston",
+  "Denver",
+  "Los Angeles",
+  "Miami",
+  "Atlanta",
+];
+
+const states = [
+  "New York",
+  "California",
+  "Illinois",
+  "Texas",
+  "Washington",
+  "Massachusetts",
+  "Colorado",
+  "Florida",
+  "Georgia",
+];
+
+const streets = [
+  "Main Street",
+  "Park Avenue",
+  "Oak Street",
+  "Maple Drive",
+  "Sunset Boulevard",
+  "Lake View Road",
+  "Hill Street",
+  "Washington Ave",
+];
+
+const socialPlatforms = [
+  "facebook",
+  "instagram",
+  "twitter",
+  "github",
+  "linkedin",
+  "youtube",
+  "website",
 ];
 
 const seedUsers = async () => {
@@ -250,14 +318,13 @@ const seedUsers = async () => {
         `${firstName.slice(0, 3)}${lastName.slice(0, 3)}`.toLowerCase();
 
       const numSkills = 2 + Math.floor(Math.random() * 3);
-      const skills = [
-        ...new Set(
-          Array.from({ length: numSkills }, () => ({
-            name: skillsList[Math.floor(Math.random() * skillsList.length)],
-            level: skillLevels[Math.floor(Math.random() * skillLevels.length)],
-          })),
-        ),
-      ];
+
+      const shuffledSkills = [...skillsList].sort(() => Math.random() - 0.5);
+
+      const skills = shuffledSkills.slice(0, numSkills).map((name) => ({
+        name,
+        level: skillLevels[Math.floor(Math.random() * skillLevels.length)],
+      }));
 
       const numInterests = 2 + Math.floor(Math.random() * 3);
       const interests = [
@@ -285,6 +352,36 @@ const seedUsers = async () => {
         description:
           "Worked on various impactful projects and collaborated with cross-functional teams.",
       }));
+
+      const social = socialPlatforms.reduce((acc, platform) => {
+        if (Math.random() > 0.35) {
+          const domains = {
+            facebook: `https://facebook.com/${firstName}`,
+            instagram: `https://instagram.com/${firstName}`,
+            twitter: `https://twitter.com/${firstName}`,
+            github: `https://github.com/${firstName}`,
+            linkedin: `https://linkedin.com/in/${firstName}`,
+            youtube: `https://youtube.com/@${firstName}`,
+            website: `https://www.${firstName}.com`,
+          };
+
+          acc[platform] = domains[platform];
+        }
+
+        return acc;
+      }, {});
+
+      const address = {
+        type: ["home", "office", "other"][Math.floor(Math.random() * 3)],
+        street: `${Math.floor(Math.random() * 999) + 1} ${
+          streets[Math.floor(Math.random() * streets.length)]
+        }`,
+        city: cities[Math.floor(Math.random() * cities.length)],
+        state: states[Math.floor(Math.random() * states.length)],
+        country: "United States",
+        pinCode: String(Math.floor(100000 + Math.random() * 900000)),
+        isDefault: true,
+      };
 
       try {
         const { userId } = await authService.register({
@@ -315,6 +412,13 @@ const seedUsers = async () => {
             interests,
           },
         );
+
+        await Social.findOneAndUpdate({ user: userId }, { ...social });
+
+        await Address.create({
+          user: userId,
+          ...address,
+        });
 
         logger.info(`✅ Created user ${i}/${MAX_USERS}: ${email}`);
       } catch (err) {

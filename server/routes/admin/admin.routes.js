@@ -23,7 +23,7 @@ const adminRouter = express.Router();
 
 adminRouter.get(
   "/user/list",
-  requestMiddleware({}),
+  requestMiddleware({ requireQuery: true }),
   authenticate,
   authorize({ permissions: [PERMISSIONS.ADMIN_ACCESS] }),
   listUsers,

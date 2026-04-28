@@ -15,7 +15,8 @@
     "dev": "cross-env NODE_ENV=development nodemon src/server.js",
     "start": "cross-env NODE_ENV=production node src/server.js",
     "seed": "node seed/rbac.seed.js",
-    "seed-users": "node seed/users.seed.js"
+    "seed-users": "node seed/users.seed.js",
+    "seed-connect": "node seed/connect.seed.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
