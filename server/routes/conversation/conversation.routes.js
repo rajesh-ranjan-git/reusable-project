@@ -1,6 +1,6 @@
 import express from "express";
 import { PERMISSIONS } from "../../constants/permission.constants.js";
-import User from "../../models/user/auth/user.model.js";
+import Profile from "../../models/user/profile/profile.model.js";
 import { requestMiddleware } from "../../middlewares/request.middleware.js";
 import { authenticate } from "../../middlewares/authenticate.middleware.js";
 import { authorize } from "../../middlewares/authorize.middleware.js";
@@ -32,7 +32,7 @@ import {
 const conversationRouter = express.Router();
 
 conversationRouter.post(
-  "/direct/:targetUserId",
+  "/direct/:userName",
   requestMiddleware({ requireParams: true }),
   authenticate,
   authorize({
@@ -40,9 +40,9 @@ conversationRouter.post(
     ownership: {
       type: "resource",
       source: "params",
-      idKey: "targetUserId",
-      model: User,
-      ownerIdField: "_id",
+      fieldKey: "userName",
+      model: Profile,
+      ownerIdField: "user",
     },
     enforceHierarchy: true,
     allowSameLevel: true,

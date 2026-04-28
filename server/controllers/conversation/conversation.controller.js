@@ -1,8 +1,12 @@
 import mongoose from "mongoose";
+import Account from "../../models/user/auth/account.model.js";
+import Profile from "../../models/user/profile/profile.model.js";
 import Conversation from "../../models/conversation/conversation.model.js";
 import Message from "../../models/conversation/message.model.js";
 import { asyncHandler } from "../../utils/common.utils.js";
+import { userNameValidator } from "../../validators/auth.validator.js";
 import AppError from "../../services/error/error.service.js";
+import { responseService } from "../../services/response/response.service.js";
 
 const PARTICIPANT_FIELDS =
   "username firstName lastName fullName avatarUrl lastSeen";
@@ -23,9 +27,45 @@ const buildParticipantPipeline = () => [
 
 export const getOrCreateDirectConversation = asyncHandler(async (req, res) => {
   const currentUserId = req.data.userId;
-  const { targetUserId } = req.data.params;
+  const { userName } = req.data.params;
 
-  if (currentUserId.toString() === targetUserId) {
+  const {
+    isUserNameValid,
+    message: userNameErrorMessage,
+    validatedUserName,
+  } = userNameValidator(userName);
+
+  if (!isUserNameValid) {
+    throw AppError.unprocessable({
+      message: userNameErrorMessage,
+      code: "USERNAME VALIDATION FAILED",
+      details: { userName: userName },
+    });
+  }
+
+  const profile = await Profile.findOne({ userName: validatedUserName })
+    .populate("user", "status lastSeen")
+    .select("-_id username firstName lastName fullName avatarUrl");
+
+  if (!profile || profile.user?.status !== "active") {
+    throw AppError.notFound({
+      message: "Profile details not found!",
+      code: "PROFILE NOT FOUND",
+    });
+  }
+
+  const targetUserId = profile.user.id;
+
+  const account = await Account.findOne({ user: targetUserId }).lean();
+
+  if (!account) {
+    throw AppError.notFound({
+      message: "User account not found!",
+      code: "ACCOUNT NOT FOUND",
+    });
+  }
+
+  if (currentUserId === targetUserId) {
     throw AppError.forbidden({
       message: "You cannot start a conversation with yourself.",
     });
@@ -53,7 +93,13 @@ export const getOrCreateDirectConversation = asyncHandler(async (req, res) => {
     await conversation.populate("participants.user", PARTICIPANT_FIELDS);
   }
 
-  res.status(200).json({ success: true, data: conversation });
+  logger.debug("debug conversation:", conversation);
+
+  return responseService.successResponseHandler(req, res, {
+    status: "CONVERSATION FETCH SUCCESS",
+    message: "Conversation fetched successfully!",
+    data: { conversation },
+  });
 });
 
 export const createGroupConversation = asyncHandler(async (req, res) => {

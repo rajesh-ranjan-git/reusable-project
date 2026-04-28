@@ -442,7 +442,9 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
                       onClick={(e) => {
                         e.stopPropagation();
                         setIsSidebarOpen?.(false);
-                        router.push(conversationRoutes.conversation);
+                        router.push(
+                          `${conversationRoutes.conversation}/${connection.userName}`,
+                        );
                       }}
                       className="p-0 w-8 h-8 font-medium text-status-info-text text-sm"
                     >

@@ -11,3 +11,17 @@ export const fetchConversationsList = async (): Promise<ApiResponseType> => {
     return error as ApiErrorResponseType;
   }
 };
+
+export const fetchDirectConversation = async (
+  userName: string,
+): Promise<ApiResponseType> => {
+  try {
+    return await api.post(
+      `${apiUrls.conversation.directConversation}/${userName}`,
+      {},
+      { requireAuth: true },
+    );
+  } catch (error) {
+    return error as ApiErrorResponseType;
+  }
+};

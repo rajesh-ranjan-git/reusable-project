@@ -1,16 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ConversationType } from "@/types/types/conversation.types";
+import { ConversationPageProps } from "@/types/props/conversation.props";
+import { fetchDirectConversation } from "@/lib/actions/conversation.action";
 import Header from "@/components/layout/header";
 import BottomNavbar from "@/components/layout/bottom.navbar";
 import ConversationList from "@/components/conversation/conversation.list";
 import ConversationWindow from "@/components/conversation/conversation.window";
 
-const ConversationPage = () => {
+const ConversationPage = ({ userName }: ConversationPageProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedConversation, setSelectedConversation] =
     useState<ConversationType | null>(null);
+
+  const getDirectConversation = async (userName: string) => {
+    const directConversationResponse = await fetchDirectConversation(userName);
+
+    logger.debug(
+      "debug directConversationResponse:",
+      directConversationResponse,
+    );
+  };
+
+  useEffect(() => {
+    if (userName) {
+      getDirectConversation(userName);
+    }
+  }, [userName]);
 
   return (
     <div className="flex flex-col bg-bg-page h-dvh overflow-hidden text-text-primary">
