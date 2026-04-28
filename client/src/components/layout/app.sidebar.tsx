@@ -64,8 +64,18 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
         prev.filter((request) => request.userId !== userId),
       );
 
+      setConnectionRequestsPagination((prev) =>
+        prev ? { ...prev, total: Math.max(0, prev.total - 1) } : prev,
+      );
+
       if (direction === "right") {
         setConnections((prev) => [selectedRequest, ...prev]);
+
+        setConnectionsPagination((prev) =>
+          prev
+            ? { ...prev, total: prev.total + 1 }
+            : { page: 1, limit: 10, total: 1, totalPages: 1 },
+        );
       }
     }, 0);
 
@@ -76,9 +86,17 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
     if (!response.success) {
       setConnectionRequests((prev) => [selectedRequest, ...prev]);
 
+      setConnectionRequestsPagination((prev) =>
+        prev ? { ...prev, total: prev.total + 1 } : prev,
+      );
+
       if (direction === "right") {
         setConnections((prev) =>
           prev.filter((connection) => connection.userId !== userId),
+        );
+
+        setConnectionsPagination((prev) =>
+          prev ? { ...prev, total: Math.max(0, prev.total - 1) } : prev,
         );
       }
 
@@ -145,7 +163,7 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
           <div className="flex items-center gap-3 mb-3 alert alert-info">
             <LuUserPlus className="text-primary" size={20} />
 
-            <p className="font-medium text-status-info-text text-sm">
+            <p className="font-medium text-status-info-text text-sm select-none">
               {connectionRequestsPagination?.total &&
               connectionRequestsPagination?.total > 0 ? (
                 <span>{connectionRequestsPagination?.total}&nbsp;</span>
@@ -353,20 +371,22 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
                   </p>
                 )}
               </AnimatePresence>
-            </div>
 
-            {connectionRequestsPagination?.total &&
-              connectionRequestsPagination.total >
-                connectionRequests.length && (
-                <button
-                  onClick={() =>
-                    getConnectionRequests(connectionRequestsPagination.page + 1)
-                  }
-                  className="my-2 w-full btn btn-secondary"
-                >
-                  Load more requests
-                </button>
-              )}
+              {connectionRequestsPagination?.total &&
+                connectionRequestsPagination.total >
+                  connectionRequests.length && (
+                  <button
+                    onClick={() =>
+                      getConnectionRequests(
+                        connectionRequestsPagination.page + 1,
+                      )
+                    }
+                    className="my-2 w-full btn btn-secondary"
+                  >
+                    Load more requests
+                  </button>
+                )}
+            </div>
           </div>
         </Sheet>
 
@@ -433,7 +453,7 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
               ))}
 
               {connectionsPagination?.total &&
-                connectionsPagination.total > connectionRequests.length && (
+                connectionsPagination.total > connections.length && (
                   <button
                     onClick={() =>
                       getConnections(connectionsPagination.page + 1)
