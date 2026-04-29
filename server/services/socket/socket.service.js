@@ -28,7 +28,7 @@ export const generateRoomId = async (users) => {
 };
 
 export const isConnectedSocket = async (socket, targetUserId) => {
-  const currentUserId = socket.user._id;
+  const currentUserId = socket.user.id;
 
   const connection = await Connection.findOne({
     $or: [

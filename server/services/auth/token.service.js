@@ -29,15 +29,11 @@ class TokenService {
       });
     }
 
-    return jwt.sign(
-      { userId: userId.toString(), ...extra },
-      ACCESS_TOKEN_SECRET,
-      {
-        expiresIn: ACCESS_TOKEN_EXPIRY,
-        issuer: JWT_ISSUER,
-        audience: JWT_AUDIENCE,
-      },
-    );
+    return jwt.sign({ userId, ...extra }, ACCESS_TOKEN_SECRET, {
+      expiresIn: ACCESS_TOKEN_EXPIRY,
+      issuer: JWT_ISSUER,
+      audience: JWT_AUDIENCE,
+    });
   }
 
   verifyAccessToken(token) {

@@ -806,7 +806,7 @@ export const updateExperience = async (req, res) => {
     }
 
     const experienceToDelete = profile.experiences?.filter(
-      (experience) => experience._id === experienceId,
+      (experience) => experience.id === experienceId,
     );
 
     if (!experienceToDelete) {

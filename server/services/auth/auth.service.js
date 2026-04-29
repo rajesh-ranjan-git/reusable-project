@@ -53,7 +53,7 @@ class AuthService {
     });
 
     await Account.create({
-      user: user._id,
+      user: user.id,
       provider: "local",
       email: email.toLowerCase(),
       password: hashedPassword,
@@ -62,35 +62,35 @@ class AuthService {
     const role = await Role.findOne({ name: ROLES.USER });
 
     await UserRole.create({
-      user: user._id,
-      role: role._id,
+      user: user.id,
+      role: role.id,
     });
 
     await Profile.create({
-      user: user._id,
+      user: user.id,
       userName: generatedUserName,
       firstName,
       lastName,
     });
 
-    await SocialLink.create({ user: user._id });
+    await SocialLink.create({ user: user.id });
 
     const verificationToken = await this._createVerificationToken(
-      user._id,
+      user.id,
       "email_verification",
     );
 
     await emailService.sendVerificationEmail(email, verificationToken);
 
     await activityService.logActivity({
-      userId: user._id,
+      userId: user.id,
       action: "user_registered",
       metadata: { email },
       ipAddress,
     });
 
     return {
-      userId: user._id.toString(),
+      userId: user.id,
       message: "User registered successfully, please login to continue!",
     };
   };
@@ -103,7 +103,7 @@ class AuthService {
     if (userName) {
       profile = await Profile.findOne({
         userName,
-      }).select("user userName firstName lastName");
+      }).select("user userName firstName lastName avatar cover");
     }
 
     const account = userName
@@ -184,20 +184,22 @@ class AuthService {
       await account.resetLoginAttempts();
     }
 
-    await User.findByIdAndUpdate(user._id, { lastSeen: new Date() });
+    await User.findByIdAndUpdate(user.id, { lastSeen: new Date() });
 
-    const userRoles = await rbacService.getUserRoles(user._id);
-    const userPermissionsSet = await rbacService.getUserPermissions(user._id);
+    const userRoles = await rbacService.getUserRoles(user.id);
+    const userPermissionsSet = await rbacService.getUserPermissions(user.id);
     const userPermissions = [...userPermissionsSet];
 
-    const tokens = tokenService.generateAuthTokens(user._id, {
+    const tokens = tokenService.generateAuthTokens(user.id, {
       roles: userRoles,
       permissions: userPermissions,
     });
 
-    profile = await Profile.findOne({
-      user: user.id,
-    }).select("userName firstName lastName avatar cover");
+    profile = userName
+      ? profile
+      : await Profile.findOne({
+          user: user.id,
+        }).select("userName firstName lastName avatar cover");
 
     const userRoleLevel = await rbacService.getHighestRoleLevel(userRoles);
     const userRoleName = userRoles.reduce(
@@ -212,6 +214,7 @@ class AuthService {
       role: userRoleName,
       ...omitObjectProperties(sanitizeMongoData(profile), [
         "id",
+        "user",
         "cover",
         "age",
         "totalExperience",
@@ -221,7 +224,7 @@ class AuthService {
     };
 
     await sessionService.createSession({
-      userId: user._id,
+      userId: user.id,
       refreshToken: tokens.refreshToken,
       device: device || userAgent || "unknown",
       ipAddress,
@@ -229,7 +232,7 @@ class AuthService {
     });
 
     await activityService.logActivity({
-      userId: user._id,
+      userId: user.id,
       action: "user_login",
       metadata: { email },
       ipAddress,
@@ -305,12 +308,12 @@ class AuthService {
     }
 
     await VerificationToken.deleteMany({
-      user: user._id,
+      user: user.id,
       type: "email_verification",
     });
 
     const token = await this._createVerificationToken(
-      user._id,
+      user.id,
       "email_verification",
     );
 
@@ -525,7 +528,7 @@ class AuthService {
     });
 
     await sessionService.rotateSession(
-      session._id,
+      session.id,
       tokens.refreshToken,
       tokens.refreshTokenExpiry,
     );

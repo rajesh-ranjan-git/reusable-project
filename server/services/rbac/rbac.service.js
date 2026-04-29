@@ -15,7 +15,7 @@ class RBACService {
         select: "name priority",
       });
 
-    return roles.map((r) => r.role);
+    return sanitizeMongoData(roles.map((r) => r.role));
   }
 
   async getUserPermissions(userId) {
@@ -38,9 +38,9 @@ class RBACService {
     const permissions = new Set();
 
     const traverse = (role, visited = new Set()) => {
-      if (!role || visited.has(role._id.toString())) return;
+      if (!role || visited.has(role.id)) return;
 
-      visited.add(role._id.toString());
+      visited.add(role.id);
 
       role.permissions?.forEach((p) => permissions.add(p.key));
       role.inherits?.forEach((r) => traverse(r, visited));

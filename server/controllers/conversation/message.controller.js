@@ -38,7 +38,7 @@ const updateConversationAfterSend = async (
     {
       $set: {
         lastMessage: {
-          messageId: message._id,
+          messageId: message.id,
           content:
             message.contentType === "text"
               ? message.content
@@ -58,7 +58,7 @@ const updateConversationAfterSend = async (
 };
 
 export const sendMessage = asyncHandler(async (req, res) => {
-  const senderId = req.user._id;
+  const senderId = req.data.userId;
   const {
     conversationId,
     contentType = "text",
@@ -106,9 +106,9 @@ export const sendMessage = asyncHandler(async (req, res) => {
 });
 
 export const getMessages = asyncHandler(async (req, res) => {
-  const currentUserId = req.user._id;
-  const { conversationId } = req.params;
-  const { cursor, limit = PAGE_SIZE } = req.query;
+  const currentUserId = req.data.userId;
+  const { conversationId } = req.data.params;
+  const { cursor, limit = PAGE_SIZE } = req.data.query;
 
   await assertParticipant(conversationId, currentUserId);
 
@@ -141,8 +141,8 @@ export const getMessages = asyncHandler(async (req, res) => {
 });
 
 export const editMessage = asyncHandler(async (req, res) => {
-  const { messageId } = req.params;
-  const currentUserId = req.user._id.toString();
+  const { messageId } = req.data.params;
+  const currentUserId = req.data.userId.toString();
   const { content } = req.body;
 
   if (!content?.trim()) {
@@ -174,8 +174,8 @@ export const editMessage = asyncHandler(async (req, res) => {
 });
 
 export const deleteMessage = asyncHandler(async (req, res) => {
-  const { messageId } = req.params;
-  const currentUserId = req.user._id.toString();
+  const { messageId } = req.data.params;
+  const currentUserId = req.data.userId.toString();
 
   const message = await Message.findById(messageId);
 
@@ -201,8 +201,8 @@ export const deleteMessage = asyncHandler(async (req, res) => {
 });
 
 export const markDelivered = asyncHandler(async (req, res) => {
-  const { messageId } = req.params;
-  const currentUserId = req.user._id;
+  const { messageId } = req.data.params;
+  const currentUserId = req.data.userId;
 
   await Message.updateOne(
     {
@@ -217,8 +217,8 @@ export const markDelivered = asyncHandler(async (req, res) => {
 });
 
 export const markSeen = asyncHandler(async (req, res) => {
-  const { messageId } = req.params;
-  const currentUserId = req.user._id;
+  const { messageId } = req.data.params;
+  const currentUserId = req.data.userId;
 
   const now = new Date();
 
@@ -236,8 +236,8 @@ export const markSeen = asyncHandler(async (req, res) => {
 });
 
 export const toggleReaction = asyncHandler(async (req, res) => {
-  const { messageId } = req.params;
-  const currentUserId = req.user._id;
+  const { messageId } = req.data.params;
+  const currentUserId = req.data.userId;
   const { emoji } = req.body;
 
   if (!emoji?.trim()) {
@@ -267,8 +267,8 @@ export const toggleReaction = asyncHandler(async (req, res) => {
 });
 
 export const pinMessage = asyncHandler(async (req, res) => {
-  const { conversationId, messageId } = req.params;
-  const currentUserId = req.user._id.toString();
+  const { conversationId, messageId } = req.data.params;
+  const currentUserId = req.data.userId.toString();
 
   const conversation = await assertParticipant(conversationId, currentUserId);
 
@@ -290,9 +290,9 @@ export const pinMessage = asyncHandler(async (req, res) => {
 });
 
 export const unpinMessage = asyncHandler(async (req, res) => {
-  const { conversationId, messageId } = req.params;
+  const { conversationId, messageId } = req.data.params;
 
-  await assertParticipant(conversationId, req.user._id);
+  await assertParticipant(conversationId, req.data.userId);
 
   await Conversation.updateOne(
     { _id: conversationId },
@@ -303,10 +303,10 @@ export const unpinMessage = asyncHandler(async (req, res) => {
 });
 
 export const searchMessages = asyncHandler(async (req, res) => {
-  const { conversationId } = req.params;
-  const { q, limit = 20 } = req.query;
+  const { conversationId } = req.data.params;
+  const { q, limit = 20 } = req.data.query;
 
-  await assertParticipant(conversationId, req.user._id);
+  await assertParticipant(conversationId, req.data.userId);
 
   if (!q?.trim()) {
     throw AppError.badRequest({ message: "Search query is required." });

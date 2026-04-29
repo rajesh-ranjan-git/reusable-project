@@ -72,7 +72,7 @@ export const sanitizeList = (arr) =>
 export const deepEquals = (a, b) => {
   if (Object.is(a, b)) return true;
 
-  if (a == null || b == null) return a === b;
+  if (a === null || b === null) return a === b;
 
   if (typeof a !== typeof b) return false;
 

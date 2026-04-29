@@ -18,7 +18,7 @@ export const getActiveSessions = asyncHandler(async (req, res) => {
     req.cookies?.refreshToken || req.data.body?.refreshToken;
 
   const mapped = sessions.map((s) => ({
-    id: s._id,
+    id: s.id,
     device: s.device,
     ipAddress: s.ipAddress,
     createdAt: s.createdAt,

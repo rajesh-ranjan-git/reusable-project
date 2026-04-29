@@ -1,8 +1,9 @@
 import Account from "../models/user/auth/account.model.js";
 import User from "../models/user/auth/user.model.js";
-import { asyncHandler } from "../utils/common.utils.js";
+import { asyncHandler, deepEquals } from "../utils/common.utils.js";
 import { tokenService } from "../services/auth/token.service.js";
 import AppError from "../services/error/error.service.js";
+import { rbacService } from "../services/rbac/rbac.service.js";
 
 export const authenticate = asyncHandler(async (req, res, next) => {
   const token = tokenService.extractBearerToken(req.headers.authorization);
@@ -70,12 +71,27 @@ export const authenticate = asyncHandler(async (req, res, next) => {
     });
   }
 
+  const userRoles = await rbacService.getUserRoles(payload.userId);
+  const areRolesValid = deepEquals(payload.roles, userRoles);
+
+  const userPermissionsSet = await rbacService.getUserPermissions(
+    payload.userId,
+  );
+  const userPermissions = [...userPermissionsSet];
+  const arePermissionsValid = deepEquals(payload.permissions, userPermissions);
+
+  if (!areRolesValid || !arePermissionsValid) {
+    throw AppError.unauthorized({
+      message: "Inconsistent roles/permissions found!",
+    });
+  }
+
   req.data = {
     ...req.data,
-    userId: user._id.toString(),
+    userId: user.id,
     user,
-    roles: payload.roles,
-    permissions: payload.permissions,
+    roles: userRoles,
+    permissions: userPermissions,
   };
 
   next();
@@ -94,7 +110,7 @@ export const optionalAuthenticate = asyncHandler(async (req, res, next) => {
     const user = await User.findById(account.user);
 
     if (user && user.status === "active") {
-      req.data = { ...req.data, userId: user._id.toString(), user };
+      req.data = { ...req.data, userId: user.id, user };
     }
   } catch {}
 

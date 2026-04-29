@@ -35,7 +35,7 @@ const seedRBAC = async () => {
       ),
     );
 
-    const permissionMap = new Map(permissionDocs.map((p) => [p.key, p._id]));
+    const permissionMap = new Map(permissionDocs.map((p) => [p.key, p.id]));
 
     for (const [roleName, permissionKeys] of Object.entries(
       ROLE_PERMISSIONS_MAP,
@@ -43,7 +43,7 @@ const seedRBAC = async () => {
       let permissions = [];
 
       if (permissionKeys.includes(PERMISSIONS.ALL)) {
-        permissions = permissionDocs.map((p) => p._id);
+        permissions = permissionDocs.map((p) => p.id);
       } else {
         permissions = permissionKeys
           .map((key) => permissionMap.get(key))
@@ -77,7 +77,7 @@ const seedRBAC = async () => {
 
     await UserRole.findOneAndUpdate(
       { user: superAdminUserId },
-      { $set: { role: superAdminRole._id } },
+      { $set: { role: superAdminRole.id } },
     );
 
     const { userId: adminUserId } = await authService.register({
@@ -90,7 +90,7 @@ const seedRBAC = async () => {
 
     await UserRole.findOneAndUpdate(
       { user: adminUserId },
-      { $set: { role: adminRole._id } },
+      { $set: { role: adminRole.id } },
     );
 
     logger.success(

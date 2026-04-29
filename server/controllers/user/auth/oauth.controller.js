@@ -92,7 +92,7 @@ export const oauthCallback = asyncHandler(async (req, res) => {
         emailVerifiedAt: new Date(),
         status: "active",
       });
-      userId = user._id;
+      userId = user.id;
 
       await Account.create({
         user: userId,
@@ -111,8 +111,8 @@ export const oauthCallback = asyncHandler(async (req, res) => {
       const role = await Role.findOne({ name: ROLES.USER });
 
       await UserRole.create({
-        user: user._id,
-        role: role._id,
+        user: user.id,
+        role: role.id,
       });
 
       const firstName = displayName.split(" ")[0];

@@ -268,7 +268,7 @@ export const getMe = asyncHandler(async (req, res) => {
     user: user.id,
   }).select("-_id userName firstName lastName avatar cover");
 
-  const userRoles = await rbacService.getUserRoles(user._id);
+  const userRoles = await rbacService.getUserRoles(user.id);
   const userRoleLevel = await rbacService.getHighestRoleLevel(userRoles);
   const userRoleName = userRoles.reduce(
     (acc, curr) => (curr.priority === userRoleLevel ? curr.name : acc),
