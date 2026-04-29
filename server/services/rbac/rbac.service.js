@@ -5,6 +5,8 @@ import { ROLE_PERMISSIONS_MAP } from "../../config/role.permission.map.config.js
 import { sanitizeMongoData } from "../../db/db.utils.js";
 import UserRole from "../../models/user/rbac/user.role.model.js";
 import AppError from "../../services/error/error.service.js";
+import Account from "../../models/user/auth/account.model.js";
+import User from "../../models/user/auth/user.model.js";
 
 class RBACService {
   async getUserRoles(userId) {
@@ -138,7 +140,25 @@ class RBACService {
           });
         }
 
-        return resource[ownerIdField].toString();
+        const account = await Account.findOne({ user: resource.user }).lean();
+
+        if (!account) {
+          throw AppError.notFound({
+            message: "User account not found!",
+            code: "ACCOUNT NOT FOUND",
+          });
+        }
+
+        const user = await User.findById(resource.user);
+
+        if (!user) {
+          throw AppError.notFound({
+            message: "User details not found!",
+            code: "USER NOT FOUND",
+          });
+        }
+
+        return user.id;
       }
 
       case "custom":
