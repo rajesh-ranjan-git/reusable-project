@@ -17,18 +17,6 @@ import {
   deleteConversation,
   markConversationAsRead,
 } from "../../controllers/conversation/conversation.controller.js";
-import {
-  sendMessage,
-  getMessages,
-  editMessage,
-  deleteMessage,
-  markDelivered,
-  markSeen,
-  toggleReaction,
-  pinMessage,
-  unpinMessage,
-  searchMessages,
-} from "../../controllers/conversation/message.controller.js";
 
 const conversationRouter = express.Router();
 
@@ -143,86 +131,6 @@ conversationRouter.patch(
   authenticate,
   authorize({ permissions: [PERMISSIONS.PROFILE_READ_OWN] }),
   markConversationAsRead,
-);
-
-conversationRouter.post(
-  "/:conversationId/messages",
-  requestMiddleware({ requireParams: true, requireBody: true }),
-  authenticate,
-  authorize({ permissions: [PERMISSIONS.PROFILE_READ_OWN] }),
-  sendMessage,
-);
-
-conversationRouter.get(
-  "/:conversationId/messages",
-  requestMiddleware({ requireParams: true }),
-  authenticate,
-  authorize({ permissions: [PERMISSIONS.PROFILE_READ_OWN] }),
-  getMessages,
-);
-
-conversationRouter.get(
-  "/:conversationId/messages/search",
-  requestMiddleware({ requireParams: true, requireQuery: true }),
-  authenticate,
-  authorize({ permissions: [PERMISSIONS.PROFILE_READ_OWN] }),
-  searchMessages,
-);
-
-conversationRouter.patch(
-  "/:conversationId/messages/:messageId",
-  requestMiddleware({ requireParams: true, requireBody: true }),
-  authenticate,
-  authorize({ permissions: [PERMISSIONS.PROFILE_READ_OWN] }),
-  editMessage,
-);
-
-conversationRouter.delete(
-  "/:conversationId/messages/:messageId",
-  requestMiddleware({ requireParams: true }),
-  authenticate,
-  authorize({ permissions: [PERMISSIONS.PROFILE_READ_OWN] }),
-  deleteMessage,
-);
-
-conversationRouter.patch(
-  "/:conversationId/messages/:messageId/delivered",
-  requestMiddleware({ requireParams: true }),
-  authenticate,
-  authorize({ permissions: [PERMISSIONS.PROFILE_READ_OWN] }),
-  markDelivered,
-);
-
-conversationRouter.patch(
-  "/:conversationId/messages/:messageId/seen",
-  requestMiddleware({ requireParams: true }),
-  authenticate,
-  authorize({ permissions: [PERMISSIONS.PROFILE_READ_OWN] }),
-  markSeen,
-);
-
-conversationRouter.post(
-  "/:conversationId/messages/:messageId/reactions",
-  requestMiddleware({ requireParams: true, requireBody: true }),
-  authenticate,
-  authorize({ permissions: [PERMISSIONS.PROFILE_READ_OWN] }),
-  toggleReaction,
-);
-
-conversationRouter.post(
-  "/:conversationId/pinned/:messageId",
-  requestMiddleware({ requireParams: true }),
-  authenticate,
-  authorize({ permissions: [PERMISSIONS.PROFILE_READ_OWN] }),
-  pinMessage,
-);
-
-conversationRouter.delete(
-  "/:conversationId/pinned/:messageId",
-  requestMiddleware({ requireParams: true }),
-  authenticate,
-  authorize({ permissions: [PERMISSIONS.PROFILE_READ_OWN] }),
-  unpinMessage,
 );
 
 export default conversationRouter;

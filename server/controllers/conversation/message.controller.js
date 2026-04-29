@@ -1,3 +1,4 @@
+import { DEFAULT_PAGE_SIZE } from "../../constants/common.constants.js";
 import Conversation from "../../models/conversation/conversation.model.js";
 import Message from "../../models/conversation/message.model.js";
 import { asyncHandler } from "../../utils/common.utils.js";
@@ -7,8 +8,6 @@ const MESSAGE_POPULATE = [
   { path: "sender", select: "name username avatar" },
   { path: "replyTo", select: "content contentType sender createdAt" },
 ];
-
-const PAGE_SIZE = 30;
 
 const assertParticipant = async (conversationId, userId) => {
   const conversation = await Conversation.findOne({
@@ -108,7 +107,7 @@ export const sendMessage = asyncHandler(async (req, res) => {
 export const getMessages = asyncHandler(async (req, res) => {
   const currentUserId = req.data.userId;
   const { conversationId } = req.data.params;
-  const { cursor, limit = PAGE_SIZE } = req.data.query;
+  const { cursor, limit = DEFAULT_PAGE_SIZE } = req.data.query;
 
   await assertParticipant(conversationId, currentUserId);
 

@@ -19,6 +19,7 @@ import adminRouter from "../routes/admin/admin.routes.js";
 import discoverRouter from "../routes/discover/discover.routes.js";
 import connectionRouter from "../routes/connection/connection.routes.js";
 import conversationRouter from "../routes/conversation/conversation.routes.js";
+import messageRouter from "../routes/conversation/message.routes.js";
 import pushNotificationRouter from "../routes/push/push.notification.routes.js";
 import Log from "../models/log/log.model.js";
 import { initializeSocket } from "../services/socket/socket.service.js";
@@ -55,6 +56,7 @@ app.use("/api/v1/discover", discoverRouter);
 app.use("/api/v1/connection", connectionRouter);
 
 app.use("/api/v1/conversation", conversationRouter);
+app.use("/api/v1/conversation", messageRouter);
 
 app.use("/api/v1/push-notifications", pushNotificationRouter);
 

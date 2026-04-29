@@ -70,6 +70,7 @@ export const apiUrls = {
   conversation: {
     actionConversations: "/conversation",
     directConversation: "/conversation/direct",
-    actionGroupConversation: "/conversation/group",
+    groupConversation: "/conversation/group",
+    actionMessage: "/conversation/message",
   },
 };
