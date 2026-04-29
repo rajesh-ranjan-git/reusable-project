@@ -1,24 +1,24 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
 
-const receiptSchema = new Schema(
+const receiptSchema = new mongoose.Schema(
   {
-    user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     deliveredAt: { type: Date, default: null },
     seenAt: { type: Date, default: null },
   },
   { _id: false },
 );
 
-const reactionSchema = new Schema(
+const reactionSchema = new mongoose.Schema(
   {
-    user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     emoji: { type: String, required: true, maxlength: 10 },
     reactedAt: { type: Date, default: Date.now },
   },
   { _id: false },
 );
 
-const attachmentSchema = new Schema(
+const attachmentSchema = new mongoose.Schema(
   {
     url: { type: String, required: true },
 
@@ -35,7 +35,7 @@ const attachmentSchema = new Schema(
   { _id: false },
 );
 
-const locationSchema = new Schema(
+const locationSchema = new mongoose.Schema(
   {
     latitude: { type: Number, required: true },
     longitude: { type: Number, required: true },
@@ -45,17 +45,17 @@ const locationSchema = new Schema(
   { _id: false },
 );
 
-const messageSchema = new Schema(
+const messageSchema = new mongoose.Schema(
   {
     conversation: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Conversation",
       required: true,
       index: true,
     },
 
     sender: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
@@ -87,13 +87,13 @@ const messageSchema = new Schema(
     location: { type: locationSchema, default: null },
 
     replyTo: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Message",
       default: null,
     },
 
     forwardedFrom: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Message",
       default: null,
     },
@@ -113,7 +113,7 @@ const messageSchema = new Schema(
 
     callData: {
       callType: { type: String, enum: ["audio", "video"] },
-      duration: Number, // seconds
+      duration: Number,
       status: { type: String, enum: ["completed", "missed", "rejected"] },
     },
   },

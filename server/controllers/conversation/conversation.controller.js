@@ -7,75 +7,34 @@ import { asyncHandler } from "../../utils/common.utils.js";
 import { userNameValidator } from "../../validators/auth.validator.js";
 import AppError from "../../services/error/error.service.js";
 import { responseService } from "../../services/response/response.service.js";
+import { normalizeConversationParticipants } from "../../utils/conversation.utils.js";
+import { sanitizeMongoData } from "../../db/db.utils.js";
 
 const PARTICIPANT_FIELDS =
   "username firstName lastName fullName avatarUrl lastSeen";
 
-const buildParticipantPipeline = () => [
-  {
-    $lookup: {
-      from: "users",
-      localField: "participants.user",
-      foreignField: "_id",
-      as: "_participantDocs",
-      pipeline: [
-        { $project: { name: 1, username: 1, avatarUrl: 1, lastSeen: 1 } },
-      ],
-    },
-  },
-];
-
 export const getOrCreateDirectConversation = asyncHandler(async (req, res) => {
   const currentUserId = req.data.userId;
-  const { userName } = req.data.params;
-
-  const {
-    isUserNameValid,
-    message: userNameErrorMessage,
-    validatedUserName,
-  } = userNameValidator(userName);
-
-  if (!isUserNameValid) {
-    throw AppError.unprocessable({
-      message: userNameErrorMessage,
-      code: "USERNAME VALIDATION FAILED",
-      details: { userName: userName },
-    });
-  }
-
-  const profile = await Profile.findOne({ userName: validatedUserName })
-    .populate("user", "status lastSeen")
-    .select("-_id username firstName lastName fullName avatarUrl");
-
-  if (!profile || profile.user?.status !== "active") {
-    throw AppError.notFound({
-      message: "Profile details not found!",
-      code: "PROFILE NOT FOUND",
-    });
-  }
-
-  const targetUserId = profile.user.id;
-
-  const account = await Account.findOne({ user: targetUserId }).lean();
-
-  if (!account) {
-    throw AppError.notFound({
-      message: "User account does not exist!",
-      code: "ACCOUNT NOT FOUND",
-    });
-  }
-
-  if (currentUserId === targetUserId) {
-    throw AppError.forbidden({
-      message: "You cannot start a conversation with yourself.",
-    });
-  }
+  const targetUserId = req.data.targetUserId;
 
   let conversation = await Conversation.findDirectConversation(
     currentUserId,
     targetUserId,
   )
-    .populate("participants.user", PARTICIPANT_FIELDS)
+    .populate({
+      path: "participants.user",
+      select: "status lastSeen",
+      populate: [
+        {
+          path: "account",
+          select: "email",
+        },
+        {
+          path: "profile",
+          select: "username firstName lastName fullName avatar experiences",
+        },
+      ],
+    })
     .populate({
       path: "lastMessage.messageId",
       select: "content contentType createdAt",
@@ -90,15 +49,30 @@ export const getOrCreateDirectConversation = asyncHandler(async (req, res) => {
       ],
     });
 
-    await conversation.populate("participants.user", PARTICIPANT_FIELDS);
+    await conversation.populate({
+      path: "participants.user",
+      select: "status lastSeen",
+      populate: [
+        {
+          path: "account",
+          select: "email",
+        },
+        {
+          path: "profile",
+          select: "username firstName lastName fullName avatar experiences",
+        },
+      ],
+    });
   }
 
-  logger.debug("debug conversation:", conversation);
+  const normalizedConversation = normalizeConversationParticipants(
+    sanitizeMongoData(conversation),
+  );
 
   return responseService.successResponseHandler(req, res, {
     status: "CONVERSATION FETCH SUCCESS",
     message: "Conversation fetched successfully!",
-    data: { conversation },
+    data: { conversation: normalizedConversation },
   });
 });
 

@@ -70,7 +70,7 @@ const conversationSchema = new mongoose.Schema(
           return arr.length >= 2;
         },
         message:
-          "Direct conversations must have exactly 2 participants; groups must have ≥ 2.",
+          "Direct conversations must have exactly 2 participants; groups must have ≥ 2!",
       },
     },
 

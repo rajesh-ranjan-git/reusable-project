@@ -7,6 +7,7 @@ import UserRole from "../../models/user/rbac/user.role.model.js";
 import AppError from "../../services/error/error.service.js";
 import Account from "../../models/user/auth/account.model.js";
 import User from "../../models/user/auth/user.model.js";
+import { omitObjectProperties } from "../../utils/common.utils.js";
 
 class RBACService {
   async getUserRoles(userId) {
@@ -140,23 +141,31 @@ class RBACService {
           });
         }
 
-        const account = await Account.findOne({ user: resource.user }).lean();
+        const user =
+          model.modelName.toLowerCase() === "user"
+            ? user.populate("account", "profile")
+            : await User.findById(resource.user)
+                .select("status")
+                .populate("account", "isLocked")
+                .populate("profile", "id");
 
-        if (!account) {
-          throw AppError.notFound({
-            message: "User account not found!",
-            code: "ACCOUNT NOT FOUND",
-          });
-        }
-
-        const user = await User.findById(resource.user);
-
-        if (!user) {
+        if (
+          !user ||
+          user.status !== "active" ||
+          !user.account ||
+          user.account.isLocked ||
+          !user.profile
+        ) {
           throw AppError.notFound({
             message: "User does not exist!",
             code: "USER NOT FOUND",
           });
         }
+
+        req.data = {
+          ...req.data,
+          targetUserId: user.id,
+        };
 
         return user.id;
       }
