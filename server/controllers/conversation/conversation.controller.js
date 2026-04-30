@@ -125,8 +125,7 @@ export const createGroupConversation = asyncHandler(async (req, res) => {
     });
   }
 
-  const ids = [currentUserId, ...participantIds.map(String)];
-  let uniqueIds = [...new Set(ids)];
+  let uniqueIds = [...new Set(participantIds.map(String))];
 
   const invalidId = uniqueIds.find((id) => !isValidObjectId(id));
 
@@ -158,7 +157,33 @@ export const createGroupConversation = asyncHandler(async (req, res) => {
     });
   }
 
-  uniqueIds = uniqueIds.map((id) => new mongoose.Types.ObjectId(id));
+  const connections = await Connection.find({
+    $or: [
+      { sender: currentUserId, receiver: { $in: uniqueIds } },
+      { sender: { $in: uniqueIds }, receiver: currentUserId },
+    ],
+    connectionStatus: "accepted",
+  }).select("sender receiver");
+
+  const connectedUserIds = connections.map((connection) =>
+    connection.sender.toString() === currentUserId
+      ? connection.receiver.toString()
+      : connection.sender.toString(),
+  );
+
+  const connectedSet = new Set(connectedUserIds);
+
+  if (connectedSet.has(targetUserId)) {
+    throw AppError.forbidden({
+      message: "You can only create groups with users you are connected with!",
+      code: "GROUP CREATE FAILED",
+      details: { participants: connectedUserIds },
+    });
+  }
+
+  uniqueIds = [currentUserId, ...uniqueIds].map(
+    (id) => new mongoose.Types.ObjectId(id),
+  );
 
   if (uniqueIds.length < 2) {
     throw AppError.unprocessable({

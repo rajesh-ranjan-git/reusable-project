@@ -128,9 +128,9 @@ class RBACService {
             });
           }
 
-          resource = await model.findById(resourceId).lean();
+          resource = await model.findById(resourceId);
         } else {
-          resource = await model.findOne({ [fieldKey]: fieldValue }).lean();
+          resource = await model.findOne({ [fieldKey]: fieldValue });
         }
 
         if (!resource) {
@@ -141,13 +141,12 @@ class RBACService {
           });
         }
 
-        const user =
-          model.modelName.toLowerCase() === "user"
-            ? user.populate("account", "profile")
-            : await User.findById(resource.user)
-                .select("status")
-                .populate("account", "isLocked")
-                .populate("profile", "id");
+        const user = await User.findById(
+          model.modelName.toLowerCase() === "user" ? resourceId : resource.user,
+        )
+          .select("status")
+          .populate("account", "isLocked")
+          .populate("profile", "id");
 
         if (
           !user ||

@@ -63,7 +63,7 @@ export const listUsers = asyncHandler(async (req, res) => {
         ...accounts.map((a) => a.user.toString()),
       ]),
     ];
-    filter.id = { $in: userIds };
+    filter._id = { $in: userIds };
   }
 
   const [users, total] = await Promise.all([
@@ -80,12 +80,12 @@ export const listUsers = asyncHandler(async (req, res) => {
 
   const [userRoles, userAccounts] = await Promise.all([
     UserRole.find({
-      user: { $in: users.map((u) => u.id) },
+      user: { $in: users.map((u) => u._id) },
     })
       .populate("role", "name permissions")
       .lean(),
     Account.find({
-      user: { $in: users.map((u) => u.id) },
+      user: { $in: users.map((u) => u._id) },
     })
       .select("user email provider")
       .lean(),
@@ -112,8 +112,8 @@ export const listUsers = asyncHandler(async (req, res) => {
 
   const enriched = users.map((u) => ({
     ...u,
-    roles: roleMap[u.id] || [],
-    accounts: accountMap[u.id] || [],
+    roles: roleMap[u._id] || [],
+    accounts: accountMap[u._id] || [],
   }));
 
   const nonAdminUsers = enriched.filter((user) => {
@@ -395,7 +395,7 @@ export const assignRole = asyncHandler(async (req, res) => {
     {
       $set: {
         user: userId,
-        role: role.id,
+        role: role._id,
       },
     },
     { returnDocument: "after", runValidators: true },

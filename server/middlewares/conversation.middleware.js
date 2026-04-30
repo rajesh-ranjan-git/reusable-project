@@ -3,7 +3,7 @@ import AppError from "../services/error/error.service.js";
 
 export const isConnected = async (req, res, next) => {
   const currentUserId = req.data.userId;
-  const targetUserId = req.params.userId;
+  const targetUserId = req.data.targetUserId;
 
   const connection = await Connection.findOne({
     $or: [

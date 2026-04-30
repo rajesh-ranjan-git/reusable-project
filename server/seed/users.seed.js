@@ -304,7 +304,7 @@ const seedUsers = async () => {
         avatarIds[Math.floor(Math.random() * avatarIds.length)];
       const randomCoverId =
         coverIds[Math.floor(Math.random() * coverIds.length)];
-      const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${i}@server.com`;
+      const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${i}@gmail.com`;
 
       const gender = genders[Math.floor(Math.random() * genders.length)];
       const maritalStatus =

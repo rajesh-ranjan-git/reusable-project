@@ -42,15 +42,15 @@ export const discoverProfiles = asyncHandler(async (req, res) => {
 
   const connections = await Connection.find({
     connectionStatus: { $in: ["interested", "accepted", "blocked"] },
-    $or: [{ senderId: currentUserId }, { receiverId: currentUserId }],
+    $or: [{ sender: currentUserId }, { receiver: currentUserId }],
   })
-    .select("senderId receiverId")
+    .select("sender receiver")
     .lean();
 
   const connectedUserIds = connections.map((connection) => {
-    return connection.senderId.toString() === currentUserId.toString()
-      ? connection.receiverId.toString()
-      : connection.senderId.toString();
+    return connection.sender.toString() === currentUserId.toString()
+      ? connection.receiver.toString()
+      : connection.sender.toString();
   });
 
   const excludedUserIds = [

@@ -65,7 +65,7 @@ export const assertParticipant = async (conversationId, userId) => {
 export const updateConversationAfterSend = async (
   conversationId,
   message,
-  senderId,
+  sender,
 ) => {
   if (!isValidObjectId(conversationId)) {
     throw AppError.unprocessable({
@@ -86,7 +86,7 @@ export const updateConversationAfterSend = async (
               ? message.content
               : `[${message.contentType}]`,
           contentType: message.contentType,
-          sentBy: senderId,
+          sentBy: sender,
           sentAt: message.createdAt,
         },
       },
@@ -94,7 +94,7 @@ export const updateConversationAfterSend = async (
       $inc: { "participants.$[other].unreadCount": 1 },
     },
     {
-      arrayFilters: [{ "other.user": { $ne: senderId } }],
+      arrayFilters: [{ "other.user": { $ne: sender } }],
     },
   );
 };

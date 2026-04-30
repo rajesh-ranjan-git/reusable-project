@@ -93,6 +93,11 @@ const seedRBAC = async () => {
       { $set: { role: adminRole.id } },
     );
 
+    await authService.register({
+      email: "rajesh@gmail.com",
+      password: "Rajesh@0",
+    });
+
     logger.success(
       "✅ [ RBAC ] Initial roles and permission seeded Successfully!",
     );

@@ -29,7 +29,7 @@ const MESSAGE_POPULATE = [
 ];
 
 export const sendMessage = asyncHandler(async (req, res) => {
-  const senderId = req.data.userId;
+  const sender = req.data.userId;
   const {
     conversationId,
     contentType = "text",
@@ -40,14 +40,14 @@ export const sendMessage = asyncHandler(async (req, res) => {
     forwardedFrom,
   } = req.data.body;
 
-  const conversation = await assertParticipant(conversationId, senderId);
+  const conversation = await assertParticipant(conversationId, sender);
 
   if (
     conversation.type === "group" &&
     conversation.groupSettings?.sendPermission === "admins"
   ) {
     const participant = conversation.participants.find(
-      (p) => p.user.toString() === senderId && !p.leftAt,
+      (p) => p.user.toString() === sender && !p.leftAt,
     );
     if (!["admin", "owner"].includes(participant?.role)) {
       throw AppError.forbidden({
@@ -59,7 +59,7 @@ export const sendMessage = asyncHandler(async (req, res) => {
 
   const message = await Message.create({
     conversation: conversationId,
-    sender: senderId,
+    sender: sender,
     contentType,
     content: contentType === "text" ? content.trim() : "",
     attachments: contentType !== "text" ? attachments : [],
@@ -67,12 +67,12 @@ export const sendMessage = asyncHandler(async (req, res) => {
     replyTo: replyTo ?? null,
     forwardedFrom: forwardedFrom ?? null,
     receipts: conversation.participants
-      .filter((p) => !p.leftAt && p.user.toString() !== senderId)
+      .filter((p) => !p.leftAt && p.user.toString() !== sender)
       .map((p) => ({ user: p.user })),
   });
 
   await message.populate(MESSAGE_POPULATE);
-  await updateConversationAfterSend(conversationId, message, senderId);
+  await updateConversationAfterSend(conversationId, message, sender);
 
   return responseService.successResponseHandler(req, res, {
     statusCode: httpStatusConfig.created.statusCode,
