@@ -25,7 +25,7 @@ import EmailForm from "@/components/forms/profile/email.form";
 import PhoneForm from "@/components/forms/profile/phone.form";
 import GenderForm from "@/components/forms/profile/gender.form";
 import RelationshipForm from "@/components/forms/profile/relationship.form";
-import DobForm from "../forms/profile/dob.form";
+import DobForm from "@/components/forms/profile/dob.form";
 
 const getGenderIcon = (gender?: string | null) => {
   if (gender === "male") return <FaMale size={18} />;
