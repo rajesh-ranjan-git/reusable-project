@@ -161,7 +161,15 @@ const ProfilePersonal = ({
                         </div>
 
                         {isOwnProfile ? (
-                          hasValue && key !== "gender" && key !== "dob" ? (
+                          !hasValue ? (
+                            <button
+                              className="relative flex gap-0 opacity-0 group-hover:opacity-100 p-1.5 pr-2.5 text-sm btn btn-secondary"
+                              onClick={() => setCurrentForm(key)}
+                            >
+                              <IoMdAdd size={16} />
+                              <span className="hidden md:block">Add</span>
+                            </button>
+                          ) : key !== "gender" && key !== "dob" ? (
                             <button
                               type="button"
                               className="relative flex-none opacity-0 group-hover:opacity-100 p-1.5 text-sm transition-opacity duration-200 btn btn-ghost"
@@ -170,17 +178,7 @@ const ProfilePersonal = ({
                             >
                               <MdOutlineEdit size={16} />
                             </button>
-                          ) : (
-                            <button
-                              className="relative flex gap-0 opacity-0 group-hover:opacity-100 p-1.5 pr-2.5 text-sm btn btn-secondary"
-                              onClick={() => setCurrentForm(key)}
-                            >
-                              <IoMdAdd size={16} />
-                              {!hasValue && (
-                                <span className="hidden md:block">Add</span>
-                              )}
-                            </button>
-                          )
+                          ) : null
                         ) : null}
                       </div>
 
