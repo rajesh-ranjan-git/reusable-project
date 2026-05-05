@@ -45,6 +45,11 @@ export type ActivityType = {
 };
 
 export type CurrentFormType =
+  | "email"
+  | "dob"
+  | "gender"
+  | "phone"
+  | "maritalStatus"
   | "bio"
   | "skills"
   | "interests"

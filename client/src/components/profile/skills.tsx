@@ -1,24 +1,12 @@
 import Image from "next/image";
-import { MdOutlineEdit } from "react-icons/md";
 import { SkillsProps } from "@/types/props/profile.props.types";
 import { toTitleCase } from "@/utils/common.utils";
 
-const Skills = ({ isOwnProfile, skills, setCurrentForm }: SkillsProps) => {
+const Skills = ({ skills }: SkillsProps) => {
   return (
-    <div className="relative mb-6 p-6 glass">
-      <h3 className="mb-4 tracking-wider">Tech Stack & Expertise</h3>
-
-      {isOwnProfile ? (
-        <button
-          className="top-2 right-2 absolute px-2 text-sm btn btn-secondary"
-          onClick={() => setCurrentForm("skills")}
-        >
-          <MdOutlineEdit size={20} />
-        </button>
-      ) : null}
-
-      <div className="flex flex-wrap gap-3">
-        {skills.map((skill) => (
+    <div className="flex flex-wrap gap-3">
+      {skills?.length > 0 &&
+        skills.map((skill) => (
           <div
             key={skill.name}
             className="group relative pr-2 transition-all cursor-default btn btn-secondary"
@@ -42,7 +30,6 @@ const Skills = ({ isOwnProfile, skills, setCurrentForm }: SkillsProps) => {
             </span>
           </div>
         ))}
-      </div>
     </div>
   );
 };

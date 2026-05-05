@@ -17,14 +17,14 @@ import ProfileAvatar from "@/components/profile/avatar";
 import ProfileMain from "@/components/profile/profile.main";
 import ProfileImagePreview from "@/components/profile/image.preview";
 
-const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
+const ProfileHeader = ({ isOwnProfile, userProfile }: ProfileHeaderProps) => {
   const [activeMenu, setActiveMenu] = useState<ImageTargetType>(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [currentImageTarget, setCurrentImageTarget] =
     useState<ImageTargetType>(null);
-  const [localAvatar, setLocalAvatar] = useState(user?.avatar);
-  const [localCover, setLocalCover] = useState(user?.cover);
+  const [localAvatar, setLocalAvatar] = useState(userProfile?.avatar);
+  const [localCover, setLocalCover] = useState(userProfile?.cover);
   const [isImageUploading, setIsImageUploading] = useState(false);
   const [previousImage, setPreviousImage] = useState<string | null>(null);
 
@@ -165,16 +165,16 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
   };
 
   useEffect(() => {
-    setLocalAvatar(user?.avatar);
-    setLocalCover(user?.cover);
-  }, [user]);
+    setLocalAvatar(userProfile?.avatar);
+    setLocalCover(userProfile?.cover);
+  }, [userProfile]);
 
-  if (!user) return;
+  if (!userProfile) return;
 
   return (
     <div className="z-(--z-raised) relative mb-6 glass-heavy rounded-t-2xl">
       <ProfileCover
-        user={user}
+        user={userProfile}
         localCover={localCover}
         handleImagePreview={handleImagePreview}
         isImageUploading={isImageUploading}
@@ -189,7 +189,7 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
       <div className="z-20 relative px-6 pb-6 pointer-events-none">
         <div className="flex md:flex-row flex-col justify-between md:items-end gap-4 -mt-12 md:-mt-16 mb-4">
           <ProfileAvatar
-            user={user}
+            user={userProfile}
             localAvatar={localAvatar}
             handleImagePreview={handleImagePreview}
             isImageUploading={isImageUploading}
@@ -227,7 +227,7 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
           </div>
         </div>
 
-        <ProfileMain user={user} />
+        <ProfileMain user={userProfile} />
       </div>
 
       <input
@@ -246,7 +246,7 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
       />
 
       <ProfileImagePreview
-        user={user}
+        user={userProfile}
         previewImage={previewImage}
         setPreviewImage={setPreviewImage}
       />

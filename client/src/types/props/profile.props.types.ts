@@ -20,7 +20,7 @@ export interface ProfilePageProps {
 
 export interface ProfileHeaderProps {
   isOwnProfile: boolean;
-  user: UserProfileType;
+  userProfile: UserProfileType | null;
 }
 
 export interface ProfileImageProps {
@@ -59,11 +59,47 @@ export interface CameraModalProps {
   onCapture: (imgSrc: string) => void;
 }
 
+export interface ProfilePersonalProps {
+  userProfile: UserProfileType | null;
+  setUserProfile: Dispatch<SetStateAction<UserProfileType | null>>;
+  isOwnProfile: boolean;
+  currentForm: string | null;
+  setCurrentForm: Dispatch<SetStateAction<CurrentFormType>>;
+}
+
+export interface ProfileBioProps {
+  bio?: string | null;
+  isOwnProfile: boolean;
+  setUserProfile: Dispatch<SetStateAction<UserProfileType | null>>;
+  currentForm: string | null;
+  setCurrentForm: Dispatch<SetStateAction<CurrentFormType>>;
+}
+
+export interface ProfileInterestsProps {
+  interests?: string[] | null;
+  isOwnProfile: boolean;
+  setUserProfile: Dispatch<SetStateAction<UserProfileType | null>>;
+  currentForm: string | null;
+  setCurrentForm: Dispatch<SetStateAction<CurrentFormType>>;
+}
+
 export interface InterestsFormProps {
   isOpen: boolean;
   onClose: () => void;
   initialData?: string[];
   onSave: (interests: string[]) => void;
+}
+
+export interface InterestsProps {
+  interests: string[] | null;
+}
+
+export interface ProfileSkillsProps {
+  skills?: SkillType[] | null;
+  isOwnProfile: boolean;
+  setUserProfile: Dispatch<SetStateAction<UserProfileType | null>>;
+  currentForm: string | null;
+  setCurrentForm: Dispatch<SetStateAction<CurrentFormType>>;
 }
 
 export interface SkillsFormProps {
@@ -73,22 +109,20 @@ export interface SkillsFormProps {
   onSave: (skills: SkillType[]) => void;
 }
 
-export interface InterestsProps {
-  isOwnProfile: boolean;
-  interests: string[] | null;
-  setCurrentForm: Dispatch<SetStateAction<CurrentFormType>>;
+export interface SkillsProps {
+  skills: SkillType[];
 }
 
-export interface SkillsProps {
+export interface ProfileExperienceProps {
+  experiences?: ExperienceType[] | null;
   isOwnProfile: boolean;
-  skills: SkillType[];
+  setUserProfile: Dispatch<SetStateAction<UserProfileType | null>>;
+  currentForm: string | null;
   setCurrentForm: Dispatch<SetStateAction<CurrentFormType>>;
 }
 
 export interface ExperienceProps {
-  isOwnProfile: boolean;
   experiences: ExperienceType[];
-  setCurrentForm: Dispatch<SetStateAction<CurrentFormType>>;
 }
 
 export interface ActivitySectionProps {
