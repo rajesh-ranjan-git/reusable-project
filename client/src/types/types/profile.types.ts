@@ -1,4 +1,32 @@
+import { ReactNode } from "react";
 import { allowedSkillLevelsConfig } from "@/config/profile.config";
+
+export type CurrentFormType =
+  | "email"
+  | "dob"
+  | "gender"
+  | "phone"
+  | "maritalStatus"
+  | "bio"
+  | "skills"
+  | "interests"
+  | "experience"
+  | null;
+
+type PersonalFormKey = Exclude<
+  CurrentFormType,
+  "bio" | "skills" | "interests" | "experience" | null
+>;
+
+export type PersonalDetail = {
+  key: PersonalFormKey;
+  label: string;
+  value?: ReactNode;
+  emptyText: string;
+  icon: ReactNode;
+  isVerified?: boolean;
+  canVerify?: boolean;
+};
 
 export type HighlightedInterestType = {
   index: number;
@@ -43,18 +71,6 @@ export type ActivityType = {
   title: string;
   description: string;
 };
-
-export type CurrentFormType =
-  | "email"
-  | "dob"
-  | "gender"
-  | "phone"
-  | "maritalStatus"
-  | "bio"
-  | "skills"
-  | "interests"
-  | "experience"
-  | null;
 
 export type ImageTargetType = "cover" | "avatar" | null;
 

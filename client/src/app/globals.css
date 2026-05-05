@@ -61,6 +61,11 @@
     rgba(196, 181, 253, 0.4) 0%,
     transparent 55%
   );
+  --bg-orb-3: radial-gradient(
+    circle at 80% 20%,
+    rgba(196, 181, 253, 0.1) 0%,
+    transparent 55%
+  );
 
   --text-primary: #0f172a;
   --text-secondary: #475569;

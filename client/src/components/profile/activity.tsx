@@ -14,7 +14,12 @@ const ActivitySection = ({
 }: ActivitySectionProps) => {
   return (
     <div className="relative mb-8 md:mb-6 p-6 glass">
-      <h3 className="mb-4 tracking-wider">Recent Activities</h3>
+      <div className="flex flex-col gap-1 mb-4">
+        <h3 className="tracking-wider">Recent Activities</h3>
+        <p className="max-w-2xl text-text-secondary text-sm">
+          Latest account activities timeline of profile.
+        </p>
+      </div>
 
       {isOwnProfile ? (
         <button className="top-2 right-2 absolute pl-3 text-sm btn btn-secondary">

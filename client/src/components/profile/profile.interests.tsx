@@ -14,7 +14,13 @@ const ProfileInterests = ({
   return (
     <>
       <div className="relative mb-6 p-6 leading-relaxed glass">
-        <h3 className="mb-4 tracking-wider">Interests & Hobbies</h3>
+        <div className="flex flex-col gap-1 mb-4">
+          <h3 className="tracking-wider">Interests & Hobbies</h3>
+          <p className="max-w-2xl text-text-secondary text-sm">
+            Passions, hobbies, and pursuits beyond work that keep life engaging.
+          </p>
+        </div>
+
         {interests && interests.length > 0 ? (
           <Interests interests={interests} />
         ) : (

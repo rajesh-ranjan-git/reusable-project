@@ -14,7 +14,14 @@ const ProfileSkills = ({
   return (
     <>
       <div className="relative mb-6 p-6 leading-relaxed glass">
-        <h3 className="mb-4 tracking-wider">Tech Stack & Expertise</h3>
+        <div className="flex flex-col gap-1 mb-4">
+          <h3 className="tracking-wider">Tech Stack & Expertise</h3>
+          <p className="max-w-2xl text-text-secondary text-sm">
+            Core technologies, tools, and expertise built through hands-on
+            experience.
+          </p>
+        </div>
+
         {skills && skills.length > 0 ? (
           <Skills skills={skills} />
         ) : (

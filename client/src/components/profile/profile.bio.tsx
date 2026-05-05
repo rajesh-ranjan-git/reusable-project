@@ -14,7 +14,17 @@ const ProfileBio = ({
   return (
     <>
       <div className="relative mb-6 p-6 leading-relaxed glass">
-        <h3 className="mb-4 tracking-wider">Bio</h3>
+        <div className="flex flex-col gap-1 mb-4">
+          <span className="font-semibold text-xs uppercase tracking-[0.28em] text-accent-purple">
+            Bio
+          </span>
+          <h3 className="tracking-wider">About</h3>
+          <p className="max-w-2xl text-text-secondary text-sm">
+            A quick snapshot of background, personality, and what defines the
+            journey.
+          </p>
+        </div>
+
         {bio ? (
           bio?.trim().split("\n").length > 0 ? (
             bio
