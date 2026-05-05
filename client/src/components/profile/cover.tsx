@@ -25,7 +25,7 @@ const Cover = ({
         alt={getFullName(user) ?? "User Cover"}
         width={1600}
         height={800}
-        className="opacity-80 group-hover:opacity-60 rounded-t-2xl w-full h-full object-cover transition-opacity cursor-pointer"
+        className="opacity-80 group-hover:opacity-60 rounded-t-2xl w-full h-full object-cover object-top transition-opacity cursor-pointer"
         onClick={() =>
           handleImagePreview(
             localCover ? localCover : staticImagesConfig.coverPlaceholder.src,
