@@ -3,6 +3,7 @@ import { allowedSkillLevelsConfig } from "@/config/profile.config";
 
 export type CurrentFormType =
   | "email"
+  | "verifyEmail"
   | "dob"
   | "gender"
   | "phone"
@@ -92,7 +93,7 @@ export type UserProfileType = {
   age?: number | null;
   gender?: string | null;
   maritalStatus?: string | null;
-  phone?: number | null;
+  phone?: string | null;
   location?: string | null;
   skills?: SkillType[];
   topSkills?: SkillType[];

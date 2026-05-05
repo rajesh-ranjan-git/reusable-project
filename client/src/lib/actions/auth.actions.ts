@@ -309,6 +309,20 @@ export const resetPasswordAction = async (
   }
 };
 
+export const resendVerificationEmail = async (
+  email: string,
+): Promise<ApiResponseType> => {
+  try {
+    return await api.post(
+      apiUrls.auth.resendVerification,
+      { email },
+      { requireAuth: true },
+    );
+  } catch (error) {
+    return error as ApiErrorResponseType;
+  }
+};
+
 export const verifyEmail = async (token: string): Promise<ApiResponseType> => {
   try {
     return await api.post(

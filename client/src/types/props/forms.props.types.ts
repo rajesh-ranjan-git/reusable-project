@@ -15,30 +15,41 @@ export interface EmailFormProps {
   isOpen: boolean;
   onClose: () => void;
   initialData?: string;
+  onSave: (email: string) => void;
+}
+
+export interface EmailVerificationModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  email?: string;
 }
 
 export interface PhoneFormProps {
   isOpen: boolean;
   onClose: () => void;
   initialData?: string;
+  onSave: (phone: string) => void;
 }
 
 export interface GenderFormProps {
   isOpen: boolean;
   onClose: () => void;
   initialData?: string | null;
+  onSave: (gender: string) => void;
 }
 
 export interface DobFormProps {
   isOpen: boolean;
   onClose: () => void;
   initialData?: string | null;
+  onSave: (dob: string) => void;
 }
 
 export interface RelationshipFormProps {
   isOpen: boolean;
   onClose: () => void;
   initialData?: string | null;
+  onSave: (maritalStatus: string) => void;
 }
 
 export interface BioFormProps {

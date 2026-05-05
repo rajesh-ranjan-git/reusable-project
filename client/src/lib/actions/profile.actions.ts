@@ -13,10 +13,13 @@ import { ApiErrorResponseType, ApiResponseType } from "@/types/types/api.types";
 import {
   datePropertyValidator,
   listPropertiesValidator,
+  numberRegexPropertiesValidator,
   stringPropertiesValidator,
 } from "@/validators/common.validators";
 import { api } from "@/lib/api/apiHandler";
 import { apiUrls } from "@/lib/api/apiUtils";
+import { emailValidator } from "@/validators/auth.validators";
+import { PHONE_REGEX } from "@/constants/regex.constants";
 
 export const uploadImage = async (
   image: File,
@@ -54,6 +57,7 @@ export const updateProfile = async (
   formData: FormData,
 ): Promise<FormStateType> => {
   const bio = formData.get("bio");
+  const maritalStatus = formData.get("maritalStatus");
   const interestsRaw = formData.get("interests");
 
   let interests: string[] = [];
@@ -66,12 +70,6 @@ export const updateProfile = async (
 
   const errors: FormStateType["errors"] = {};
 
-  const {
-    validatedProperty: validatedInterests,
-    message: interestsErrorMessage,
-  } = listPropertiesValidator("interests", interests);
-  errors.interests = interestsErrorMessage ?? null;
-
   const { validatedProperty: validatedBio, message: bioErrorMessage } =
     stringPropertiesValidator(
       "bio",
@@ -80,6 +78,21 @@ export const updateProfile = async (
       propertyConstraintsConfig.maxBioLength,
     );
   errors.bio = bioErrorMessage ?? null;
+
+  if (
+    maritalStatus &&
+    !["married", "single", "separated", "divorced", "complicated"].includes(
+      maritalStatus as string,
+    )
+  ) {
+    errors.maritalStatus = "Please provide a valid relationship status!";
+  }
+
+  const {
+    validatedProperty: validatedInterests,
+    message: interestsErrorMessage,
+  } = listPropertiesValidator("interests", interests);
+  errors.interests = interestsErrorMessage ?? null;
 
   if (Object.values(errors).some((error) => error !== null)) {
     return {
@@ -101,6 +114,7 @@ export const updateProfile = async (
       apiUrls.profile.actionProfile,
       {
         bio: validatedBio,
+        maritalStatus,
         interests: validatedInterests,
       },
       { requireAuth: true },
@@ -114,6 +128,209 @@ export const updateProfile = async (
       code: error?.code ?? "PROFILE UPDATE FAILED",
       statusCode: error?.statusCode ?? 500,
       message: error?.message ?? "Unable to update profile, please try again!",
+      details: error?.details ?? null,
+      timestamp: new Date().toISOString(),
+      metadata: error?.metadata ?? null,
+      inputs: Object.fromEntries(formData),
+    };
+  }
+};
+
+export const updateEmail = async (
+  prevState: FormStateType,
+  formData: FormData,
+): Promise<FormStateType> => {
+  const email = formData.get("email");
+
+  const errors: FormStateType["errors"] = {};
+
+  const { validatedEmail, message: emailErrorMessage } = emailValidator(email);
+  errors.email = emailErrorMessage ?? null;
+
+  if (Object.values(errors).some((error) => error !== null)) {
+    return {
+      success: false,
+      status: "EMAIL VALIDATION FAILED",
+      code: "EMAIL UPDATE FAILED",
+      statusCode: 422,
+      message: "Please provide valid email address!",
+      details: errors,
+      timestamp: new Date().toISOString(),
+      metadata: null,
+      errors,
+      inputs: Object.fromEntries(formData),
+    };
+  }
+
+  try {
+    const response = await api.put(
+      apiUrls.user.updateEmail,
+      { email: validatedEmail },
+      { requireAuth: true },
+    );
+
+    return { ...response };
+  } catch (error: any) {
+    return {
+      success: false,
+      status: error?.status ?? "EMAIL VALIDATION FAILED",
+      code: error?.code ?? "EMAIL UPDATE FAILED",
+      statusCode: error?.statusCode ?? 500,
+      message: error?.message ?? "Unable to update email, please try again!",
+      details: error?.details ?? null,
+      timestamp: new Date().toISOString(),
+      metadata: error?.metadata ?? null,
+      inputs: Object.fromEntries(formData),
+    };
+  }
+};
+
+export const updatePhone = async (
+  prevState: FormStateType,
+  formData: FormData,
+): Promise<FormStateType> => {
+  const phone = formData.get("phone");
+
+  const errors: FormStateType["errors"] = {};
+
+  const { validatedProperty: validatedPhone, message: phoneErrorMessage } =
+    numberRegexPropertiesValidator("phone", phone, PHONE_REGEX);
+  errors.phone = phoneErrorMessage ?? null;
+
+  if (Object.values(errors).some((error) => error !== null)) {
+    return {
+      success: false,
+      status: "PHONE VALIDATION FAILED",
+      code: "PHONE UPDATE FAILED",
+      statusCode: 422,
+      message: errors.phone ?? "Please provide valid phone number!",
+      details: errors,
+      timestamp: new Date().toISOString(),
+      metadata: null,
+      errors,
+      inputs: Object.fromEntries(formData),
+    };
+  }
+
+  try {
+    const response = await api.post(
+      apiUrls.profile.updatePhone,
+      { phone: validatedPhone },
+      { requireAuth: true },
+    );
+
+    return { ...response };
+  } catch (error: any) {
+    return {
+      success: false,
+      status: error?.status ?? "PHONE VALIDATION FAILED",
+      code: error?.code ?? "PHONE UPDATE FAILED",
+      statusCode: error?.statusCode ?? 500,
+      message:
+        error?.message ?? "Unable to update phone number, please try again!",
+      details: error?.details ?? null,
+      timestamp: new Date().toISOString(),
+      metadata: error?.metadata ?? null,
+      inputs: Object.fromEntries(formData),
+    };
+  }
+};
+
+export const updateGender = async (
+  prevState: FormStateType,
+  formData: FormData,
+): Promise<FormStateType> => {
+  const gender = formData.get("gender");
+
+  const errors: FormStateType["errors"] = {};
+
+  if (gender && !["male", "female", "other"].includes(gender as string)) {
+    errors.gender = "Please provide a valid gender!";
+  }
+
+  if (Object.values(errors).some((error) => error !== null)) {
+    return {
+      success: false,
+      status: "GENDER VALIDATION FAILED",
+      code: "GENDER UPDATE FAILED",
+      statusCode: 422,
+      message: errors.gender ?? "Please provide valid gender!",
+      details: errors,
+      timestamp: new Date().toISOString(),
+      metadata: null,
+      errors,
+      inputs: Object.fromEntries(formData),
+    };
+  }
+
+  try {
+    const response = await api.post(
+      apiUrls.profile.updateGender,
+      { gender },
+      { requireAuth: true },
+    );
+
+    return { ...response };
+  } catch (error: any) {
+    return {
+      success: false,
+      status: error?.status ?? "GENDER VALIDATION FAILED",
+      code: error?.code ?? "GENDER UPDATE FAILED",
+      statusCode: error?.statusCode ?? 500,
+      message: error?.message ?? "Unable to update gender, please try again!",
+      details: error?.details ?? null,
+      timestamp: new Date().toISOString(),
+      metadata: error?.metadata ?? null,
+      inputs: Object.fromEntries(formData),
+    };
+  }
+};
+
+export const updateDob = async (
+  prevState: FormStateType,
+  formData: FormData,
+): Promise<FormStateType> => {
+  const dob = formData.get("dob");
+
+  const errors: FormStateType["errors"] = {};
+
+  const { message, validatedProperty: validatedDob } = datePropertyValidator(
+    "date of birth",
+    dob as string,
+  );
+  errors.dob = message ?? null;
+
+  if (Object.values(errors).some((error) => error !== null)) {
+    return {
+      success: false,
+      status: "DOB VALIDATION FAILED",
+      code: "DOB UPDATE FAILED",
+      statusCode: 422,
+      message: errors.dob ?? "Please provide valid date of birth!",
+      details: errors,
+      timestamp: new Date().toISOString(),
+      metadata: null,
+      errors,
+      inputs: Object.fromEntries(formData),
+    };
+  }
+
+  try {
+    const response = await api.post(
+      apiUrls.profile.updateDob,
+      { dob: validatedDob },
+      { requireAuth: true },
+    );
+
+    return { ...response };
+  } catch (error: any) {
+    return {
+      success: false,
+      status: error?.status ?? "DOB VALIDATION FAILED",
+      code: error?.code ?? "DOB UPDATE FAILED",
+      statusCode: error?.statusCode ?? 500,
+      message:
+        error?.message ?? "Unable to update date of birth, please try again!",
       details: error?.details ?? null,
       timestamp: new Date().toISOString(),
       metadata: error?.metadata ?? null,
@@ -215,7 +432,7 @@ export const updateSkills = async (
   }
 };
 
-export const experienceAction = async (
+export const updateExperience = async (
   prevState: FormStateType,
   formData: FormData,
 ): Promise<FormStateType> => {

@@ -14,6 +14,10 @@ export type FieldErrorsType = {
   token?: string | null;
   firstName?: string | null;
   lastName?: string | null;
+  phone?: string | null;
+  dob?: string | null;
+  gender?: string | null;
+  maritalStatus?: string | null;
   bio?: string | null;
   interests?: string | null;
   skills?: string | null;

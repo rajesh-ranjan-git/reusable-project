@@ -26,6 +26,7 @@ import PhoneForm from "@/components/forms/profile/phone.form";
 import GenderForm from "@/components/forms/profile/gender.form";
 import RelationshipForm from "@/components/forms/profile/relationship.form";
 import DobForm from "@/components/forms/profile/dob.form";
+import EmailVerificationModal from "@/components/profile/email.verify";
 
 const getGenderIcon = (gender?: string | null) => {
   if (gender === "male") return <FaMale size={18} />;
@@ -43,6 +44,7 @@ const getMaritalStatusIcon = (maritalStatus?: string | null) => {
 
 const ProfilePersonal = ({
   userProfile,
+  setUserProfile,
   isOwnProfile,
   currentForm,
   setCurrentForm,
@@ -207,7 +209,7 @@ const ProfilePersonal = ({
                             <button
                               type="button"
                               className="group/inner flex self-start px-3 py-1 text-xs bg-accent-purple-dark btn btn-primary"
-                              onClick={() => {}}
+                              onClick={() => setCurrentForm("verifyEmail")}
                             >
                               <span>Verify now</span>
                               <span>
@@ -237,30 +239,88 @@ const ProfilePersonal = ({
         isOpen={currentForm === "email"}
         onClose={() => setCurrentForm(null)}
         initialData={userProfile?.email}
+        onSave={(updatedEmail) => {
+          setUserProfile((prev) => {
+            if (!prev) return prev;
+
+            return {
+              ...prev,
+              email: updatedEmail,
+              emailVerified: false,
+            };
+          });
+        }}
+      />
+
+      <EmailVerificationModal
+        isOpen={currentForm === "verifyEmail"}
+        onClose={() => setCurrentForm(null)}
+        email={userProfile?.email}
       />
 
       <PhoneForm
         isOpen={currentForm === "phone"}
         onClose={() => setCurrentForm(null)}
         initialData={userProfile?.phone?.toString()}
+        onSave={(updatedPhone) => {
+          setUserProfile((prev) => {
+            if (!prev) return prev;
+
+            return {
+              ...prev,
+              phone: updatedPhone,
+              phoneVerified: false,
+            };
+          });
+        }}
       />
 
       <DobForm
         isOpen={currentForm === "dob"}
         onClose={() => setCurrentForm(null)}
         initialData={userProfile?.dob}
+        onSave={(updatedDob) => {
+          setUserProfile((prev) => {
+            if (!prev) return prev;
+
+            return {
+              ...prev,
+              dob: updatedDob,
+            };
+          });
+        }}
       />
 
       <GenderForm
         isOpen={currentForm === "gender"}
         onClose={() => setCurrentForm(null)}
         initialData={userProfile?.maritalStatus}
+        onSave={(updatedGender) => {
+          setUserProfile((prev) => {
+            if (!prev) return prev;
+
+            return {
+              ...prev,
+              gender: updatedGender,
+            };
+          });
+        }}
       />
 
       <RelationshipForm
         isOpen={currentForm === "maritalStatus"}
         onClose={() => setCurrentForm(null)}
         initialData={userProfile?.maritalStatus}
+        onSave={(updatedMaritalStatus) => {
+          setUserProfile((prev) => {
+            if (!prev) return prev;
+
+            return {
+              ...prev,
+              maritalStatus: updatedMaritalStatus,
+            };
+          });
+        }}
       />
     </>
   );

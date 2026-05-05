@@ -17,7 +17,7 @@ import { normalizeExperienceDates } from "@/helpers/profile.helpers";
 import { formatLocalDate } from "@/utils/date.utils";
 import { useToast } from "@/hooks/toast";
 import useInputFieldValidator from "@/hooks/useInputFieldValidation";
-import { experienceAction } from "@/lib/actions/profile.actions";
+import { updateExperience } from "@/lib/actions/profile.actions";
 import ModalPortal from "@/components/forms/shared/form.modal";
 import FormField from "@/components/forms/shared/form.field";
 import FormInput from "@/components/forms/shared/form.input";
@@ -106,9 +106,12 @@ const ExperienceForm = ({
   const action = async (
     prevState: FormStateType,
     formData: FormData,
-  ): Promise<FormStateType> => experienceAction(prevState, formData);
+  ): Promise<FormStateType> => updateExperience(prevState, formData);
 
-  const [state, formAction, isPending] = useActionState(action, initialState);
+  const [state, experienceFormAction, isPending] = useActionState(
+    action,
+    initialState,
+  );
 
   const updateEntry = <K extends keyof ExperienceType>(
     idx: number,
@@ -198,7 +201,11 @@ const ExperienceForm = ({
         />
       }
     >
-      <Form action={formAction} id="experience-form" autoComplete="off">
+      <Form
+        action={experienceFormAction}
+        id="experience-form"
+        autoComplete="off"
+      >
         <div className="space-y-6">
           {entries.map((exp, idx) => (
             <div key={idx} className="relative p-5 glass">
