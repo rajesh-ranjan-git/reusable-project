@@ -11,6 +11,30 @@ import {
   FormSelectOptionType,
 } from "@/types/types/forms.types";
 
+export interface EmailFormProps {
+  isOpen: boolean;
+  onClose: () => void;
+  initialData?: string;
+}
+
+export interface PhoneFormProps {
+  isOpen: boolean;
+  onClose: () => void;
+  initialData?: string;
+}
+
+export interface GenderFormProps {
+  isOpen: boolean;
+  onClose: () => void;
+  initialData?: string | null;
+}
+
+export interface RelationshipFormProps {
+  isOpen: boolean;
+  onClose: () => void;
+  initialData?: string | null;
+}
+
 export interface BioFormProps {
   isOpen: boolean;
   onClose: () => void;
@@ -27,6 +51,7 @@ export interface ExperienceFormProps {
 
 export interface FormLabelProps {
   htmlFor?: string;
+  className?: string;
   children: ReactNode;
   required?: boolean;
 }
@@ -36,6 +61,8 @@ export interface FormInputProps extends InputHTMLAttributes<HTMLInputElement> {
   startIcon?: ReactNode;
   endIcon?: ReactNode;
   error?: string;
+  numericOnly?: boolean;
+  maxDigits?: number;
 }
 
 export interface FormButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -81,7 +108,7 @@ export interface FormCheckboxProps extends Omit<
 export interface FormRadioGroupProps {
   name: string;
   options: FormRadioOptionType[];
-  value?: string;
+  value?: string | null;
   onChange?: (value: string) => void;
   disabled?: boolean;
   error?: string;
