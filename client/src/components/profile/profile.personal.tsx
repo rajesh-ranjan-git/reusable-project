@@ -145,7 +145,7 @@ const ProfilePersonal = ({
                         </p>
                       </div>
 
-                      {isOwnProfile ? (
+                      {isOwnProfile && key !== "gender" && key !== "dob" ? (
                         <button
                           type="button"
                           className="relative flex-none opacity-0 group-hover:opacity-100 p-1.5 text-sm transition-opacity duration-200 btn btn-ghost"
