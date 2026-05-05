@@ -3,8 +3,8 @@ import { GenderFormProps } from "@/types/props/forms.props.types";
 import { useToast } from "@/hooks/toast";
 import ModalPortal from "@/components/forms/shared/form.modal";
 import FormField from "@/components/forms/shared/form.field";
-import FormButton from "@/components/forms/shared/form.button";
 import { FormRadioGroup } from "@/components/forms/shared/form.radio";
+import FormFooter from "@/components/forms/shared/form.footer";
 
 const GenderForm = ({
   isOpen,
@@ -29,25 +29,12 @@ const GenderForm = ({
       title="Update Gender"
       maxWidth="max-w-lg w-max"
       footer={
-        <>
-          <FormButton
-            type="button"
-            variant="ghost"
-            onClick={onClose}
-            disabled={isUpdating || !gender}
-          >
-            Cancel
-          </FormButton>
-          <FormButton
-            type="button"
-            variant="primary"
-            loading={isUpdating}
-            disabled={isUpdating || !gender}
-            onClick={() => {}}
-          >
-            Update
-          </FormButton>
-        </>
+        <FormFooter
+          formType="gender-form"
+          onClose={onClose}
+          isPending={isUpdating}
+          isDisabled={isUpdating || !gender}
+        />
       }
     >
       <FormField label="Gender" htmlFor="gender">

@@ -8,7 +8,7 @@ import useInputFieldValidator from "@/hooks/useInputFieldValidation";
 import ModalPortal from "@/components/forms/shared/form.modal";
 import FormField from "@/components/forms/shared/form.field";
 import FormInput from "@/components/forms/shared/form.input";
-import FormButton from "@/components/forms/shared/form.button";
+import FormFooter from "@/components/forms/shared/form.footer";
 
 const PhoneForm = ({ isOpen, onClose, initialData = "" }: PhoneFormProps) => {
   const [isUpdating, setIsUpdating] = useState(false);
@@ -41,25 +41,12 @@ const PhoneForm = ({ isOpen, onClose, initialData = "" }: PhoneFormProps) => {
       title="Update Phone"
       maxWidth="max-w-lg w-max"
       footer={
-        <>
-          <FormButton
-            type="button"
-            variant="ghost"
-            onClick={onClose}
-            disabled={isUpdating || !phoneInput?.raw}
-          >
-            Cancel
-          </FormButton>
-          <FormButton
-            type="button"
-            variant="primary"
-            loading={isUpdating}
-            disabled={isUpdating || !phoneInput?.raw}
-            onClick={() => {}}
-          >
-            Update
-          </FormButton>
-        </>
+        <FormFooter
+          formType="phone-form"
+          onClose={onClose}
+          isPending={isUpdating}
+          isDisabled={isUpdating || !phoneInput?.raw}
+        />
       }
     >
       <FormField label="Phone" htmlFor="phone" error={phoneInput.error}>

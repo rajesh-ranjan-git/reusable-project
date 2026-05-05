@@ -3,8 +3,8 @@ import { RelationshipFormProps } from "@/types/props/forms.props.types";
 import { useToast } from "@/hooks/toast";
 import ModalPortal from "@/components/forms/shared/form.modal";
 import FormField from "@/components/forms/shared/form.field";
-import FormButton from "@/components/forms/shared/form.button";
 import { FormRadioGroup } from "@/components/forms/shared/form.radio";
+import FormFooter from "@/components/forms/shared/form.footer";
 
 const RelationshipForm = ({
   isOpen,
@@ -29,25 +29,12 @@ const RelationshipForm = ({
       title="Update Relationship Status"
       maxWidth="max-w-lg w-max"
       footer={
-        <>
-          <FormButton
-            type="button"
-            variant="ghost"
-            onClick={onClose}
-            disabled={isUpdating || !maritalStatus}
-          >
-            Cancel
-          </FormButton>
-          <FormButton
-            type="button"
-            variant="primary"
-            loading={isUpdating}
-            disabled={isUpdating || !maritalStatus}
-            onClick={() => {}}
-          >
-            Update
-          </FormButton>
-        </>
+        <FormFooter
+          formType="relationship-form"
+          onClose={onClose}
+          isPending={isUpdating}
+          isDisabled={isUpdating || !maritalStatus}
+        />
       }
     >
       <FormField label="Marital Status" htmlFor="maritalStatus">

@@ -7,7 +7,7 @@ import useInputFieldValidator from "@/hooks/useInputFieldValidation";
 import ModalPortal from "@/components/forms/shared/form.modal";
 import FormField from "@/components/forms/shared/form.field";
 import FormInput from "@/components/forms/shared/form.input";
-import FormButton from "@/components/forms/shared/form.button";
+import FormFooter from "@/components/forms/shared/form.footer";
 
 const EmailForm = ({ isOpen, onClose, initialData = "" }: EmailFormProps) => {
   const [isUpdating, setIsUpdating] = useState(false);
@@ -39,25 +39,12 @@ const EmailForm = ({ isOpen, onClose, initialData = "" }: EmailFormProps) => {
       title="Update Email"
       maxWidth="max-w-lg"
       footer={
-        <>
-          <FormButton
-            type="button"
-            variant="ghost"
-            onClick={onClose}
-            disabled={isUpdating || !emailInput?.raw}
-          >
-            Cancel
-          </FormButton>
-          <FormButton
-            type="button"
-            variant="primary"
-            loading={isUpdating}
-            disabled={isUpdating || !emailInput?.raw}
-            onClick={() => {}}
-          >
-            Update
-          </FormButton>
-        </>
+        <FormFooter
+          formType="email-form"
+          onClose={onClose}
+          isPending={isUpdating}
+          isDisabled={isUpdating || !emailInput?.raw}
+        />
       }
     >
       <FormField label="Email" htmlFor="email" error={emailInput.error}>

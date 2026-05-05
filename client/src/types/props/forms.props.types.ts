@@ -29,6 +29,12 @@ export interface GenderFormProps {
   initialData?: string | null;
 }
 
+export interface DobFormProps {
+  isOpen: boolean;
+  onClose: () => void;
+  initialData?: string | null;
+}
+
 export interface RelationshipFormProps {
   isOpen: boolean;
   onClose: () => void;
