@@ -207,7 +207,7 @@ const ProfilePersonal = ({
                             <button
                               type="button"
                               className="group/inner flex self-start px-3 py-1 text-xs bg-accent-purple-dark btn btn-primary"
-                              onClick={() => setCurrentForm(key)}
+                              onClick={() => {}}
                             >
                               <span>Verify now</span>
                               <span>
