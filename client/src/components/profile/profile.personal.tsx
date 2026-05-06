@@ -114,7 +114,7 @@ const ProfilePersonal = ({
                       <div className="divider-gradient-to-right my-4" />
 
                       <div className="flex flex-1 items-end min-w-0">
-                        <div className="flex justify-between items-center min-w-0">
+                        <div className="flex justify-between items-center w-full min-w-0">
                           <div
                             className={`min-w-0 flex-1 truncate font-semibold text-sm leading-snug ${
                               hasValue
