@@ -62,6 +62,9 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
             <ProfileHeader
               isOwnProfile={isOwnProfile}
               userProfile={userProfile}
+              setUserProfile={setUserProfile}
+              currentForm={currentForm}
+              setCurrentForm={setCurrentForm}
             />
 
             <ProfilePersonal

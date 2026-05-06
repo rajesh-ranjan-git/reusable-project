@@ -16,9 +16,17 @@ import ProfileCover from "@/components/profile/cover";
 import ProfileAvatar from "@/components/profile/avatar";
 import ProfileMain from "@/components/profile/profile.main";
 import ProfileImagePreview from "@/components/profile/image.preview";
+import EditProfileModal from "../shared/edit.profile.modal";
 
-const ProfileHeader = ({ isOwnProfile, userProfile }: ProfileHeaderProps) => {
+const ProfileHeader = ({
+  isOwnProfile,
+  userProfile,
+  setUserProfile,
+  currentForm,
+  setCurrentForm,
+}: ProfileHeaderProps) => {
   const [activeMenu, setActiveMenu] = useState<ImageTargetType>(null);
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [currentImageTarget, setCurrentImageTarget] =
@@ -203,7 +211,10 @@ const ProfileHeader = ({ isOwnProfile, userProfile }: ProfileHeaderProps) => {
 
           <div className="flex items-center gap-3 pointer-events-auto">
             {isOwnProfile ? (
-              <button className="text-sm btn btn-secondary">
+              <button
+                className="text-sm btn btn-secondary"
+                onClick={() => setIsEditOpen(true)}
+              >
                 <MdOutlineEdit size={16} />
                 Update Profile
               </button>
@@ -237,6 +248,24 @@ const ProfileHeader = ({ isOwnProfile, userProfile }: ProfileHeaderProps) => {
         ref={fileInputRef}
         onChange={handleFileChange}
         title="Hidden file input"
+      />
+
+      <EditProfileModal
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        userProfile={userProfile}
+        onSave={(updated) => {
+          setUserProfile((prev) => {
+            if (!prev) return prev;
+
+            return {
+              ...prev,
+              ...updated,
+            };
+          });
+        }}
+        currentForm={currentForm}
+        setCurrentForm={setCurrentForm}
       />
 
       <CameraModal

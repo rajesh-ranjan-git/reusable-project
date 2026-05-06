@@ -5,7 +5,7 @@ import { socialPlatformsConfig } from "@/config/profile.config";
 import { ProfileMainProps } from "@/types/props/profile.props.types";
 import { getCurrentJobRole, getFullName } from "@/helpers/profile.helpers";
 import { toTitleCase } from "@/utils/common.utils";
-import { formatDate, formatLocalDate, getDateToShow } from "@/utils/date.utils";
+import { formatDate } from "@/utils/date.utils";
 
 const ProfileMain = ({ user }: ProfileMainProps) => {
   return (

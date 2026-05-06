@@ -4,12 +4,39 @@ import {
   ReactNode,
   TextareaHTMLAttributes,
 } from "react";
-import { ExperienceType } from "@/types/types/profile.types";
+import {
+  ExperienceType,
+  SocialType,
+  UserProfileType,
+} from "@/types/types/profile.types";
 import {
   DateRangeType,
   FormRadioOptionType,
   FormSelectOptionType,
 } from "@/types/types/forms.types";
+
+export interface BasicInfoFormProps {
+  isOpen: boolean;
+  onClose: () => void;
+  initialData: Pick<UserProfileType, "firstName" | "lastName" | "nickName">;
+  onSave: (
+    data: Pick<UserProfileType, "firstName" | "lastName" | "nickName">,
+  ) => void;
+}
+
+export interface UsernameFormProps {
+  isOpen: boolean;
+  onClose: () => void;
+  initialData?: string;
+  onSave: (username: string) => void;
+}
+
+export interface SocialLinksFormProps {
+  isOpen: boolean;
+  onClose: () => void;
+  initialData?: SocialType;
+  onSave: (social: SocialType) => void;
+}
 
 export interface EmailFormProps {
   isOpen: boolean;
@@ -104,7 +131,7 @@ export interface FormSelectProps {
 }
 
 export interface FormFieldProps {
-  label?: string;
+  label?: string | ReactNode;
   htmlFor?: string;
   required?: boolean;
   error?: string;

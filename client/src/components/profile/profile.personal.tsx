@@ -1,46 +1,15 @@
-import {
-  FaBirthdayCake,
-  FaFemale,
-  FaHeart,
-  FaMale,
-  FaPeopleArrows,
-  FaPhone,
-  FaRandom,
-  FaTransgender,
-  FaUser,
-} from "react-icons/fa";
-import {
-  MdEmail,
-  MdHeartBroken,
-  MdOutlineEdit,
-  MdVerifiedUser,
-} from "react-icons/md";
+import { MdOutlineEdit, MdVerifiedUser } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
 import { LuArrowRight } from "react-icons/lu";
-import { PersonalDetail } from "@/types/types/profile.types";
 import { ProfilePersonalProps } from "@/types/props/profile.props.types";
-import { toTitleCase } from "@/utils/common.utils";
 import { formatDate } from "@/utils/date.utils";
+import { getPersonalDetails } from "@/helpers/profile.helpers";
 import EmailForm from "@/components/forms/profile/email.form";
 import PhoneForm from "@/components/forms/profile/phone.form";
 import GenderForm from "@/components/forms/profile/gender.form";
 import RelationshipForm from "@/components/forms/profile/relationship.form";
 import DobForm from "@/components/forms/profile/dob.form";
 import EmailVerificationModal from "@/components/profile/email.verify";
-
-const getGenderIcon = (gender?: string | null) => {
-  if (gender === "male") return <FaMale size={18} />;
-  if (gender === "female") return <FaFemale size={18} />;
-  return <FaTransgender size={18} />;
-};
-
-const getMaritalStatusIcon = (maritalStatus?: string | null) => {
-  if (maritalStatus === "married") return <FaHeart size={18} />;
-  if (maritalStatus === "single") return <FaUser size={18} />;
-  if (maritalStatus === "separated") return <FaPeopleArrows size={18} />;
-  if (maritalStatus === "divorced") return <MdHeartBroken size={18} />;
-  return <FaRandom size={18} />;
-};
 
 const ProfilePersonal = ({
   userProfile,
@@ -49,61 +18,7 @@ const ProfilePersonal = ({
   currentForm,
   setCurrentForm,
 }: ProfilePersonalProps) => {
-  const details: PersonalDetail[] = [
-    {
-      key: "email",
-      label: "Email",
-      value: userProfile?.email,
-      emptyText: "Add email address",
-      icon: <MdEmail size={18} />,
-      isVerified: userProfile?.emailVerified,
-      canVerify: Boolean(userProfile?.email && !userProfile?.emailVerified),
-    },
-    {
-      key: "phone",
-      label: "Phone",
-      value: userProfile?.phone ? String(userProfile.phone) : "",
-      emptyText: "Add phone number",
-      icon: <FaPhone size={16} />,
-      isVerified: userProfile?.phoneVerified,
-    },
-    {
-      key: "dob",
-      label: "Birthday",
-      value: userProfile?.dob ? (
-        <span className="flex items-baseline gap-2">
-          {formatDate(userProfile.dob)}
-          {userProfile?.age ? (
-            <span className="font-normal text-text-muted text-xs">
-              {userProfile.age} yrs
-            </span>
-          ) : null}
-        </span>
-      ) : (
-        ""
-      ),
-      emptyText: "Add birthday",
-      icon: <FaBirthdayCake size={17} />,
-    },
-    {
-      key: "gender",
-      label: "Gender",
-      value: userProfile?.gender ? toTitleCase(userProfile.gender) : "",
-      emptyText: "Add gender",
-      icon: getGenderIcon(userProfile?.gender),
-    },
-    {
-      key: "maritalStatus",
-      label: "Relationship",
-      value: userProfile?.maritalStatus
-        ? toTitleCase(userProfile.maritalStatus)
-        : "",
-      emptyText: "Add relationship status",
-      icon: getMaritalStatusIcon(userProfile?.maritalStatus),
-    },
-  ];
-
-  const visibleDetails = details.filter(
+  const visibleDetails = getPersonalDetails(userProfile).filter(
     ({ value }) => isOwnProfile || Boolean(value),
   );
 
@@ -133,10 +48,27 @@ const ProfilePersonal = ({
                 label,
                 value,
                 emptyText,
-                icon,
+                icon: Icon,
                 isVerified,
                 canVerify,
               }) => {
+                const valueToShow =
+                  key === "dob" ? (
+                    userProfile?.dob ? (
+                      <span className="flex items-baseline gap-2">
+                        {formatDate(userProfile.dob)}
+                        {userProfile?.age ? (
+                          <span className="font-normal text-text-muted text-xs">
+                            {userProfile.age} yrs
+                          </span>
+                        ) : null}
+                      </span>
+                    ) : (
+                      ""
+                    )
+                  ) : (
+                    value
+                  );
                 const hasValue = Boolean(value);
                 const isActive = currentForm === key;
 
@@ -155,7 +87,7 @@ const ProfilePersonal = ({
                       <div className="flex justify-between items-center gap-2">
                         <div className="flex items-center gap-4 min-w-0">
                           <span className="flex flex-none justify-center items-center bg-linear-to-br shadow-glass border border-glass-border-accent rounded-md w-9 h-9 from-accent-blue/15 text-accent-purple to-accent-purple/20">
-                            {icon}
+                            <Icon size={16} />
                           </span>
                           <p className="font-bold text-text-muted text-xs truncate uppercase tracking-[0.18em]">
                             {label}
@@ -186,16 +118,16 @@ const ProfilePersonal = ({
 
                       <div className="divider-gradient-to-right my-4" />
 
-                      <div className="flex flex-1 items-end">
-                        <div className="flex justify-between items-center w-full">
+                      <div className="flex flex-1 items-end min-w-0">
+                        <div className="flex justify-between items-center min-w-0">
                           <div
-                            className={`wrap-break-word font-semibold text-sm leading-snug ${
+                            className={`min-w-0 flex-1 truncate font-semibold text-sm leading-snug ${
                               hasValue
                                 ? "text-text-primary"
                                 : "text-text-muted italic font-normal"
                             }`}
                           >
-                            {hasValue ? value : emptyText}
+                            {hasValue ? valueToShow : emptyText}
                           </div>
 
                           {hasValue && isVerified ? (

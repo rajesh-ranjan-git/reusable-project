@@ -1,7 +1,11 @@
 import { ReactNode } from "react";
+import { IconType } from "react-icons";
 import { allowedSkillLevelsConfig } from "@/config/profile.config";
 
 export type CurrentFormType =
+  | "basic"
+  | "username"
+  | "social"
   | "email"
   | "verifyEmail"
   | "dob"
@@ -14,17 +18,17 @@ export type CurrentFormType =
   | "experience"
   | null;
 
-type PersonalFormKey = Exclude<
+type PersonalFormKeyType = Exclude<
   CurrentFormType,
   "bio" | "skills" | "interests" | "experience" | null
 >;
 
-export type PersonalDetail = {
-  key: PersonalFormKey;
+export type PersonalDetailType = {
+  key: PersonalFormKeyType;
   label: string;
   value?: ReactNode;
   emptyText: string;
-  icon: ReactNode;
+  icon: IconType;
   isVerified?: boolean;
   canVerify?: boolean;
 };

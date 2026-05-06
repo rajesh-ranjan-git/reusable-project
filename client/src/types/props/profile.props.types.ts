@@ -21,6 +21,9 @@ export interface ProfilePageProps {
 export interface ProfileHeaderProps {
   isOwnProfile: boolean;
   userProfile: UserProfileType | null;
+  setUserProfile: Dispatch<SetStateAction<UserProfileType | null>>;
+  currentForm: string | null;
+  setCurrentForm: Dispatch<SetStateAction<CurrentFormType>>;
 }
 
 export interface ProfileImageProps {
@@ -57,6 +60,15 @@ export interface CameraModalProps {
   isOpen: boolean;
   onClose: () => void;
   onCapture: (imgSrc: string) => void;
+}
+
+export interface EditProfileModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  userProfile: UserProfileType | null;
+  onSave: (updated: Partial<UserProfileType>) => void;
+  currentForm: string | null;
+  setCurrentForm: Dispatch<SetStateAction<CurrentFormType>>;
 }
 
 export interface ProfilePersonalProps {
