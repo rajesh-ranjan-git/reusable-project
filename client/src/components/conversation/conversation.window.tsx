@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, KeyboardEvent } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Socket } from "socket.io-client";
 import { LuArrowDown, LuMessageSquare } from "react-icons/lu";
 import { ConversationWindowProps } from "@/types/props/conversation.props";
@@ -12,11 +12,9 @@ import {
   MessageDeliveryStatusType,
   MessageResponseType,
 } from "@/types/types/message.types";
-import { UserProfileType } from "@/types/types/profile.types";
 import { ConversationDisplayType } from "@/types/types/conversation.types";
 import { useAppStore } from "@/store/store";
 import { createSocketConnection } from "@/socket/socket";
-import { getFullName } from "@/helpers/profile.helpers";
 import { getConversationDisplay } from "@/utils/conversation.utils";
 import { getMessageDisplay } from "@/utils/message.utils";
 import {
@@ -37,7 +35,6 @@ const ConversationWindow = ({
   const [targetUserId, setTargetUserId] = useState<string | null>(null);
   const [conversationDisplay, setConversationDisplay] =
     useState<ConversationDisplayType | null>(null);
-  const [draft, setDraft] = useState("");
   const [displayMessages, setDisplayMessages] = useState<MessageDisplayType[]>(
     [],
   );
@@ -213,27 +210,6 @@ const ConversationWindow = ({
     await markConversationAsRead(conversationId);
   };
 
-  const handleInput = () => {
-    const el = textareaRef.current;
-    if (!el) return;
-
-    el.style.height = "auto";
-
-    const lineHeight = parseInt(window.getComputedStyle(el).lineHeight);
-
-    const maxHeight = lineHeight * 3;
-
-    el.style.height = Math.min(el.scrollHeight, maxHeight) + "px";
-    setDraft(el.value);
-  };
-
-  const resetHeight = () => {
-    const el = textareaRef.current;
-    if (!el) return;
-
-    el.style.height = "auto";
-  };
-
   const emitMessage = (message: MessageResponseType) => {
     const socket = socketRef.current;
     if (!socket || !conversation) return;
@@ -247,47 +223,6 @@ const ConversationWindow = ({
       conversationId: conversation.id,
       message,
     });
-  };
-
-  const createPendingMessage = (content: string): MessageResponseType => {
-    const now = new Date().toISOString();
-    const clientMessageId = `local-${crypto.randomUUID()}`;
-    const sender = {
-      userId: loggedInUser?.userId ?? "",
-      status: loggedInUser?.status,
-      email: loggedInUser?.email ?? "",
-      emailVerified: true,
-      phoneVerified: false,
-      userName: loggedInUser?.userName ?? "",
-      firstName: loggedInUser?.firstName,
-      lastName: loggedInUser?.lastName,
-      fullName: getFullName(loggedInUser),
-      avatar: loggedInUser?.avatar,
-      createdAt: now,
-      updatedAt: now,
-    } as UserProfileType;
-
-    return {
-      id: clientMessageId,
-      messageId: clientMessageId,
-      clientMessageId,
-      conversation: conversation?.id ?? "",
-      sender,
-      contentType: "text",
-      content,
-      attachments: [],
-      location: null,
-      replyTo: null,
-      forwardedFrom: null,
-      receipts: [],
-      reactions: [],
-      deletedAt: null,
-      editHistory: [],
-      callData: null,
-      createdAt: now,
-      updatedAt: now,
-      deliveryStatus: "sending",
-    };
   };
 
   const persistAndEmitMessage = async (
@@ -346,24 +281,6 @@ const ConversationWindow = ({
     setIsSending(false);
   };
 
-  const handleSend = async () => {
-    const content = draft.trim();
-    if (!content || !conversation?.id || isSending) return;
-
-    const pendingMessage = createPendingMessage(content);
-    shouldAutoScrollRef.current = true;
-    updateConversationWithMessage(pendingMessage, {
-      activeConversationId: conversation.id,
-      incrementUnread: false,
-    });
-    upsertMessage(pendingMessage);
-    setDraft("");
-    if (textareaRef.current) textareaRef.current.value = "";
-    resetHeight();
-
-    await persistAndEmitMessage(pendingMessage.clientMessageId ?? "", content);
-  };
-
   const handleResend = async (messageId: string) => {
     if (isSending) return;
 
@@ -379,13 +296,6 @@ const ConversationWindow = ({
       failedMessage.clientMessageId ?? failedMessage.messageId ?? messageId,
       failedMessage.content,
     );
-  };
-
-  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
   };
 
   const isMessagesContainerNearBottom = () => {
@@ -588,12 +498,13 @@ const ConversationWindow = ({
       )}
 
       <ConversationFooter
+        conversationId={conversation?.id}
         textareaRef={textareaRef}
-        handleInput={handleInput}
-        handleKeyDown={handleKeyDown}
+        shouldAutoScrollRef={shouldAutoScrollRef}
         isSending={isSending}
-        handleSend={handleSend}
-        draft={draft}
+        updateConversationWithMessage={updateConversationWithMessage}
+        upsertMessage={upsertMessage}
+        persistAndEmitMessage={persistAndEmitMessage}
       />
     </div>
   );

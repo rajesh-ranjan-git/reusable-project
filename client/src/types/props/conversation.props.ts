@@ -1,7 +1,10 @@
-import { KeyboardEvent, RefObject } from "react";
+import { RefObject } from "react";
 import { ConversationResponseType } from "@/types/types/response.types";
 import { ConversationDisplayType } from "@/types/types/conversation.types";
-import { MessageDisplayType } from "@/types/types/message.types";
+import {
+  MessageDisplayType,
+  MessageResponseType,
+} from "@/types/types/message.types";
 
 export interface ConversationProps {
   params: {
@@ -37,10 +40,20 @@ export interface MessagesContainerProps {
 }
 
 export interface ConversationFooterProps {
+  conversationId?: string;
   textareaRef: RefObject<HTMLTextAreaElement | null>;
-  handleInput: () => void;
-  handleKeyDown: (e: KeyboardEvent<HTMLTextAreaElement>) => void;
+  shouldAutoScrollRef: RefObject<boolean>;
   isSending: boolean;
-  handleSend: () => void;
-  draft: string;
+  updateConversationWithMessage: (
+    message: MessageResponseType,
+    options?: {
+      activeConversationId?: string | null;
+      incrementUnread?: boolean;
+    },
+  ) => void;
+  upsertMessage: (message: MessageResponseType) => void;
+  persistAndEmitMessage: (
+    clientMessageId: string,
+    content: string,
+  ) => Promise<void>;
 }
