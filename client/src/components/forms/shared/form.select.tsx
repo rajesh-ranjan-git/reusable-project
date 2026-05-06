@@ -51,7 +51,7 @@ const FormSelect = forwardRef<HTMLDivElement, FormSelectProps>(
               }
               ${selectedOption ? "text-text-on-glass" : "text-text-muted"}
               ${disabled ? "opacity-50 cursor-not-allowed" : ""}
-              ${error ? "border-status-error-border" : "border-border-default"}
+              ${error ? "border-status-error-border" : "border-glass-border"}
             `}
           >
             {selectedOption?.label || placeholder}
@@ -66,7 +66,7 @@ const FormSelect = forwardRef<HTMLDivElement, FormSelectProps>(
           </button>
 
           <div
-            className={`absolute z-(--z-dropdown) w-full mt-2 backdrop-blur-md border border-border-default overflow-hidden transition-all duration-300 origin-top rounded-md
+            className={`absolute z-(--z-dropdown) w-full mt-2 backdrop-blur-md border border-glass-border overflow-hidden transition-all duration-300 origin-top rounded-md
               ${
                 isOpen
                   ? "opacity-100 scale-y-100 translate-y-0"

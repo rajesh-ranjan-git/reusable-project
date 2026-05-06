@@ -234,6 +234,7 @@ const SkillsForm = ({
               variant="primary"
               onClick={() => addSkill(skillInput.raw)}
               className="mt-1"
+              disabled={isPending || !skillInput.raw}
             >
               <LuPlus size={18} />
               Add
