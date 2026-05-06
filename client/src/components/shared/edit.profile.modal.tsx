@@ -1,36 +1,27 @@
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { LuX, LuChevronRight } from "react-icons/lu";
-import { SocialType } from "@/types/types/profile.types";
+import { CurrentFormType } from "@/types/types/profile.types";
 import { EditProfileModalProps } from "@/types/props/profile.props.types";
+import { useAppStore } from "@/store/store";
 import { getEditProfileSections } from "@/helpers/profile.helpers";
-import BasicInfoForm from "@/components/forms/profile/basic.info.form";
-import UsernameForm from "@/components/forms/profile/username.form";
-import SocialLinksForm from "@/components/forms/profile/social.links.form";
-import EmailForm from "@/components/forms/profile/email.form";
-import PhoneForm from "@/components/forms/profile/phone.form";
-import DobForm from "@/components/forms/profile/dob.form";
-import GenderForm from "@/components/forms/profile/gender.form";
-import RelationshipForm from "@/components/forms/profile/relationship.form";
-import SkillsForm from "@/components/forms/profile/skills.form";
-import InterestsForm from "@/components/forms/profile/interests.form";
-import ExperienceForm from "@/components/forms/profile/experience.form";
 
 const EditProfileModal = ({
   isOpen,
   onClose,
   userProfile,
-  onSave,
-  currentForm,
-  setCurrentForm,
 }: EditProfileModalProps) => {
+  const currentForm = useAppStore((state) => state.currentProfileForm);
+  const setCurrentForm = useAppStore((state) => state.setCurrentProfileForm);
+
   const handleClose = () => {
     setCurrentForm(null);
     onClose();
   };
 
-  const handleSectionClose = () => {
-    setCurrentForm(null);
+  const handleSectionOpen = (formId: Exclude<CurrentFormType, null>) => {
+    setCurrentForm(formId);
+    onClose();
   };
 
   if (typeof document === "undefined") return null;
@@ -44,7 +35,7 @@ const EditProfileModal = ({
               className="fixed inset-0 z-(--z-modal) flex items-center justify-center p-2 sm:p-4"
               role="dialog"
               aria-modal="true"
-              aria-label="Edit Profile"
+              aria-label="Update Profile"
             >
               <motion.div
                 initial={{ opacity: 0 }}
@@ -71,7 +62,7 @@ const EditProfileModal = ({
                 <div className="flex justify-between items-start gap-4 px-4 sm:px-6 pt-4 sm:pt-5 pb-4 border-glass-border border-b shrink-0">
                   <div>
                     <h4 className="font-semibold text-text-primary leading-tight">
-                      Edit Profile
+                      Update Profile
                     </h4>
                     <p className="mt-0.5 text-text-muted text-xs">
                       Choose what you&apos;d like to update
@@ -96,7 +87,7 @@ const EditProfileModal = ({
                         initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.06 + 0.1 }}
-                        onClick={() => setCurrentForm(id)}
+                        onClick={() => id && handleSectionOpen(id)}
                         className="group flex items-center gap-3 hover:shadow-glass-shadow-hover)] px-4 py-3.5 border border-glass-border)] hover:border-glass-border-accent)] rounded-2xl w-full text-left transition-all duration-200 glass"
                       >
                         <span className="flex flex-none justify-center items-center bg-linear-to-br shadow-glass border border-glass-border-accent rounded-md w-9 h-9 from-accent-blue/15 text-accent-purple to-accent-purple/20">
@@ -124,120 +115,6 @@ const EditProfileModal = ({
         </AnimatePresence>,
         document.body,
       )}
-
-      <BasicInfoForm
-        isOpen={isOpen && currentForm === "basic"}
-        onClose={handleSectionClose}
-        initialData={{
-          firstName: userProfile?.firstName,
-          lastName: userProfile?.lastName,
-          nickName: userProfile?.nickName,
-        }}
-        onSave={(data) => {
-          onSave(data);
-          handleClose();
-        }}
-      />
-
-      <UsernameForm
-        isOpen={isOpen && currentForm === "username"}
-        onClose={handleSectionClose}
-        initialData={userProfile?.userName}
-        onSave={(userName) => {
-          onSave({ userName });
-          handleClose();
-        }}
-      />
-
-      <SocialLinksForm
-        isOpen={isOpen && currentForm === "social"}
-        onClose={handleSectionClose}
-        initialData={userProfile?.social}
-        onSave={(social: SocialType) => {
-          onSave({ social });
-          handleClose();
-        }}
-      />
-
-      <EmailForm
-        isOpen={currentForm === "email"}
-        onClose={handleSectionClose}
-        initialData={userProfile?.email}
-        onSave={(updatedEmail) => {
-          onSave({ email: updatedEmail, emailVerified: false });
-          handleClose();
-        }}
-      />
-
-      <PhoneForm
-        isOpen={currentForm === "phone"}
-        onClose={() => setCurrentForm(null)}
-        initialData={userProfile?.phone?.toString()}
-        onSave={(phone) => {
-          onSave({ phone });
-          handleClose();
-        }}
-      />
-
-      <DobForm
-        isOpen={currentForm === "dob"}
-        onClose={() => setCurrentForm(null)}
-        initialData={userProfile?.dob}
-        onSave={(dob) => {
-          onSave({ dob });
-          handleClose();
-        }}
-      />
-
-      <GenderForm
-        isOpen={currentForm === "gender"}
-        onClose={() => setCurrentForm(null)}
-        initialData={userProfile?.maritalStatus}
-        onSave={(gender) => {
-          onSave({ gender });
-          handleClose();
-        }}
-      />
-
-      <RelationshipForm
-        isOpen={currentForm === "maritalStatus"}
-        onClose={() => setCurrentForm(null)}
-        initialData={userProfile?.maritalStatus}
-        onSave={(maritalStatus) => {
-          onSave({ maritalStatus });
-          handleClose();
-        }}
-      />
-
-      <SkillsForm
-        isOpen={currentForm === "skills"}
-        onClose={() => setCurrentForm(null)}
-        initialData={userProfile?.skills ?? []}
-        onSave={(skills) => {
-          onSave({ skills });
-          handleClose();
-        }}
-      />
-
-      <InterestsForm
-        isOpen={currentForm === "interests"}
-        onClose={() => setCurrentForm(null)}
-        initialData={userProfile?.interests ?? []}
-        onSave={(interests) => {
-          onSave({ interests });
-          handleClose();
-        }}
-      />
-
-      <ExperienceForm
-        isOpen={currentForm === "experience"}
-        onClose={() => setCurrentForm(null)}
-        initialData={userProfile?.experiences ?? []}
-        onSave={(experiences) => {
-          onSave({ experiences });
-          handleClose();
-        }}
-      />
     </>
   );
 };

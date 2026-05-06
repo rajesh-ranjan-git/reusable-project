@@ -38,6 +38,14 @@ export const useAppStore = create<AppStateType>()(
               ? isLoggingOutUpdater(state.isLoggingOut)
               : isLoggingOutUpdater,
         })),
+      currentProfileForm: null,
+      setCurrentProfileForm: (currentProfileFormUpdater) =>
+        set((state) => ({
+          currentProfileForm:
+            typeof currentProfileFormUpdater === "function"
+              ? currentProfileFormUpdater(state.currentProfileForm)
+              : currentProfileFormUpdater,
+        })),
       conversationList: [],
       setConversationList: (conversationListUpdater) =>
         set((state) => ({

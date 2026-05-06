@@ -1,23 +1,18 @@
 import { MdOutlineEdit, MdVerifiedUser } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
 import { LuArrowRight } from "react-icons/lu";
+import { useAppStore } from "@/store/store";
 import { ProfilePersonalProps } from "@/types/props/profile.props.types";
 import { formatDate } from "@/utils/date.utils";
 import { getPersonalDetails } from "@/helpers/profile.helpers";
-import EmailForm from "@/components/forms/profile/email.form";
-import PhoneForm from "@/components/forms/profile/phone.form";
-import GenderForm from "@/components/forms/profile/gender.form";
-import RelationshipForm from "@/components/forms/profile/relationship.form";
-import DobForm from "@/components/forms/profile/dob.form";
-import EmailVerificationModal from "@/components/profile/email.verify";
 
 const ProfilePersonal = ({
   userProfile,
-  setUserProfile,
   isOwnProfile,
-  currentForm,
-  setCurrentForm,
 }: ProfilePersonalProps) => {
+  const currentForm = useAppStore((state) => state.currentProfileForm);
+  const setCurrentForm = useAppStore((state) => state.setCurrentProfileForm);
+
   const visibleDetails = getPersonalDetails(userProfile).filter(
     ({ value }) => isOwnProfile || Boolean(value),
   );
@@ -166,94 +161,6 @@ const ProfilePersonal = ({
           </div>
         )}
       </div>
-
-      <EmailForm
-        isOpen={currentForm === "email"}
-        onClose={() => setCurrentForm(null)}
-        initialData={userProfile?.email}
-        onSave={(updatedEmail) => {
-          setUserProfile((prev) => {
-            if (!prev) return prev;
-
-            return {
-              ...prev,
-              email: updatedEmail,
-              emailVerified: false,
-            };
-          });
-        }}
-      />
-
-      <EmailVerificationModal
-        isOpen={currentForm === "verifyEmail"}
-        onClose={() => setCurrentForm(null)}
-        email={userProfile?.email}
-      />
-
-      <PhoneForm
-        isOpen={currentForm === "phone"}
-        onClose={() => setCurrentForm(null)}
-        initialData={userProfile?.phone?.toString()}
-        onSave={(updatedPhone) => {
-          setUserProfile((prev) => {
-            if (!prev) return prev;
-
-            return {
-              ...prev,
-              phone: updatedPhone,
-              phoneVerified: false,
-            };
-          });
-        }}
-      />
-
-      <DobForm
-        isOpen={currentForm === "dob"}
-        onClose={() => setCurrentForm(null)}
-        initialData={userProfile?.dob}
-        onSave={(updatedDob) => {
-          setUserProfile((prev) => {
-            if (!prev) return prev;
-
-            return {
-              ...prev,
-              dob: updatedDob,
-            };
-          });
-        }}
-      />
-
-      <GenderForm
-        isOpen={currentForm === "gender"}
-        onClose={() => setCurrentForm(null)}
-        initialData={userProfile?.maritalStatus}
-        onSave={(updatedGender) => {
-          setUserProfile((prev) => {
-            if (!prev) return prev;
-
-            return {
-              ...prev,
-              gender: updatedGender,
-            };
-          });
-        }}
-      />
-
-      <RelationshipForm
-        isOpen={currentForm === "maritalStatus"}
-        onClose={() => setCurrentForm(null)}
-        initialData={userProfile?.maritalStatus}
-        onSave={(updatedMaritalStatus) => {
-          setUserProfile((prev) => {
-            if (!prev) return prev;
-
-            return {
-              ...prev,
-              maritalStatus: updatedMaritalStatus,
-            };
-          });
-        }}
-      />
     </>
   );
 };

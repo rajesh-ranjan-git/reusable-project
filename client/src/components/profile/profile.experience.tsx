@@ -1,71 +1,51 @@
 import { IoMdAdd } from "react-icons/io";
 import { MdOutlineEdit } from "react-icons/md";
-import { ExperienceType } from "@/types/types/profile.types";
 import { ProfileExperienceProps } from "@/types/props/profile.props.types";
 import Experience from "@/components/profile/experience";
-import ExperienceForm from "@/components/forms/profile/experience.form";
+import { useAppStore } from "@/store/store";
 
 const ProfileExperience = ({
   experiences,
   isOwnProfile,
-  setUserProfile,
-  currentForm,
-  setCurrentForm,
 }: ProfileExperienceProps) => {
+  const setCurrentForm = useAppStore((state) => state.setCurrentProfileForm);
+
   return (
-    <>
-      <div className="relative mb-6 p-6 leading-relaxed glass">
-        <div className="flex flex-col gap-1 mb-4">
-          <h3 className="tracking-wider">Work Experience</h3>
-          <p className="max-w-2xl text-text-secondary text-sm">
-            Professional journey, roles, and impact delivered along the way.
-          </p>
-        </div>
-
-        {experiences && experiences.length > 0 ? (
-          <Experience experiences={experiences} />
-        ) : (
-          <p className="text-text-muted">
-            Add your work experiences to show here...
-          </p>
-        )}
-
-        {isOwnProfile ? (
-          experiences ? (
-            <button
-              className="top-2 right-2 absolute px-2 text-sm btn btn-secondary"
-              onClick={() => setCurrentForm("experience")}
-            >
-              <MdOutlineEdit size={20} />
-            </button>
-          ) : (
-            <button
-              className="top-2 right-2 absolute flex items-center gap-2 pl-3 text-sm btn btn-secondary"
-              onClick={() => setCurrentForm("experience")}
-            >
-              <IoMdAdd size={20} />
-              <span className="hidden md:block">Add</span>
-            </button>
-          )
-        ) : null}
+    <div className="relative mb-6 p-6 leading-relaxed glass">
+      <div className="flex flex-col gap-1 mb-4">
+        <h3 className="tracking-wider">Work Experience</h3>
+        <p className="max-w-2xl text-text-secondary text-sm">
+          Professional journey, roles, and impact delivered along the way.
+        </p>
       </div>
 
-      <ExperienceForm
-        isOpen={currentForm === "experience"}
-        onClose={() => setCurrentForm(null)}
-        initialData={experiences ?? []}
-        onSave={(updatedExperiences: ExperienceType[]) => {
-          setUserProfile((prev) => {
-            if (!prev) return prev;
+      {experiences && experiences.length > 0 ? (
+        <Experience experiences={experiences} />
+      ) : (
+        <p className="text-text-muted">
+          Add your work experiences to show here...
+        </p>
+      )}
 
-            return {
-              ...prev,
-              experiences: [...updatedExperiences],
-            };
-          });
-        }}
-      />
-    </>
+      {isOwnProfile ? (
+        experiences ? (
+          <button
+            className="top-2 right-2 absolute px-2 text-sm btn btn-secondary"
+            onClick={() => setCurrentForm("experience")}
+          >
+            <MdOutlineEdit size={20} />
+          </button>
+        ) : (
+          <button
+            className="top-2 right-2 absolute flex items-center gap-2 pl-3 text-sm btn btn-secondary"
+            onClick={() => setCurrentForm("experience")}
+          >
+            <IoMdAdd size={20} />
+            <span className="hidden md:block">Add</span>
+          </button>
+        )
+      ) : null}
+    </div>
   );
 };
 

@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { ProfilePageProps } from "@/types/props/profile.props.types";
-import { CurrentFormType, UserProfileType } from "@/types/types/profile.types";
+import { UserProfileType } from "@/types/types/profile.types";
 import { ProfileResponseType } from "@/types/types/response.types";
 import { useAppStore } from "@/store/store";
+import { toTitleCase } from "@/utils/common.utils";
 import { fetchProfile } from "@/lib/actions/profile.actions";
 import { mockActivities } from "@/lib/data/profile.data";
 import Header from "@/components/layout/header";
@@ -17,14 +18,39 @@ import ProfileSkills from "@/components/profile/profile.skills";
 import ProfileExperience from "@/components/profile/profile.experience";
 import ProfileBio from "@/components/profile/profile.bio";
 import ProfilePersonal from "@/components/profile/profile.personal";
+import ProfileForms from "@/components/profile/profile.forms";
 
 const ProfilePage = ({ userName }: ProfilePageProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfileType | null>(null);
   const [isOwnProfile] = useState<boolean>(!userName);
-  const [currentForm, setCurrentForm] = useState<CurrentFormType>(null);
 
   const accessToken = useAppStore((state) => state.accessToken);
+  const setCurrentForm = useAppStore((state) => state.setCurrentProfileForm);
+
+  const handleProfileSave = (updated: Partial<UserProfileType>) => {
+    const updatedValues =
+      updated.firstName && updated.lastName
+        ? {
+            ...updated,
+            fullName: toTitleCase(`${updated.firstName} ${updated.lastName}`),
+          }
+        : updated.firstName
+          ? {
+              ...updated,
+              fullName: toTitleCase(updated.firstName),
+            }
+          : updated;
+
+    setUserProfile((prev) => {
+      if (!prev) return prev;
+
+      return {
+        ...prev,
+        ...updatedValues,
+      };
+    });
+  };
 
   const getUserProfile = async (userName?: string) => {
     const response = await fetchProfile(userName);
@@ -44,6 +70,10 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
     }
   }, [userName, accessToken]);
 
+  useEffect(() => {
+    setCurrentForm(null);
+  }, [userName, setCurrentForm]);
+
   return (
     <div className="flex flex-col bg-bg h-dvh overflow-hidden text-text-primary">
       <Header
@@ -62,52 +92,36 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
             <ProfileHeader
               isOwnProfile={isOwnProfile}
               userProfile={userProfile}
-              setUserProfile={setUserProfile}
-              currentForm={currentForm}
-              setCurrentForm={setCurrentForm}
             />
 
             <ProfilePersonal
               userProfile={userProfile}
-              setUserProfile={setUserProfile}
               isOwnProfile={isOwnProfile}
-              currentForm={currentForm}
-              setCurrentForm={setCurrentForm}
             />
 
-            <ProfileBio
-              bio={userProfile?.bio}
-              isOwnProfile={isOwnProfile}
-              setUserProfile={setUserProfile}
-              currentForm={currentForm}
-              setCurrentForm={setCurrentForm}
-            />
+            <ProfileBio bio={userProfile?.bio} isOwnProfile={isOwnProfile} />
 
             <ProfileExperience
               experiences={userProfile?.experiences}
               isOwnProfile={isOwnProfile}
-              setUserProfile={setUserProfile}
-              currentForm={currentForm}
-              setCurrentForm={setCurrentForm}
             />
 
             <ProfileSkills
               skills={userProfile?.skills}
               isOwnProfile={isOwnProfile}
-              setUserProfile={setUserProfile}
-              currentForm={currentForm}
-              setCurrentForm={setCurrentForm}
             />
 
             <ProfileInterests
               interests={userProfile?.interests}
               isOwnProfile={isOwnProfile}
-              setUserProfile={setUserProfile}
-              currentForm={currentForm}
-              setCurrentForm={setCurrentForm}
             />
 
             <Activity isOwnProfile={isOwnProfile} activities={mockActivities} />
+
+            <ProfileForms
+              userProfile={userProfile}
+              onSave={handleProfileSave}
+            />
           </div>
         </div>
       </main>

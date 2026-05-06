@@ -7,7 +7,6 @@ import { ProfileHeaderProps } from "@/types/props/profile.props.types";
 import { ImageTargetType } from "@/types/types/profile.types";
 import { useAppStore } from "@/store/store";
 import { compressImage, dataURLtoImage } from "@/helpers/profile.helpers";
-import { toTitleCase } from "@/utils/common.utils";
 import { validateImage } from "@/validators/profile.validators";
 import { useToast } from "@/hooks/toast";
 import { conversationRoutes } from "@/lib/routes/routes";
@@ -22,9 +21,6 @@ import ProfileImagePreview from "@/components/profile/image.preview";
 const ProfileHeader = ({
   isOwnProfile,
   userProfile,
-  setUserProfile,
-  currentForm,
-  setCurrentForm,
 }: ProfileHeaderProps) => {
   const [activeMenu, setActiveMenu] = useState<ImageTargetType>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -255,33 +251,6 @@ const ProfileHeader = ({
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
         userProfile={userProfile}
-        onSave={(updated) => {
-          const updatedValues =
-            updated.firstName && updated.lastName
-              ? {
-                  ...updated,
-                  fullName: toTitleCase(
-                    `${updated.firstName} ${updated.lastName}`,
-                  ),
-                }
-              : updated.firstName
-                ? {
-                    ...updated,
-                    fullName: toTitleCase(updated.firstName),
-                  }
-                : updated;
-
-          setUserProfile((prev) => {
-            if (!prev) return prev;
-
-            return {
-              ...prev,
-              ...updatedValues,
-            };
-          });
-        }}
-        currentForm={currentForm}
-        setCurrentForm={setCurrentForm}
       />
 
       <CameraModal
