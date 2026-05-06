@@ -1,4 +1,4 @@
-import { RefObject } from "react";
+import { Dispatch, RefObject, SetStateAction } from "react";
 import { ConversationResponseType } from "@/types/types/response.types";
 import { ConversationDisplayType } from "@/types/types/conversation.types";
 import {
@@ -33,10 +33,16 @@ export interface ConversationHeaderProps {
 
 export interface MessagesContainerProps {
   messagesContainerRef: RefObject<HTMLDivElement | null>;
-  handleMessagesScroll: () => void;
+  shouldAutoScrollRef: RefObject<boolean>;
   isLoadingMessages: boolean;
   displayMessages: MessageDisplayType[];
-  handleResend: (messageId: string) => void;
+  messages: MessageResponseType[];
+  isSending: boolean;
+  setNewMessagesCount: Dispatch<SetStateAction<number>>;
+  persistAndEmitMessage: (
+    clientMessageId: string,
+    content: string,
+  ) => Promise<void>;
 }
 
 export interface ConversationFooterProps {
@@ -56,4 +62,11 @@ export interface ConversationFooterProps {
     clientMessageId: string,
     content: string,
   ) => Promise<void>;
+}
+
+export interface NewMessagesButtonProps {
+  newMessagesCount: number;
+  shouldAutoScrollRef: RefObject<boolean>;
+  setNewMessagesCount: Dispatch<SetStateAction<number>>;
+  scrollMessagesToBottom: (behavior?: ScrollBehavior) => void;
 }

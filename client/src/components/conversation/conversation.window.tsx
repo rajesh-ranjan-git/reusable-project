@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { Socket } from "socket.io-client";
-import { LuArrowDown, LuMessageSquare } from "react-icons/lu";
 import { ConversationWindowProps } from "@/types/props/conversation.props";
 import {
   ConversationResponseType,
@@ -24,6 +23,8 @@ import {
   markMessageSeen,
   sendConversationMessage,
 } from "@/lib/actions/conversation.action";
+import EmptyConversation from "@/components/conversation/empty.conversation";
+import NewMessagesButton from "@/components/conversation/new.messages.button";
 import ConversationFooter from "@/components/conversation/conversation.footer";
 import MessagesContainer from "@/components/conversation/messages.container";
 import ConversationHeader from "@/components/conversation/conversation.header";
@@ -281,32 +282,6 @@ const ConversationWindow = ({
     setIsSending(false);
   };
 
-  const handleResend = async (messageId: string) => {
-    if (isSending) return;
-
-    const failedMessage = messages.find(
-      (message) =>
-        message.messageId === messageId ||
-        message.clientMessageId === messageId,
-    );
-
-    if (!failedMessage) return;
-
-    await persistAndEmitMessage(
-      failedMessage.clientMessageId ?? failedMessage.messageId ?? messageId,
-      failedMessage.content,
-    );
-  };
-
-  const isMessagesContainerNearBottom = () => {
-    const el = messagesContainerRef.current;
-    if (!el) return true;
-
-    const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
-
-    return distanceFromBottom <= 64;
-  };
-
   const scrollMessagesToBottom = (behavior: ScrollBehavior = "smooth") => {
     const el = messagesContainerRef.current;
     if (!el) return;
@@ -314,22 +289,6 @@ const ConversationWindow = ({
     requestAnimationFrame(() => {
       el.scrollTo({ top: el.scrollHeight, behavior });
     });
-  };
-
-  const handleMessagesScroll = () => {
-    const isNearBottom = isMessagesContainerNearBottom();
-
-    shouldAutoScrollRef.current = isNearBottom;
-
-    if (isNearBottom) {
-      setNewMessagesCount(0);
-    }
-  };
-
-  const handleNewMessagesClick = () => {
-    shouldAutoScrollRef.current = true;
-    setNewMessagesCount(0);
-    scrollMessagesToBottom();
   };
 
   useEffect(() => {
@@ -458,17 +417,7 @@ const ConversationWindow = ({
   }, [accessToken, conversation?.id, conversation?.type, targetUserId]);
 
   if (!conversation) {
-    return (
-      <div className="hidden relative md:flex flex-col flex-1 justify-center items-center gap-2">
-        <div className="flex justify-center items-center mb-4 rounded-full w-16 h-16 text-text-secondary glass">
-          <LuMessageSquare size={32} />
-        </div>
-        <h3>Your Messages</h3>
-        <p className="text-text-secondary">
-          Select a chat to start messaging...
-        </p>
-      </div>
-    );
+    return <EmptyConversation />;
   }
 
   return (
@@ -480,22 +429,21 @@ const ConversationWindow = ({
 
       <MessagesContainer
         messagesContainerRef={messagesContainerRef}
-        handleMessagesScroll={handleMessagesScroll}
+        shouldAutoScrollRef={shouldAutoScrollRef}
         isLoadingMessages={isLoadingMessages}
         displayMessages={displayMessages}
-        handleResend={handleResend}
+        messages={messages}
+        isSending={isSending}
+        setNewMessagesCount={setNewMessagesCount}
+        persistAndEmitMessage={persistAndEmitMessage}
       />
 
-      {newMessagesCount > 0 && (
-        <button
-          onClick={handleNewMessagesClick}
-          className="right-4 bottom-24 md:bottom-20 z-(--z-raised) absolute flex items-center gap-2 px-3 py-2 rounded-full text-sm font-medium text-text-primary glass shadow-glass"
-        >
-          <LuArrowDown size={16} />
-          {newMessagesCount} new{" "}
-          {newMessagesCount === 1 ? "message" : "messages"}
-        </button>
-      )}
+      <NewMessagesButton
+        newMessagesCount={newMessagesCount}
+        shouldAutoScrollRef={shouldAutoScrollRef}
+        setNewMessagesCount={setNewMessagesCount}
+        scrollMessagesToBottom={scrollMessagesToBottom}
+      />
 
       <ConversationFooter
         conversationId={conversation?.id}

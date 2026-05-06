@@ -3,11 +3,50 @@ import MessageBubble from "@/components/conversation/message.bubble";
 
 const MessagesContainer = ({
   messagesContainerRef,
-  handleMessagesScroll,
+  shouldAutoScrollRef,
   isLoadingMessages,
   displayMessages,
-  handleResend,
+  messages,
+  isSending,
+  setNewMessagesCount,
+  persistAndEmitMessage,
 }: MessagesContainerProps) => {
+  const isMessagesContainerNearBottom = () => {
+    const el = messagesContainerRef.current;
+    if (!el) return true;
+
+    const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+
+    return distanceFromBottom <= 64;
+  };
+
+  const handleMessagesScroll = () => {
+    const isNearBottom = isMessagesContainerNearBottom();
+
+    shouldAutoScrollRef.current = isNearBottom;
+
+    if (isNearBottom) {
+      setNewMessagesCount(0);
+    }
+  };
+
+  const handleResend = async (messageId: string) => {
+    if (isSending) return;
+
+    const failedMessage = messages.find(
+      (message) =>
+        message.messageId === messageId ||
+        message.clientMessageId === messageId,
+    );
+
+    if (!failedMessage) return;
+
+    await persistAndEmitMessage(
+      failedMessage.clientMessageId ?? failedMessage.messageId ?? messageId,
+      failedMessage.content,
+    );
+  };
+
   return (
     <div
       ref={messagesContainerRef}
