@@ -76,10 +76,7 @@ const ToastItem = ({ toast, onRemove, index, position }: ToastProps) => {
         damping: 40,
         mass: 1,
       }}
-      className={`${config.cn} relative backdrop-blur-lg min-w-64 max-w-72 overflow-hidden alert p-0`}
-      style={{
-        marginBottom: index > 0 ? "8px" : "0",
-      }}
+      className={`${config.cn} relative backdrop-blur-lg min-w-64 max-w-72 overflow-hidden alert p-0 ${index > 0 ? "8px" : "0"}`}
     >
       {toast.toastProgressPosition === "top" && (
         <div className="h-1" style={progressContainerStyle}>
@@ -95,7 +92,7 @@ const ToastItem = ({ toast, onRemove, index, position }: ToastProps) => {
       <div className="flex items-start gap-2 px-4 py-4">
         <Icon className={`${config.iconColor} alert-icon`} size={20} />
 
-        <div>
+        <div className="pr-4">
           <p className="font-poppins text-sm alert-title">{toast.title}</p>
           <p className={`${config.text} opacity-90 m-0 text-xs`}>
             {toast.message}
@@ -107,7 +104,7 @@ const ToastItem = ({ toast, onRemove, index, position }: ToastProps) => {
             setShouldExit(true);
             setTimeout(() => onRemove(toast.id), 300);
           }}
-          className={`${config.text} top-1 right-1 absolute opacity-50 hover:opacity-100 shadow-glass-bg hover:shadow-glass-bg-strong m-0 p-0 border border-status-error-border hover:border-status-error-text rounded-full transition-opacity`}
+          className={`${config.text} top-1 right-1 absolute opacity-50 hover:opacity-100 shadow-glass-bg hover:shadow-glass-bg-strong m-0 p-0 border rounded-full transition-opacity`}
         >
           <IoClose size={18} />
         </button>

@@ -46,6 +46,8 @@ const PhoneForm = ({
   );
 
   useEffect(() => {
+    phoneInput.reset();
+
     if (isOpen) {
       phoneInput.handleInput(initialData || "");
     }

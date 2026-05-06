@@ -74,13 +74,12 @@ const ChartCard = () => {
             </button>
 
             <div
-              className={`absolute z-(--z-dropdown) w-full mt-2 backdrop-blur-md border border-glass-border overflow-hidden transition-all duration-300 origin-top
+              className={`absolute z-(--z-dropdown) w-full mt-2 backdrop-blur-md border border-glass-border overflow-hidden transition-all duration-300 origin-top rounded-md
                 ${
                   isTimelineDropdownOpen
                     ? "opacity-100 scale-y-100 translate-y-0"
                     : "opacity-0 scale-y-95 -translate-y-2 pointer-events-none"
                 }`}
-              style={{ borderRadius: "var(--border-radius-md)" }}
             >
               <ul className="flex flex-col m-0 py-2 max-h-60 overflow-y-auto list-none">
                 {["Last 6 Months", "This Year", "All Time"].map((role) => (

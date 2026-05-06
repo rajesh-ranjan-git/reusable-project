@@ -39,6 +39,8 @@ const BioForm = ({
   );
 
   useEffect(() => {
+    bioInput.reset();
+
     if (isOpen) {
       bioInput.handleInput(initialData || "");
     }

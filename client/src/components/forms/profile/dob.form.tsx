@@ -42,6 +42,8 @@ const DobForm = ({
   );
 
   useEffect(() => {
+    dobInput.reset();
+
     if (isOpen) {
       dobInput.handleInput(initialData || "");
     }

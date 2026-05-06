@@ -1,27 +1,54 @@
 import Link from "next/link";
 import { FaLink } from "react-icons/fa";
 import { LuCalendar, LuMapPin } from "react-icons/lu";
+import { MdOutlineEdit } from "react-icons/md";
 import { socialPlatformsConfig } from "@/config/profile.config";
 import { ProfileMainProps } from "@/types/props/profile.props.types";
+import { useAppStore } from "@/store/store";
 import { getCurrentJobRole, getFullName } from "@/helpers/profile.helpers";
 import { toTitleCase } from "@/utils/common.utils";
 import { formatDate } from "@/utils/date.utils";
 
 const ProfileMain = ({ user }: ProfileMainProps) => {
+  const setCurrentProfileForm = useAppStore(
+    (state) => state.setCurrentProfileForm,
+  );
+
   return (
     <div className="pointer-events-auto">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <h1 className="font-arima font-extrabold">{getFullName(user)}</h1>
 
         {user?.nickName ? (
-          <span className="text-text-muted text-base md:text-lg italic">
-            &ldquo;{toTitleCase(user.nickName)}&rdquo;
-          </span>
+          <div className="flex gap-2">
+            <span className="text-text-muted text-base md:text-lg italic">
+              &ldquo;{toTitleCase(user.nickName)}&rdquo;
+            </span>
+            <button
+              type="button"
+              className="relative flex-none group-hover:opacity-100 p-1.5 text-sm transition-opacity duration-200 btn btn-ghost"
+              onClick={() => setCurrentProfileForm("basic")}
+              aria-label="Edit Name"
+            >
+              <MdOutlineEdit size={14} />
+            </button>
+          </div>
         ) : null}
       </div>
 
       {user?.userName && (
-        <p className="mt-0.5 text-text-muted text-sm">@{user.userName}</p>
+        <div className="flex gap-2">
+          <p className="mt-0.5 text-text-muted text-sm">@{user.userName}</p>
+
+          <button
+            type="button"
+            className="relative flex-none group-hover:opacity-100 p-1 text-sm transition-opacity duration-200 btn btn-ghost"
+            onClick={() => setCurrentProfileForm("username")}
+            aria-label="Edit Username"
+          >
+            <MdOutlineEdit size={12} />
+          </button>
+        </div>
       )}
 
       {user?.experiences?.length && user?.experiences?.length > 0 ? (

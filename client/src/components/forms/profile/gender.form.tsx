@@ -40,6 +40,8 @@ const GenderForm = ({
   );
 
   useEffect(() => {
+    genderInput.reset();
+
     if (isOpen) {
       genderInput.handleInput(initialData || "");
     }

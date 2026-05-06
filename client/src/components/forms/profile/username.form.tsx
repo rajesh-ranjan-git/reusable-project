@@ -41,6 +41,8 @@ const UsernameForm = ({
   );
 
   useEffect(() => {
+    userNameInput.reset();
+
     if (isOpen) {
       userNameInput.handleInput(initialData);
     }

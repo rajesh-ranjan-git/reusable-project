@@ -44,6 +44,8 @@ const RelationshipForm = ({
   );
 
   useEffect(() => {
+    relationshipInput.reset();
+
     if (isOpen) {
       relationshipInput.handleInput(initialData || "");
     }

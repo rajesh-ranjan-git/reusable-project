@@ -61,6 +61,10 @@ const BasicInfoForm = ({
   );
 
   useEffect(() => {
+    firstNameInput.reset();
+    lastNameInput.reset();
+    nickNameInput.reset();
+
     if (isOpen) {
       firstNameInput.handleInput(initialData?.firstName ?? "");
       lastNameInput.handleInput(initialData?.lastName ?? "");

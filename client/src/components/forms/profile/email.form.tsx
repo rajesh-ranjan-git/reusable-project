@@ -44,6 +44,8 @@ const EmailForm = ({
   );
 
   useEffect(() => {
+    emailInput.reset();
+
     if (isOpen) {
       emailInput.handleInput(initialData || "");
     }

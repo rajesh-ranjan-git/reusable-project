@@ -151,6 +151,14 @@ const SocialLinksForm = ({
   );
 
   useEffect(() => {
+    facebookInput.reset();
+    instagramInput.reset();
+    twitterInput.reset();
+    githubInput.reset();
+    linkedinInput.reset();
+    youtubeInput.reset();
+    websiteInput.reset();
+
     if (isOpen) {
       facebookInput.handleInput(initialData?.facebook ?? "");
       instagramInput.handleInput(initialData?.instagram ?? "");
