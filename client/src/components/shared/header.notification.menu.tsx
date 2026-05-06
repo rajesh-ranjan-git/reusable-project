@@ -92,7 +92,7 @@ const HeaderNotificationMenu = ({
                   <li
                     key={notification.id}
                     onClick={() => handleNavigation(notification.path)}
-                    className="flex items-start gap-3 hover:bg-glass-bg-subtle px-4 py-3 w-full text-left"
+                    className="flex items-start gap-3 hover:bg-glass-bg-subtle px-4 py-3 w-full text-left cursor-pointer select-none"
                   >
                     <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
                       <Icon size={16} className={notification.color} />

@@ -13,7 +13,7 @@ const ProfileMenuItem = ({ item, handleNavigation }: ProfileMenuItemProps) => {
   return (
     <li
       onClick={() => handleNavigation(item.url ?? "")}
-      className="flex items-center gap-3 hover:bg-glass-bg-subtle px-4 py-1 w-full text-left transition-colors"
+      className="flex items-center gap-3 hover:bg-glass-bg-subtle px-4 py-1 w-full text-left transition-colors cursor-pointer select-none"
     >
       <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
         {item.icon}
