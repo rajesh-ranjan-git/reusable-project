@@ -18,6 +18,7 @@ const DobForm = ({
   isOpen,
   onClose,
   initialData = "",
+  joined,
   onSave,
 }: DobFormProps) => {
   const { showToast } = useToast();
@@ -89,7 +90,7 @@ const DobForm = ({
           <FormField label="Date of Birth" htmlFor="dob" error={dobInput.error}>
             <FormDatePicker
               id="dob"
-              maxDate={new Date()}
+              maxDate={joined ? new Date(joined) : new Date()}
               value={dobInput.raw ? new Date(dobInput.raw) : null}
               onChange={(date) => {
                 const formatted = formatLocalDate(date)!;
@@ -105,7 +106,7 @@ const DobForm = ({
           </div>
         </div>
 
-        <input type="hidden" name="dob" value={dobInput.raw} />
+        <input type="hidden" name="dob" value={dobInput.raw ?? ""} />
       </Form>
     </ModalPortal>
   );

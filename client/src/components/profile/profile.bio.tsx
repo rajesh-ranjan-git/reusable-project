@@ -2,7 +2,7 @@ import { IoMdAdd } from "react-icons/io";
 import { MdOutlineEdit } from "react-icons/md";
 import { ProfileBioProps } from "@/types/props/profile.props.types";
 import { useAppStore } from "@/store/store";
-import { toTitleCase } from "@/utils/common.utils";
+import { toSentenceCase } from "@/utils/common.utils";
 
 const ProfileBio = ({ bio, isOwnProfile }: ProfileBioProps) => {
   const setCurrentForm = useAppStore((state) => state.setCurrentProfileForm);
@@ -24,11 +24,11 @@ const ProfileBio = ({ bio, isOwnProfile }: ProfileBioProps) => {
             .split("\n")
             .map((bio, idx) => (
               <p key={`${bio.length}-${idx}`} className="text-text-primary">
-                {toTitleCase(bio)}
+                {toSentenceCase(bio)}
               </p>
             ))
         ) : (
-          toTitleCase(bio.trim())
+          toSentenceCase(bio.trim())
         )
       ) : (
         <p className="text-text-muted">Add bio to show here...</p>

@@ -20,20 +20,19 @@ const ProfileMain = ({ user }: ProfileMainProps) => {
         <h1 className="font-arima font-extrabold">{getFullName(user)}</h1>
 
         {user?.nickName ? (
-          <div className="flex gap-2">
-            <span className="text-text-muted text-base md:text-lg italic">
-              &ldquo;{toTitleCase(user.nickName)}&rdquo;
-            </span>
-            <button
-              type="button"
-              className="relative flex-none group-hover:opacity-100 p-1.5 text-sm transition-opacity duration-200 btn btn-ghost"
-              onClick={() => setCurrentProfileForm("basic")}
-              aria-label="Edit Name"
-            >
-              <MdOutlineEdit size={14} />
-            </button>
-          </div>
+          <span className="text-text-muted text-base md:text-lg italic">
+            &ldquo;{toTitleCase(user.nickName)}&rdquo;
+          </span>
         ) : null}
+
+        <button
+          type="button"
+          className="relative flex-none group-hover:opacity-100 p-1.5 text-sm transition-opacity duration-200 btn btn-ghost"
+          onClick={() => setCurrentProfileForm("basic")}
+          aria-label="Edit Name"
+        >
+          <MdOutlineEdit size={16} />
+        </button>
       </div>
 
       {user?.userName && (

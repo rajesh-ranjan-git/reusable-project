@@ -69,6 +69,7 @@ export interface DobFormProps {
   isOpen: boolean;
   onClose: () => void;
   initialData?: string | null;
+  joined?: string | null;
   onSave: (dob: string) => void;
 }
 
@@ -90,6 +91,7 @@ export interface ExperienceFormProps {
   isOpen: boolean;
   onClose: () => void;
   initialData?: ExperienceType[];
+  joined?: string | null;
   onSave: (experiences: ExperienceType[]) => void;
 }
 

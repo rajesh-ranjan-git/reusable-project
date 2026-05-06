@@ -56,7 +56,7 @@ const CameraModal = ({ isOpen, onClose, onCapture }: CameraModalProps) => {
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            className="relative flex flex-col w-full max-w-2xl overflow-hidden glass"
+            className="relative flex flex-col w-full md:max-w-xl overflow-hidden glass"
           >
             <div className="flex items-center p-2">
               <h3 className="pt-1 w-full font-arima font-semibold text-center">
@@ -67,7 +67,7 @@ const CameraModal = ({ isOpen, onClose, onCapture }: CameraModalProps) => {
               </button>
             </div>
 
-            <div className="flex flex-col justify-center items-center p-2 min-h-75 md:min-h-full">
+            <div className="flex flex-col justify-center items-center p-2 min-h-64 md:min-h-full">
               {imgSrc ? (
                 <Image
                   src={imgSrc}
@@ -77,14 +77,14 @@ const CameraModal = ({ isOpen, onClose, onCapture }: CameraModalProps) => {
                   className="shadow-inner rounded-lg w-full object-cover"
                 />
               ) : (
-                <div className="relative flex justify-center items-center rounded-md w-full min-h-75 overflow-hidden">
+                <div className="relative flex justify-center items-center rounded-md w-full min-h-64 overflow-hidden">
                   {!webcamError ? (
                     <Webcam
                       audio={false}
                       ref={webcamRef}
                       screenshotFormat="image/jpeg"
                       videoConstraints={{ facingMode: "user" }}
-                      className="w-full min-h-75 max-h-100 object-cover"
+                      className="w-full min-h-64 max-h-100 object-cover"
                       onUserMediaError={() => setWebcamError(true)}
                     />
                   ) : (

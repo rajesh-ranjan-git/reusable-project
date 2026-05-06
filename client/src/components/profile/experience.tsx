@@ -1,6 +1,6 @@
 import { LuBriefcase, LuBuilding2 } from "react-icons/lu";
 import { ExperienceProps } from "@/types/props/profile.props.types";
-import { toTitleCase } from "@/utils/common.utils";
+import { toSentenceCase, toTitleCase } from "@/utils/common.utils";
 import { formatDate, getDuration } from "@/utils/date.utils";
 
 const Experience = ({ experiences }: ExperienceProps) => {
@@ -65,7 +65,7 @@ const Experience = ({ experiences }: ExperienceProps) => {
                   {experience?.description
                     ? experience.description && (
                         <p className="text-text-secondary text-xs md:text-sm leading-relaxed">
-                          {toTitleCase(experience.description)}
+                          {toSentenceCase(experience.description)}
                         </p>
                       )
                     : null}

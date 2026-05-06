@@ -74,6 +74,7 @@ const ProfileForms = ({ userProfile, onSave }: ProfileFormsProps) => {
         isOpen={currentForm === "dob"}
         onClose={handleClose}
         initialData={userProfile.dob}
+        joined={userProfile.createdAt}
         onSave={(dob) => onSave({ dob })}
       />
 
@@ -116,6 +117,7 @@ const ProfileForms = ({ userProfile, onSave }: ProfileFormsProps) => {
         isOpen={currentForm === "experience"}
         onClose={handleClose}
         initialData={userProfile.experiences ?? []}
+        joined={userProfile.createdAt}
         onSave={(experiences) => onSave({ experiences })}
       />
     </>

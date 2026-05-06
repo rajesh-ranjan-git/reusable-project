@@ -26,6 +26,7 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
   const [isOwnProfile] = useState<boolean>(!userName);
 
   const accessToken = useAppStore((state) => state.accessToken);
+  const setLoggedInUser = useAppStore((state) => state.setLoggedInUser);
   const setCurrentForm = useAppStore((state) => state.setCurrentProfileForm);
 
   const handleProfileSave = (updated: Partial<UserProfileType>) => {
@@ -48,6 +49,31 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
       return {
         ...prev,
         ...updatedValues,
+      };
+    });
+
+    const loggedInUserUpdates = {
+      ...(updatedValues?.email && { email: updatedValues.email }),
+      ...(updatedValues?.userName && {
+        userName: updatedValues.userName,
+      }),
+      ...(updatedValues?.firstName && {
+        firstName: updatedValues.firstName,
+      }),
+      ...(updatedValues?.lastName && {
+        lastName: updatedValues.lastName,
+      }),
+      ...(updatedValues?.fullName && {
+        fullName: updatedValues.fullName,
+      }),
+    };
+
+    setLoggedInUser((prev) => {
+      if (!prev) return prev;
+
+      return {
+        ...prev,
+        ...loggedInUserUpdates,
       };
     });
   };

@@ -37,6 +37,11 @@ export type ProfilesResponseType = {
   pagination: ResponsePaginationType;
 };
 
+export type UploadImageResponseType = {
+  id: string;
+  avatar: string;
+};
+
 export interface ConversationResponseType {
   id: string;
   type: ConversationType;

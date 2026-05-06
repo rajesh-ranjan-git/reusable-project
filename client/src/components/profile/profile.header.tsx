@@ -17,11 +17,9 @@ import ProfileCover from "@/components/profile/cover";
 import ProfileAvatar from "@/components/profile/avatar";
 import ProfileMain from "@/components/profile/profile.main";
 import ProfileImagePreview from "@/components/profile/image.preview";
+import { UploadImageResponseType } from "@/types/types/response.types";
 
-const ProfileHeader = ({
-  isOwnProfile,
-  userProfile,
-}: ProfileHeaderProps) => {
+const ProfileHeader = ({ isOwnProfile, userProfile }: ProfileHeaderProps) => {
   const [activeMenu, setActiveMenu] = useState<ImageTargetType>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
@@ -40,6 +38,7 @@ const ProfileHeader = ({
   const { showToast } = useToast();
 
   const loggedInUser = useAppStore((state) => state.loggedInUser);
+  const setLoggedInUser = useAppStore((state) => state.setLoggedInUser);
 
   const handleUploadClick = (target: ImageTargetType) => {
     setCurrentImageTarget(target);
@@ -85,12 +84,15 @@ const ProfileHeader = ({
       if (currentImageTarget === "avatar") setLocalAvatar(imageUrl);
       if (currentImageTarget === "cover") setLocalCover(imageUrl);
 
-      const response = await uploadImage(compressedImage, currentImageTarget);
+      const uploadImageResponse = await uploadImage(
+        compressedImage,
+        currentImageTarget,
+      );
 
-      if (!response.success) {
+      if (!uploadImageResponse.success) {
         showToast({
-          title: response.code,
-          message: response.message,
+          title: uploadImageResponse.code,
+          message: uploadImageResponse.message,
           variant: "error",
         });
 
@@ -99,6 +101,20 @@ const ProfileHeader = ({
         }
         if (currentImageTarget === "cover" && previousImage) {
           setLocalCover(previousImage);
+        }
+      } else {
+        const uploadImageResponseData =
+          uploadImageResponse.data as UploadImageResponseType;
+
+        if (currentImageTarget === "avatar") {
+          setLoggedInUser((prev) => {
+            if (!prev) return prev;
+
+            return {
+              ...prev,
+              avatar: uploadImageResponseData.avatar ?? localAvatar,
+            };
+          });
         }
       }
     } catch (error) {
@@ -130,14 +146,31 @@ const ProfileHeader = ({
 
       const compressedImage = await compressImage(image);
 
-      const response = await uploadImage(compressedImage, currentImageTarget);
+      const uploadImageResponse = await uploadImage(
+        compressedImage,
+        currentImageTarget,
+      );
 
-      if (!response.success) {
+      if (!uploadImageResponse.success) {
         showToast({
-          title: response.code,
-          message: response.message,
+          title: uploadImageResponse.code,
+          message: uploadImageResponse.message,
           variant: "error",
         });
+      } else {
+        const uploadImageResponseData =
+          uploadImageResponse.data as UploadImageResponseType;
+
+        if (currentImageTarget === "avatar") {
+          setLoggedInUser((prev) => {
+            if (!prev) return prev;
+
+            return {
+              ...prev,
+              avatar: uploadImageResponseData?.avatar ?? localAvatar,
+            };
+          });
+        }
       }
     } catch (error) {
     } finally {

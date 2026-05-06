@@ -5,7 +5,7 @@ import { FormStateType } from "@/types/types/actions.types";
 import { BioFormProps } from "@/types/props/forms.props.types";
 import { initialState } from "@/config/forms.config";
 import { propertyConstraintsConfig } from "@/config/profile.config";
-import { toTitleCase } from "@/utils/common.utils";
+import { toSentenceCase } from "@/utils/common.utils";
 import { validateBio } from "@/validators/profile.validators";
 import { useToast } from "@/hooks/toast";
 import useInputFieldValidator from "@/hooks/useInputFieldValidation";
@@ -138,9 +138,11 @@ const BioForm = ({
                       .trim()
                       .split("\n")
                       .map((bio, idx) => (
-                        <p key={`${bio.length}-${idx}`}>{toTitleCase(bio)}</p>
+                        <p key={`${bio.length}-${idx}`}>
+                          {toSentenceCase(bio)}
+                        </p>
                       ))
-                  : toTitleCase(bioInput.raw.trim())}
+                  : toSentenceCase(bioInput.raw.trim())}
               </div>
             </div>
           )}

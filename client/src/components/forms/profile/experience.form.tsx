@@ -32,6 +32,7 @@ const ExperienceForm = ({
   isOpen,
   onClose,
   initialData = [],
+  joined,
   onSave,
 }: ExperienceFormProps) => {
   const [entries, setEntries] = useState<ExperienceType[]>(
@@ -287,6 +288,7 @@ const ExperienceForm = ({
                 >
                   <FormDatePicker
                     id={`start-date-${idx}`}
+                    maxDate={joined ? new Date(joined) : new Date()}
                     value={exp.startDate ? new Date(exp.startDate) : null}
                     onChange={(date) => {
                       const formatted = formatLocalDate(date)!;
@@ -307,6 +309,7 @@ const ExperienceForm = ({
                 >
                   <FormDatePicker
                     id={`end-date-${idx}`}
+                    maxDate={joined ? new Date(joined) : new Date()}
                     value={exp.endDate ? new Date(exp.endDate) : null}
                     disabled={exp.isCurrent}
                     onChange={(date) => {

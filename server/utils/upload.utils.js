@@ -1,7 +1,9 @@
 import cloudinary from "../config/cloudinary.config.js";
+import { sanitizeMongoData } from "../db/db.utils.js";
 import Profile from "../models/user/profile/profile.model.js";
 import { googleDriveService } from "../services/drive/google.drive.service.js";
 import AppError from "../services/error/error.service.js";
+import { selectObjectProperties } from "./common.utils.js";
 
 export const uploadToGoogleDrive = async (userId, profile, type, file) => {
   const folderId = await googleDriveService.getUploadFolderId(type);
@@ -37,6 +39,7 @@ export const uploadToGoogleDrive = async (userId, profile, type, file) => {
     {
       returnDocument: "after",
       runValidators: true,
+      select: type,
     },
   );
 
@@ -64,7 +67,10 @@ export const uploadToGoogleDrive = async (userId, profile, type, file) => {
     }
   }
 
-  return updatedProfile;
+  return selectObjectProperties(sanitizeMongoData(updatedProfile), [
+    "id",
+    type,
+  ]);
 };
 
 export const uploadToCloudinary = async (userId, profile, type, file) => {
@@ -133,6 +139,7 @@ export const uploadToCloudinary = async (userId, profile, type, file) => {
     {
       returnDocument: "after",
       runValidators: true,
+      select: type,
     },
   );
 
@@ -160,5 +167,8 @@ export const uploadToCloudinary = async (userId, profile, type, file) => {
     }
   }
 
-  return updatedProfile;
+  return selectObjectProperties(sanitizeMongoData(updatedProfile), [
+    "id",
+    type,
+  ]);
 };
