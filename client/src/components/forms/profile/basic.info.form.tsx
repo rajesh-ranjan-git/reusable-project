@@ -5,25 +5,14 @@ import { MdBadge } from "react-icons/md";
 import { initialState } from "@/config/forms.config";
 import { FormStateType } from "@/types/types/actions.types";
 import { BasicInfoFormProps } from "@/types/props/forms.props.types";
+import { nameValidator } from "@/validators/auth.validators";
 import { useToast } from "@/hooks/toast";
 import useInputFieldValidator from "@/hooks/useInputFieldValidation";
+import { updateProfile } from "@/lib/actions/profile.actions";
 import ModalPortal from "@/components/forms/shared/form.modal";
 import FormField from "@/components/forms/shared/form.field";
 import FormInput from "@/components/forms/shared/form.input";
 import FormFooter from "@/components/forms/shared/form.footer";
-
-// TODO: replace with actual server action
-const updateBasicInfo = async (
-  _prevState: FormStateType,
-  _formData: FormData,
-): Promise<FormStateType> => {
-  return {
-    status: "SUCCESS",
-    success: true,
-    message: "Profile updated successfully!",
-    code: "SUCCESS",
-  };
-};
 
 const BasicInfoForm = ({
   isOpen,
@@ -36,30 +25,35 @@ const BasicInfoForm = ({
   const firstNameInput = useInputFieldValidator<string>({
     initialValue: "",
     validate: (val: string) => {
-      if (!val.trim()) return "First name is required";
-      if (val.trim().length < 2) return "Must be at least 2 characters";
-      return "";
+      if (!val) return "First name is required!";
+
+      const { message } = nameValidator(val, "firstName");
+      return message ?? "";
     },
   });
 
   const lastNameInput = useInputFieldValidator<string>({
     initialValue: "",
     validate: (val: string) => {
-      if (val.trim() && val.trim().length < 2)
-        return "Must be at least 2 characters";
-      return "";
+      const { message } = nameValidator(val, "lastName");
+
+      return message ?? "";
     },
   });
 
   const nickNameInput = useInputFieldValidator<string>({
     initialValue: "",
-    validate: () => "",
+    validate: (val: string) => {
+      const { message } = nameValidator(val, "nickName");
+
+      return message ?? "";
+    },
   });
 
   const action = async (
     prevState: FormStateType,
     formData: FormData,
-  ): Promise<FormStateType> => updateBasicInfo(prevState, formData);
+  ): Promise<FormStateType> => updateProfile(prevState, formData);
 
   const [state, basicInfoFormAction, isPending] = useActionState(
     action,
@@ -84,9 +78,11 @@ const BasicInfoForm = ({
         variant: "success",
       });
       onSave({
-        firstName: firstNameInput.raw,
-        lastName: lastNameInput.raw,
-        nickName: nickNameInput.raw,
+        firstName: firstNameInput.raw
+          ? firstNameInput.raw
+          : initialData.firstName,
+        lastName: lastNameInput.raw ? lastNameInput.raw : initialData.lastName,
+        nickName: nickNameInput.raw ? nickNameInput.raw : initialData.nickName,
       });
       onClose();
     } else {
@@ -126,6 +122,7 @@ const BasicInfoForm = ({
             <FormField
               label="First Name"
               htmlFor="firstName"
+              required
               error={firstNameInput.error}
             >
               <FormInput
@@ -165,14 +162,7 @@ const BasicInfoForm = ({
           </div>
 
           <FormField
-            label={
-              <span className="flex items-center gap-1.5">
-                Nickname
-                <span className="font-normal text-text-muted text-xs">
-                  (optional)
-                </span>
-              </span>
-            }
+            label="Nickname"
             htmlFor="nickName"
             error={nickNameInput.error}
           >

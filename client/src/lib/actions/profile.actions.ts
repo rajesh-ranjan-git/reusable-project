@@ -1,6 +1,7 @@
 import {
   allowedSkillLevelsConfig,
   propertyConstraintsConfig,
+  socialPlatformsConfig,
 } from "@/config/profile.config";
 import { FormStateType, SectionErrorsType } from "@/types/types/actions.types";
 import {
@@ -14,11 +15,16 @@ import {
   datePropertyValidator,
   listPropertiesValidator,
   numberRegexPropertiesValidator,
+  regexPropertiesValidator,
   stringPropertiesValidator,
 } from "@/validators/common.validators";
 import { api } from "@/lib/api/apiHandler";
 import { apiUrls } from "@/lib/api/apiUtils";
-import { emailValidator } from "@/validators/auth.validators";
+import {
+  emailValidator,
+  nameValidator,
+  userNameValidator,
+} from "@/validators/auth.validators";
 import { PHONE_REGEX } from "@/constants/regex.constants";
 
 export const uploadImage = async (
@@ -56,6 +62,9 @@ export const updateProfile = async (
   prevState: FormStateType,
   formData: FormData,
 ): Promise<FormStateType> => {
+  const firstName = formData.get("firstName");
+  const lastName = formData.get("lastName");
+  const nickName = formData.get("nickName");
   const bio = formData.get("bio");
   const maritalStatus = formData.get("maritalStatus");
   const interestsRaw = formData.get("interests");
@@ -69,6 +78,18 @@ export const updateProfile = async (
   }
 
   const errors: FormStateType["errors"] = {};
+
+  const { validatedName: validatedFirstName, message: firstNameErrorMessage } =
+    nameValidator(firstName, "firstName");
+  errors.firstName = firstNameErrorMessage ?? null;
+
+  const { validatedName: validatedLastName, message: lastNameErrorMessage } =
+    nameValidator(lastName, "lastName");
+  errors.lastName = lastNameErrorMessage ?? null;
+
+  const { validatedName: validatedNickName, message: nickNameErrorMessage } =
+    nameValidator(nickName, "nickName");
+  errors.nickName = nickNameErrorMessage ?? null;
 
   const { validatedProperty: validatedBio, message: bioErrorMessage } =
     stringPropertiesValidator(
@@ -97,7 +118,7 @@ export const updateProfile = async (
   if (Object.values(errors).some((error) => error !== null)) {
     return {
       success: false,
-      status: "VALIDATION FAILED",
+      status: "PROFILE VALIDATION FAILED",
       code: "PROFILE UPDATE FAILED",
       statusCode: 422,
       message: "Please provide valid details to update!",
@@ -113,6 +134,9 @@ export const updateProfile = async (
     const response = await api.patch(
       apiUrls.profile.actionProfile,
       {
+        firstName: validatedFirstName,
+        lastName: validatedLastName,
+        nickName: validatedNickName,
         bio: validatedBio,
         maritalStatus,
         interests: validatedInterests,
@@ -124,10 +148,189 @@ export const updateProfile = async (
   } catch (error: any) {
     return {
       success: false,
-      status: error?.status ?? "VALIDATION FAILED",
+      status: error?.status ?? "PROFILE VALIDATION FAILED",
       code: error?.code ?? "PROFILE UPDATE FAILED",
       statusCode: error?.statusCode ?? 500,
       message: error?.message ?? "Unable to update profile, please try again!",
+      details: error?.details ?? null,
+      timestamp: new Date().toISOString(),
+      metadata: error?.metadata ?? null,
+      inputs: Object.fromEntries(formData),
+    };
+  }
+};
+
+export const updateUsername = async (
+  prevState: FormStateType,
+  formData: FormData,
+): Promise<FormStateType> => {
+  const userName = formData.get("userName");
+
+  const errors: FormStateType["errors"] = {};
+
+  const { validatedUserName, message: userNameErrorMessage } =
+    userNameValidator(userName);
+  errors.userName = userNameErrorMessage ?? null;
+
+  if (Object.values(errors).some((error) => error !== null)) {
+    return {
+      success: false,
+      status: "USERNAME VALIDATION FAILED",
+      code: "USERNAME UPDATE FAILED",
+      statusCode: 422,
+      message: "Please provide valid email address!",
+      details: errors,
+      timestamp: new Date().toISOString(),
+      metadata: null,
+      errors,
+      inputs: Object.fromEntries(formData),
+    };
+  }
+
+  try {
+    const response = await api.put(
+      apiUrls.profile.updateUserName,
+      { userName: validatedUserName },
+      { requireAuth: true },
+    );
+
+    return { ...response };
+  } catch (error: any) {
+    return {
+      success: false,
+      status: error?.status ?? "USERNAME VALIDATION FAILED",
+      code: error?.code ?? "USERNAME UPDATE FAILED",
+      statusCode: error?.statusCode ?? 500,
+      message: error?.message ?? "Unable to update email, please try again!",
+      details: error?.details ?? null,
+      timestamp: new Date().toISOString(),
+      metadata: error?.metadata ?? null,
+      inputs: Object.fromEntries(formData),
+    };
+  }
+};
+
+export const updateSocialLinks = async (
+  prevState: FormStateType,
+  formData: FormData,
+): Promise<FormStateType> => {
+  const facebook = formData.get("facebook");
+  const instagram = formData.get("instagram");
+  const twitter = formData.get("twitter");
+  const github = formData.get("github");
+  const linkedin = formData.get("linkedin");
+  const youtube = formData.get("youtube");
+  const website = formData.get("website");
+
+  const errors: FormStateType["errors"] = {};
+
+  const {
+    validatedProperty: validatedFacebook,
+    message: facebookErrorMessage,
+  } = regexPropertiesValidator(
+    "facebook",
+    facebook,
+    socialPlatformsConfig.filter((platform) => platform.name === "facebook")[0]
+      .regex,
+  );
+  errors.facebook = facebookErrorMessage ?? null;
+
+  const {
+    validatedProperty: validatedInstagram,
+    message: instagramErrorMessage,
+  } = regexPropertiesValidator(
+    "instagram",
+    instagram,
+    socialPlatformsConfig.filter((platform) => platform.name === "instagram")[0]
+      .regex,
+  );
+  errors.instagram = instagramErrorMessage ?? null;
+
+  const { validatedProperty: validatedTwitter, message: twitterErrorMessage } =
+    regexPropertiesValidator(
+      "twitter",
+      twitter,
+      socialPlatformsConfig.filter((platform) => platform.name === "twitter")[0]
+        .regex,
+    );
+  errors.twitter = twitterErrorMessage ?? null;
+
+  const { validatedProperty: validatedGithub, message: githubErrorMessage } =
+    regexPropertiesValidator(
+      "github",
+      github,
+      socialPlatformsConfig.filter((platform) => platform.name === "github")[0]
+        .regex,
+    );
+  errors.github = githubErrorMessage ?? null;
+
+  const {
+    validatedProperty: validatedLinkedin,
+    message: linkedinErrorMessage,
+  } = regexPropertiesValidator(
+    "linkedin",
+    linkedin,
+    socialPlatformsConfig.filter((platform) => platform.name === "linkedin")[0]
+      .regex,
+  );
+  errors.linkedin = linkedinErrorMessage ?? null;
+
+  const { validatedProperty: validatedYoutube, message: youtubeErrorMessage } =
+    regexPropertiesValidator(
+      "youtube",
+      youtube,
+      socialPlatformsConfig.filter((platform) => platform.name === "youtube")[0]
+        .regex,
+    );
+  errors.youtube = youtubeErrorMessage ?? null;
+
+  const { validatedProperty: validatedWebsite, message: websiteErrorMessage } =
+    regexPropertiesValidator(
+      "website",
+      website,
+      socialPlatformsConfig.filter((platform) => platform.name === "website")[0]
+        .regex,
+    );
+  errors.website = websiteErrorMessage ?? null;
+
+  if (Object.values(errors).some((error) => error !== null)) {
+    return {
+      success: false,
+      status: "SOCIAL LINKS VALIDATION FAILED",
+      code: "SOCIAL LINKS UPDATE FAILED",
+      statusCode: 422,
+      message: "Please provide valid email address!",
+      details: errors,
+      timestamp: new Date().toISOString(),
+      metadata: null,
+      errors,
+      inputs: Object.fromEntries(formData),
+    };
+  }
+
+  try {
+    const response = await api.patch(
+      apiUrls.social.actionSocialLinks,
+      {
+        facebook: validatedFacebook,
+        instagram: validatedInstagram,
+        twitter: validatedTwitter,
+        github: validatedGithub,
+        linkedin: validatedLinkedin,
+        youtube: validatedYoutube,
+        website: validatedWebsite,
+      },
+      { requireAuth: true },
+    );
+
+    return { ...response };
+  } catch (error: any) {
+    return {
+      success: false,
+      status: error?.status ?? "SOCIAL LINKS VALIDATION FAILED",
+      code: error?.code ?? "SOCIAL LINKS UPDATE FAILED",
+      statusCode: error?.statusCode ?? 500,
+      message: error?.message ?? "Unable to update email, please try again!",
       details: error?.details ?? null,
       timestamp: new Date().toISOString(),
       metadata: error?.metadata ?? null,
@@ -397,8 +600,8 @@ export const updateSkills = async (
 
     return {
       success: false,
-      status: "VALIDATION FAILED",
-      code: "PROFILE UPDATE FAILED",
+      status: "SKILLS VALIDATION FAILED",
+      code: "SKILLS UPDATE FAILED",
       statusCode: 422,
       message: errors.skills,
       details: { errors: skillErrors },
@@ -420,10 +623,10 @@ export const updateSkills = async (
   } catch (error: any) {
     return {
       success: false,
-      status: error?.status ?? "VALIDATION FAILED",
-      code: error?.code ?? "PROFILE UPDATE FAILED",
+      status: error?.status ?? "SKILLS VALIDATION FAILED",
+      code: error?.code ?? "SKILLS UPDATE FAILED",
       statusCode: error?.statusCode ?? 500,
-      message: error?.message ?? "Unable to update profile, please try again!",
+      message: error?.message ?? "Unable to update skills, please try again!",
       details: error?.details ?? null,
       timestamp: new Date().toISOString(),
       metadata: error?.metadata ?? null,
@@ -530,8 +733,8 @@ export const updateExperience = async (
 
     return {
       success: false,
-      status: "VALIDATION FAILED",
-      code: "PROFILE UPDATE FAILED",
+      status: "EXPERIENCE VALIDATION FAILED",
+      code: "EXPERIENCE UPDATE FAILED",
       statusCode: 422,
       message: "Some experiences are invalid!",
       details: { errors: experienceErrors },

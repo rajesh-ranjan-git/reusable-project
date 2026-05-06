@@ -67,6 +67,7 @@ export type SocialType = {
   twitter?: string;
   github?: string;
   linkedin?: string;
+  youtube?: string;
   website?: string;
 };
 

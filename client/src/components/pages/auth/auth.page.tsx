@@ -67,7 +67,7 @@ const AuthPage = () => {
     initialValue: "",
     validate: (val: string) => {
       const { isNameValid, message } = nameValidator(val, "firstName");
-      if (!isNameValid) return message ?? "Please provide your password!";
+      if (!isNameValid) return message ?? "Please provide a valid first name!";
 
       return "";
     },
@@ -78,7 +78,7 @@ const AuthPage = () => {
     validate: (val: string) => {
       const { isNameValid, message } = nameValidator(val, "lastName");
 
-      if (!isNameValid) return message ?? "Please provide your password!";
+      if (!isNameValid) return message ?? "Please provide a valid last name!";
 
       return "";
     },

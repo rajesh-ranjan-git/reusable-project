@@ -7,16 +7,17 @@ import { ProfileHeaderProps } from "@/types/props/profile.props.types";
 import { ImageTargetType } from "@/types/types/profile.types";
 import { useAppStore } from "@/store/store";
 import { compressImage, dataURLtoImage } from "@/helpers/profile.helpers";
+import { toTitleCase } from "@/utils/common.utils";
 import { validateImage } from "@/validators/profile.validators";
 import { useToast } from "@/hooks/toast";
 import { conversationRoutes } from "@/lib/routes/routes";
 import { uploadImage } from "@/lib/actions/profile.actions";
 import CameraModal from "@/components/shared/camera.modal";
+import EditProfileModal from "@/components/shared/edit.profile.modal";
 import ProfileCover from "@/components/profile/cover";
 import ProfileAvatar from "@/components/profile/avatar";
 import ProfileMain from "@/components/profile/profile.main";
 import ProfileImagePreview from "@/components/profile/image.preview";
-import EditProfileModal from "../shared/edit.profile.modal";
 
 const ProfileHeader = ({
   isOwnProfile,
@@ -255,12 +256,27 @@ const ProfileHeader = ({
         onClose={() => setIsEditOpen(false)}
         userProfile={userProfile}
         onSave={(updated) => {
+          const updatedValues =
+            updated.firstName && updated.lastName
+              ? {
+                  ...updated,
+                  fullName: toTitleCase(
+                    `${updated.firstName} ${updated.lastName}`,
+                  ),
+                }
+              : updated.firstName
+                ? {
+                    ...updated,
+                    fullName: toTitleCase(updated.firstName),
+                  }
+                : updated;
+
           setUserProfile((prev) => {
             if (!prev) return prev;
 
             return {
               ...prev,
-              ...updated,
+              ...updatedValues,
             };
           });
         }}

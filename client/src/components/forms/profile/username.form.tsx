@@ -4,25 +4,14 @@ import { LuAtSign } from "react-icons/lu";
 import { initialState } from "@/config/forms.config";
 import { FormStateType } from "@/types/types/actions.types";
 import { UsernameFormProps } from "@/types/props/forms.props.types";
+import { userNameValidator } from "@/validators/auth.validators";
 import { useToast } from "@/hooks/toast";
 import useInputFieldValidator from "@/hooks/useInputFieldValidation";
+import { updateUsername } from "@/lib/actions/profile.actions";
 import ModalPortal from "@/components/forms/shared/form.modal";
 import FormField from "@/components/forms/shared/form.field";
 import FormInput from "@/components/forms/shared/form.input";
 import FormFooter from "@/components/forms/shared/form.footer";
-
-// TODO: replace with actual server action
-const updateUsername = async (
-  _prevState: FormStateType,
-  _formData: FormData,
-): Promise<FormStateType> => {
-  return {
-    status: "SUCCESS",
-    success: true,
-    message: "Username updated successfully!",
-    code: "SUCCESS",
-  };
-};
 
 const UsernameForm = ({
   isOpen,
@@ -32,15 +21,12 @@ const UsernameForm = ({
 }: UsernameFormProps) => {
   const { showToast } = useToast();
 
-  const usernameInput = useInputFieldValidator<string>({
+  const userNameInput = useInputFieldValidator<string>({
     initialValue: "",
     validate: (val: string) => {
-      if (!val.trim()) return "Username is required";
-      if (val.length < 3) return "Must be at least 3 characters";
-      if (val.length > 30) return "Cannot exceed 30 characters";
-      if (!/^[a-zA-Z0-9_]+$/.test(val))
-        return "Only letters, numbers, and underscores allowed";
-      return "";
+      const { message } = userNameValidator(val);
+
+      return message ?? "";
     },
   });
 
@@ -56,7 +42,7 @@ const UsernameForm = ({
 
   useEffect(() => {
     if (isOpen) {
-      usernameInput.handleInput(initialData);
+      userNameInput.handleInput(initialData);
     }
   }, [isOpen]);
 
@@ -69,7 +55,7 @@ const UsernameForm = ({
         message: state.message ?? "Username updated successfully!",
         variant: "success",
       });
-      onSave(usernameInput.raw);
+      onSave(userNameInput.raw);
       onClose();
     } else {
       showToast({
@@ -92,7 +78,7 @@ const UsernameForm = ({
           formType="username-form"
           onClose={onClose}
           isPending={isPending}
-          isDisabled={isPending || !usernameInput.raw || !!usernameInput.error}
+          isDisabled={isPending || !userNameInput.raw || !!userNameInput.error}
         />
       }
     >
@@ -101,26 +87,26 @@ const UsernameForm = ({
           <FormField
             label="Username"
             htmlFor="userName"
-            error={usernameInput.error}
+            error={userNameInput.error}
           >
             <FormInput
               id="userName"
               name="userName"
               placeholder="your_username"
               autoComplete="off"
-              value={usernameInput.raw}
-              onChange={(e) => usernameInput.handleInput(e.currentTarget.value)}
-              onBlur={usernameInput.handleBlur}
+              value={userNameInput.raw}
+              onChange={(e) => userNameInput.handleInput(e.currentTarget.value)}
+              onBlur={userNameInput.handleBlur}
               endIcon={<LuAtSign />}
-              error={usernameInput.error}
+              error={userNameInput.error}
             />
           </FormField>
 
-          {usernameInput.raw && !usernameInput.error && (
+          {userNameInput.raw && !userNameInput.error && (
             <p className="text-text-muted text-xs">
               Your profile will be at{" "}
               <span className="font-medium text-primary">
-                /{usernameInput.raw}
+                /{userNameInput.raw}
               </span>
             </p>
           )}

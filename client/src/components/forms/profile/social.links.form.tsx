@@ -1,39 +1,18 @@
 import { useActionState, useEffect } from "react";
 import Form from "next/form";
 import { initialState } from "@/config/forms.config";
+import { socialPlatformsConfig } from "@/config/profile.config";
 import { FormStateType } from "@/types/types/actions.types";
+import { SocialType } from "@/types/types/profile.types";
+import { SocialLinksFormProps } from "@/types/props/forms.props.types";
+import { regexPropertiesValidator } from "@/validators/common.validators";
 import { useToast } from "@/hooks/toast";
 import useInputFieldValidator from "@/hooks/useInputFieldValidation";
+import { updateSocialLinks } from "@/lib/actions/profile.actions";
 import ModalPortal from "@/components/forms/shared/form.modal";
 import FormField from "@/components/forms/shared/form.field";
 import FormInput from "@/components/forms/shared/form.input";
 import FormFooter from "@/components/forms/shared/form.footer";
-import { SocialType } from "@/types/types/profile.types";
-import { socialPlatformsConfig } from "@/config/profile.config";
-import { SocialLinksFormProps } from "@/types/props/forms.props.types";
-
-// TODO: replace with actual server action
-const updateSocialLinks = async (
-  _prevState: FormStateType,
-  _formData: FormData,
-): Promise<FormStateType> => {
-  return {
-    status: "SUCCESS",
-    success: true,
-    message: "Social links updated successfully!",
-    code: "SUCCESS",
-  };
-};
-
-const isValidUrl = (val: string): string => {
-  if (!val) return "";
-  try {
-    new URL(val.startsWith("http") ? val : `https://${val}`);
-    return "";
-  } catch {
-    return "Please enter a valid URL";
-  }
-};
 
 const SocialLinksForm = ({
   isOpen,
@@ -43,40 +22,121 @@ const SocialLinksForm = ({
 }: SocialLinksFormProps) => {
   const { showToast } = useToast();
 
-  const githubInput = useInputFieldValidator<string>({
-    initialValue: "",
-    validate: isValidUrl,
-  });
-  const linkedinInput = useInputFieldValidator<string>({
-    initialValue: "",
-    validate: isValidUrl,
-  });
-  const twitterInput = useInputFieldValidator<string>({
-    initialValue: "",
-    validate: isValidUrl,
-  });
-  const instagramInput = useInputFieldValidator<string>({
-    initialValue: "",
-    validate: isValidUrl,
-  });
   const facebookInput = useInputFieldValidator<string>({
     initialValue: "",
-    validate: isValidUrl,
+    validate: (val: string) => {
+      const { message } = regexPropertiesValidator(
+        "facebook",
+        val,
+        socialPlatformsConfig.filter(
+          (platform) => platform.name === "facebook",
+        )[0].regex,
+      );
+
+      return message ?? "";
+    },
   });
+
+  const instagramInput = useInputFieldValidator<string>({
+    initialValue: "",
+    validate: (val: string) => {
+      const { message } = regexPropertiesValidator(
+        "instagram",
+        val,
+        socialPlatformsConfig.filter(
+          (platform) => platform.name === "instagram",
+        )[0].regex,
+      );
+
+      return message ?? "";
+    },
+  });
+
+  const twitterInput = useInputFieldValidator<string>({
+    initialValue: "",
+    validate: (val: string) => {
+      const { message } = regexPropertiesValidator(
+        "twitter",
+        val,
+        socialPlatformsConfig.filter(
+          (platform) => platform.name === "twitter",
+        )[0].regex,
+      );
+
+      return message ?? "";
+    },
+  });
+
+  const githubInput = useInputFieldValidator<string>({
+    initialValue: "",
+    validate: (val: string) => {
+      const { message } = regexPropertiesValidator(
+        "github",
+        val,
+        socialPlatformsConfig.filter(
+          (platform) => platform.name === "github",
+        )[0].regex,
+      );
+
+      return message ?? "";
+    },
+  });
+
+  const linkedinInput = useInputFieldValidator<string>({
+    initialValue: "",
+    validate: (val: string) => {
+      const { message } = regexPropertiesValidator(
+        "linkedin",
+        val,
+        socialPlatformsConfig.filter(
+          (platform) => platform.name === "linkedin",
+        )[0].regex,
+      );
+
+      return message ?? "";
+    },
+  });
+
+  const youtubeInput = useInputFieldValidator<string>({
+    initialValue: "",
+    validate: (val: string) => {
+      const { message } = regexPropertiesValidator(
+        "youtube",
+        val,
+        socialPlatformsConfig.filter(
+          (platform) => platform.name === "youtube",
+        )[0].regex,
+      );
+
+      return message ?? "";
+    },
+  });
+
   const websiteInput = useInputFieldValidator<string>({
     initialValue: "",
-    validate: isValidUrl,
+    validate: (val: string) => {
+      const { message } = regexPropertiesValidator(
+        "website",
+        val,
+        socialPlatformsConfig.filter(
+          (platform) => platform.name === "website",
+        )[0].regex,
+      );
+
+      return message ?? "";
+    },
   });
 
   const inputMap: Record<
     keyof SocialType,
     ReturnType<typeof useInputFieldValidator<string>>
   > = {
+    facebook: facebookInput,
+    instagram: instagramInput,
+    twitter: twitterInput,
     github: githubInput,
     linkedin: linkedinInput,
-    twitter: twitterInput,
-    instagram: instagramInput,
-    facebook: facebookInput,
+    youtube: youtubeInput,
     website: websiteInput,
   };
 
@@ -92,9 +152,13 @@ const SocialLinksForm = ({
 
   useEffect(() => {
     if (isOpen) {
-      (Object.keys(inputMap) as (keyof SocialType)[]).forEach((key) => {
-        inputMap[key].handleInput(initialData?.[key] ?? "");
-      });
+      facebookInput.handleInput(initialData?.facebook ?? "");
+      instagramInput.handleInput(initialData?.instagram ?? "");
+      twitterInput.handleInput(initialData?.twitter ?? "");
+      githubInput.handleInput(initialData?.github ?? "");
+      linkedinInput.handleInput(initialData?.linkedin ?? "");
+      youtubeInput.handleInput(initialData?.youtube ?? "");
+      websiteInput.handleInput(initialData?.website ?? "");
     }
   }, [isOpen]);
 
@@ -107,11 +171,17 @@ const SocialLinksForm = ({
         message: state.message ?? "Social links updated successfully!",
         variant: "success",
       });
-      const updated: SocialType = {};
-      (Object.keys(inputMap) as (keyof SocialType)[]).forEach((key) => {
-        const val = inputMap[key].raw.trim();
-        if (val) updated[key] = val;
-      });
+
+      const updated: SocialType = {
+        facebook: facebookInput.raw?.trim() ?? "",
+        instagram: instagramInput.raw?.trim() ?? "",
+        twitter: twitterInput.raw?.trim() ?? "",
+        github: githubInput.raw?.trim() ?? "",
+        linkedin: linkedinInput.raw?.trim() ?? "",
+        youtube: youtubeInput.raw?.trim() ?? "",
+        website: websiteInput.raw?.trim() ?? "",
+      };
+
       onSave(updated);
       onClose();
     } else {

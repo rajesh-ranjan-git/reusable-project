@@ -14,6 +14,7 @@ export type FieldErrorsType = {
   token?: string | null;
   firstName?: string | null;
   lastName?: string | null;
+  nickName?: string | null;
   phone?: string | null;
   dob?: string | null;
   gender?: string | null;
@@ -21,6 +22,13 @@ export type FieldErrorsType = {
   bio?: string | null;
   interests?: string | null;
   skills?: string | null;
+  facebook?: string | null;
+  instagram?: string | null;
+  twitter?: string | null;
+  github?: string | null;
+  linkedin?: string | null;
+  youtube?: string | null;
+  website?: string | null;
   experiences?: SectionErrorsType<ExperienceType>[];
 };
 
