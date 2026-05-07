@@ -17,7 +17,9 @@ const ProfileMain = ({ user }: ProfileMainProps) => {
   return (
     <div className="pointer-events-auto">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <h1 className="font-alkatra font-extrabold">{getFullName(user)}</h1>
+        <h1 className="text-shadow-accent-purple-dark text-shadow-lg font-alkatra font-extrabold">
+          {getFullName(user)}
+        </h1>
 
         {user?.nickName ? (
           <span className="text-text-muted text-base md:text-lg italic">

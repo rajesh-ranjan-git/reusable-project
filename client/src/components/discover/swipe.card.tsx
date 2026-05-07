@@ -61,9 +61,9 @@ const SwipeCard = ({ profile, onSwipe, active }: SwipeCardProps) => {
               e.stopPropagation();
               router.push(`/profile/${profile?.userName}`);
             }}
-            className="group inline-flex items-center gap-2 drop-shadow-md mb-1 font-alkatra font-bold tracking-wide active:scale-95 origin-left text-accent-blue-light cursor-pointer"
+            className="inline-flex items-center gap-2 drop-shadow-md mb-1 font-alkatra font-bold tracking-wide active:scale-95 origin-left text-accent-blue-light cursor-pointer"
           >
-            <span className="group-hover:[-webkit-text-stroke:1px_#FFFFFF] group-hover:text-transparent transition-all ease-in-out">
+            <span className="text-shadow-glass-bg text-shadow-lg hover:text-shadow-accent-purple-dark transition-all ease-in-out">
               {getFullName(profile)}
             </span>
             {profile?.age && (
