@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
@@ -16,6 +16,7 @@ import { IoHomeOutline } from "react-icons/io5";
 import { staticImagesConfig } from "@/config/common.config";
 import { HeaderProfileMenuProps } from "@/types/props/common.props.types";
 import { useAppStore } from "@/store/store";
+import { useOutsideClick } from "@/hooks/useOutsideClick";
 import { toTitleCase } from "@/utils/common.utils";
 import {
   adminRoutes,
@@ -84,25 +85,12 @@ const HeaderProfileMenu = ({
   const setLoggedInUser = useAppStore((state) => state.setLoggedInUser);
   const setIsLoggingOut = useAppStore((state) => state.setIsLoggingOut);
 
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleClickOutside: EventListener = (e) => {
-      if (menuRef.current && menuRef.current.contains(e.target as Node)) {
-        return;
-      }
-      onClose();
-    };
-
-    const timeoutId = setTimeout(() => {
-      document.addEventListener("click", handleClickOutside);
-    }, 0);
-
-    return () => {
-      clearTimeout(timeoutId);
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, [isOpen, onClose]);
+  useOutsideClick({
+    ref: menuRef,
+    when: isOpen,
+    callback: onClose,
+    defer: true,
+  });
 
   const handleNavigation = (path: string) => {
     if (pathname !== path) router.push(path);

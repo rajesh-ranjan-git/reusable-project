@@ -1,6 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { LuCamera, LuTrash2, LuUpload } from "react-icons/lu";
+import { useOutsideClick } from "@/hooks/useOutsideClick";
 
 type ImageUploadMenuProps = {
   isOpen: boolean;
@@ -19,25 +20,12 @@ const ImageUploadMenu = ({
 }: ImageUploadMenuProps) => {
   const menuRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleClickOutside: EventListener = (e) => {
-      if (menuRef.current && menuRef.current.contains(e.target as Node)) {
-        return;
-      }
-      onClose();
-    };
-
-    const timeoutId = setTimeout(() => {
-      document.addEventListener("click", handleClickOutside);
-    }, 0);
-
-    return () => {
-      clearTimeout(timeoutId);
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, [isOpen, onClose]);
+  useOutsideClick({
+    ref: menuRef,
+    when: isOpen,
+    callback: onClose,
+    defer: true,
+  });
 
   return (
     <AnimatePresence>

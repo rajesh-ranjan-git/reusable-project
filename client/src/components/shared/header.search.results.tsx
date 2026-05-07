@@ -8,6 +8,7 @@ import { HeaderSearchResultsProps } from "@/types/props/common.props.types";
 import { UserProfileType } from "@/types/types/profile.types";
 import { ProfilesResponseType } from "@/types/types/response.types";
 import { RequestDirectionType } from "@/types/types/connection.types";
+import { useOutsideClick } from "@/hooks/useOutsideClick";
 import { getFullName } from "@/helpers/profile.helpers";
 import { conversationRoutes } from "@/lib/routes/routes";
 import { fetchProfiles } from "@/lib/actions/discover.actions";
@@ -36,28 +37,12 @@ const HeaderSearchResults = ({
 
   const router = useRouter();
 
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleClickOutside: EventListener = (e) => {
-      if (
-        searchResultsRef.current &&
-        searchResultsRef.current.contains(e.target as Node)
-      ) {
-        return;
-      }
-      onClose();
-    };
-
-    const timeoutId = setTimeout(() => {
-      document.addEventListener("click", handleClickOutside);
-    }, 0);
-
-    return () => {
-      clearTimeout(timeoutId);
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, [isOpen, onClose]);
+  useOutsideClick({
+    ref: searchResultsRef,
+    when: isOpen,
+    callback: onClose,
+    defer: true,
+  });
 
   const loadProfiles = useCallback(
     async (query: string, page: number = 1, reset: boolean = true) => {
@@ -90,11 +75,13 @@ const HeaderSearchResults = ({
   useEffect(() => {
     if (!isOpen) return;
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadProfiles(searchQuery, 1, true);
   }, [searchQuery, isOpen, loadProfiles]);
 
   useEffect(() => {
     if (!isOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSearchedUserProfiles([]);
       setExitDirection({});
     }

@@ -19,6 +19,8 @@ export interface UseOutsideClickProps {
   ref: RefObject<HTMLElement | null> | RefObject<HTMLElement | null>[];
   when: boolean;
   callback: () => void;
+  eventType?: "click" | "mousedown";
+  defer?: boolean;
 }
 
 export interface SheetProps {

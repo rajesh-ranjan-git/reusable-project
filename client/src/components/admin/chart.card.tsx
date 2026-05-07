@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   LineChart,
   Line,
@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { LuChevronDown } from "react-icons/lu";
+import { useOutsideClick } from "@/hooks/useOutsideClick";
 
 const data = [
   { name: "Jan", activeUsers: 4000, newMatches: 2400 },
@@ -25,18 +26,12 @@ const ChartCard = () => {
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsTimelineDropdownOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  useOutsideClick({
+    ref: dropdownRef,
+    when: isTimelineDropdownOpen,
+    callback: () => setIsTimelineDropdownOpen(false),
+    eventType: "mousedown",
+  });
 
   return (
     <div className="flex flex-col lg:col-span-2 p-6 glass">

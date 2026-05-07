@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { LuCalendar, LuX } from "react-icons/lu";
 import { FormDateRangePickerProps } from "@/types/props/forms.props.types";
+import { useOutsideClick } from "@/hooks/useOutsideClick";
 import { formatDate, isSameDay } from "@/utils/date.utils";
 import CalendarGrid from "@/components/forms/shared/calendar.grid";
 
@@ -27,19 +28,15 @@ const FormDateRangePicker = ({
     return [viewMonth + 1, viewYear];
   })();
 
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(e.target as Node)
-      ) {
-        setIsOpen(false);
-        setSelecting("start");
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  useOutsideClick({
+    ref: containerRef,
+    when: isOpen,
+    callback: () => {
+      setIsOpen(false);
+      setSelecting("start");
+    },
+    eventType: "mousedown",
+  });
 
   const prevMonth = () => {
     if (viewMonth === 0) {

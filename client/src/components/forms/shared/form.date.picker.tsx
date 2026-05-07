@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { LuCalendar, LuX } from "react-icons/lu";
 import { FormDatePickerProps } from "@/types/props/forms.props.types";
+import { useOutsideClick } from "@/hooks/useOutsideClick";
 import { formatDate, isSameDay } from "@/utils/date.utils";
 import CalendarGrid from "@/components/forms/shared/calendar.grid";
 
@@ -25,18 +26,12 @@ const FormDatePicker = ({
   );
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(e.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  useOutsideClick({
+    ref: containerRef,
+    when: isOpen,
+    callback: () => setIsOpen(false),
+    eventType: "mousedown",
+  });
 
   const prevMonth = () => {
     if (viewMonth === 0) {

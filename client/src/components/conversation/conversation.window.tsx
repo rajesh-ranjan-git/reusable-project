@@ -14,8 +14,8 @@ import {
 import { ConversationDisplayType } from "@/types/types/conversation.types";
 import { useAppStore } from "@/store/store";
 import { createSocketConnection } from "@/socket/socket";
-import { getConversationDisplay } from "@/utils/conversation.utils";
-import { getMessageDisplay } from "@/utils/message.utils";
+import { getConversationDisplay } from "@/helpers/conversation.helpers";
+import { getMessageDisplay } from "@/helpers/message.helpers";
 import {
   fetchConversationMessages,
   markConversationAsRead,

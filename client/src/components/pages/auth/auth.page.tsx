@@ -16,7 +16,7 @@ import {
 } from "@/validators/auth.validators";
 import useInputFieldValidator from "@/hooks/useInputFieldValidation";
 import { useOAuthListener } from "@/hooks/useOAuthListener";
-import { getFormVariants } from "@/utils/auth.utils";
+import { getFormVariants } from "@/helpers/auth.helpers";
 import { authRoutes, defaultRoutes } from "@/lib/routes/routes";
 import { loginAction, registerAction } from "@/lib/actions/auth.actions";
 import { loginWithProvider, providerLogin } from "@/lib/actions/oauth.actions";

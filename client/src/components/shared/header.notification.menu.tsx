@@ -1,8 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { LuHeart, LuMessageSquare, LuUserPlus } from "react-icons/lu";
 import { HeaderNotificationMenuProps } from "@/types/props/common.props.types";
+import { useOutsideClick } from "@/hooks/useOutsideClick";
 import { conversationRoutes, profileRoutes } from "@/lib/routes/routes";
 
 const HeaderNotificationMenu = ({
@@ -13,26 +14,12 @@ const HeaderNotificationMenu = ({
   const menuRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleClickOutside: EventListener = (e) => {
-      if (menuRef.current && menuRef.current.contains(e.target as Node)) {
-        return;
-      }
-
-      onClose();
-    };
-
-    const timeoutId = setTimeout(() => {
-      document.addEventListener("click", handleClickOutside);
-    }, 0);
-
-    return () => {
-      clearTimeout(timeoutId);
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, [isOpen, onClose]);
+  useOutsideClick({
+    ref: menuRef,
+    when: isOpen,
+    callback: onClose,
+    defer: true,
+  });
 
   const handleNavigation = (path: string) => {
     router.push(path);

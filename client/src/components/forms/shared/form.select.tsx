@@ -1,6 +1,7 @@
-import { forwardRef, useEffect, useRef, useState } from "react";
+import { forwardRef, useRef, useState } from "react";
 import { LuChevronDown } from "react-icons/lu";
 import { FormSelectProps } from "@/types/props/forms.props.types";
+import { useOutsideClick } from "@/hooks/useOutsideClick";
 
 const FormSelect = forwardRef<HTMLDivElement, FormSelectProps>(
   (
@@ -21,20 +22,12 @@ const FormSelect = forwardRef<HTMLDivElement, FormSelectProps>(
 
     const selectedOption = options.find((opt) => opt.value === value);
 
-    useEffect(() => {
-      const handleClickOutside = (e: MouseEvent) => {
-        if (
-          dropdownRef.current &&
-          !dropdownRef.current.contains(e.target as Node)
-        ) {
-          setIsOpen(false);
-        }
-      };
-
-      document.addEventListener("mousedown", handleClickOutside);
-      return () =>
-        document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+    useOutsideClick({
+      ref: dropdownRef,
+      when: isOpen,
+      callback: () => setIsOpen(false),
+      eventType: "mousedown",
+    });
 
     return (
       <div className={`w-full ${className}`} ref={ref}>
@@ -101,5 +94,7 @@ const FormSelect = forwardRef<HTMLDivElement, FormSelectProps>(
     );
   },
 );
+
+FormSelect.displayName = "FormSelect";
 
 export default FormSelect;
