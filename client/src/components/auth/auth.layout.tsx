@@ -20,7 +20,7 @@ const AuthLayout = ({ children, title, subtitle }: AuthLayoutProps) => {
               height={100}
               className="shadow-glass-bg shadow-md rounded-full w-10 md:w-12 h-auto select-none"
             />
-            <span className="font-tourney font-semibold text-3xl md:text-4xl tracking-tight">
+            <span className="font-semibold text-3xl md:text-4xl tracking-tight">
               App Name
             </span>
           </Link>

@@ -293,7 +293,6 @@
   --font-alkatra: var(--font-alkatra);
   --font-arima: var(--font-arima);
   --font-poppins: var(--font-poppins);
-  --font-tourney: var(--font-tourney);
 
   --color-accent-blue: var(--accent-blue);
   --color-accent-blue-light: var(--accent-blue-light);
@@ -399,7 +398,6 @@
   h4,
   h5,
   h6 {
-    font-family: var(--font-alkatra);
     font-weight: 700;
     line-height: 1.15;
     color: var(--text-primary);
@@ -618,7 +616,6 @@
   }
 
   .alert-title {
-    font-family: var(--font-alkatra);
     font-weight: 600;
     font-size: 0.9375rem;
     margin-bottom: 2px;

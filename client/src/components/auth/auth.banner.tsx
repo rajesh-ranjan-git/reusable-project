@@ -37,7 +37,7 @@ const AuthBanner = ({ isLogin, handleToggleMode }: AuthBannerProps) => {
             />
           </div>
           <div className="flex flex-col items-start md:items-center gap-0 md:gap-1 mt-0 md:mt-2">
-            <span className="font-tourney font-bold text-text-on-accent text-2xl md:text-4xl leading-none tracking-wide">
+            <span className="font-bold text-text-on-accent text-2xl md:text-4xl leading-none tracking-wide">
               App Name
             </span>
           </div>

@@ -35,7 +35,7 @@ const PricingCard = ({
       ${highlighted ? "border-2 animate-pulse-glow lg:py-12 hover:bg-(image:--gradient-brand-soft)" : "max-h-max"}`}
     >
       {highlighted && (
-        <div className="-top-3 left-1/2 absolute flex items-center gap-1.5 shadow-md hover:shadow-lg px-4 py-1 group-hover:border-accent-purple-light w-max font-bold text-xs uppercase tracking-wider transition-shadow -translate-x-1/2 ease-in-out badge badge-gradient">
+        <div className="-top-3 left-1/2 absolute flex items-center gap-1.5 shadow-md hover:shadow-lg px-4 py-1 group-hover:border-accent-purple-light w-max font-bold text-xs uppercase tracking-wide transition-shadow -translate-x-1/2 ease-in-out badge badge-gradient">
           Most Popular
         </div>
       )}

@@ -46,7 +46,7 @@ const CalendarGrid = ({
         {DAYS_SHORT.map((d) => (
           <div
             key={d}
-            className="py-1 font-semibold text-[10px] text-text-muted text-center uppercase tracking-wider"
+            className="py-1 font-semibold text-[10px] text-text-muted text-center uppercase tracking-wide"
           >
             {d}
           </div>

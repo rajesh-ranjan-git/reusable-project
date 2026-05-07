@@ -25,7 +25,7 @@ const OrderSummary = ({ isMobile }: OrderSummaryProps) => {
         <div className="space-y-6 p-6 md:p-8 glass">
           <div className="flex justify-between items-start">
             <div>
-              <h3 className="mb-1 font-arima font-bold text-text-primary text-xl tracking-wide">
+              <h3 className="mb-1 font-bold text-text-primary text-xl tracking-wide">
                 DevMatch {name}
               </h3>
               <p className="text-text-secondary text-sm">{planType} billing</p>

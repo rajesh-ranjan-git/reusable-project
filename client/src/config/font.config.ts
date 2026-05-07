@@ -24,9 +24,3 @@ export const poppins = Poppins({
   variable: "--font-poppins",
   display: "swap",
 });
-
-export const tourney = Tourney({
-  subsets: ["latin"],
-  variable: "--font-tourney",
-  display: "swap",
-});

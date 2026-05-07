@@ -41,7 +41,7 @@ const HeroSection = () => {
         </Link>
       </div>
 
-      <div className="inline-flex items-center gap-3 mt-8 px-5 py-2.5 glass rounded-(--border-radius-pill)">
+      <div className="inline-flex items-center gap-3 mt-8 px-5 py-2.5 rounded-pill) glass">
         <div className="flex justify-center items-center gap-4 text-text-secondary text-sm">
           <div className="flex -space-x-3">
             <img

@@ -59,7 +59,7 @@ const CameraModal = ({ isOpen, onClose, onCapture }: CameraModalProps) => {
             className="relative flex flex-col w-full md:max-w-xl overflow-hidden glass"
           >
             <div className="flex items-center p-2">
-              <h3 className="pt-1 w-full font-arima font-semibold text-center">
+              <h3 className="pt-1 w-full font-semibold text-center">
                 Take a picture
               </h3>
               <button onClick={onClose} className="p-1.5 glass-interactive">

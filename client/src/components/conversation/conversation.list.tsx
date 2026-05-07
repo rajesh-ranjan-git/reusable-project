@@ -142,7 +142,7 @@ const ConversationList = ({
   return (
     <div className="flex flex-col bg-surface md:bg-transparent border-glass-border md:border-r w-full md:w-72 lg:w-80 h-full shrink-0">
       <div className="bg-glass-bg p-4 pb-2 border-glass-border border-b">
-        <h4 className="mb-2 font-arima tracking-wider">Messages</h4>
+        <h4 className="mb-2 tracking-wide">Messages</h4>
         <div className="relative flex-1 max-w-md">
           <FormInput
             placeholder="Search messages..."

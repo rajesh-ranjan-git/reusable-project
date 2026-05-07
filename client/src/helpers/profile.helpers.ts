@@ -234,7 +234,7 @@ export const getEditProfileSections = (userProfile: UserProfileType | null) => {
     {
       id: "bio" as CurrentFormType,
       icon: FaBirthdayCake,
-      title: "About",
+      title: "About Me",
       description: "Snapshot of background, personality and more",
     },
     {

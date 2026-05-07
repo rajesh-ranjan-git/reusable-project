@@ -28,7 +28,7 @@ const ProfilePersonal = ({
             <span className="font-semibold text-xs uppercase tracking-[0.28em] text-accent-purple">
               Profile Snapshot
             </span>
-            <h3 className="tracking-wider">Personal Details</h3>
+            <h3 className="tracking-wide">Personal Details</h3>
             <p className="max-w-2xl text-text-secondary text-sm">
               Contact and identity details in one quick, verified overview.
             </p>

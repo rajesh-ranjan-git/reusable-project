@@ -76,7 +76,7 @@ const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
               href={adminRoutes.dashboard}
               className="group flex flex-1 items-center gap-2 w-54 overflow-hidden"
             >
-              <h1 className="pt-1.5 font-arima md:text-3xl truncate">
+              <h1 className="pt-1.5 font-alkatra md:text-4xl truncate tracking-wider">
                 {currentAdminPath}
               </h1>
             </Link>
@@ -92,7 +92,7 @@ const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
                 height={100}
                 className={`shadow-glass-bg shadow-md rounded-full w-10 select-none ${type === "landing" ? "md:w-12 md:h-12" : ""}`}
               />
-              <span className="font-tourney font-semibold text-gradient text-xl md:text-3xl text-nowrap tracking-tight">
+              <span className="font-semibold text-gradient text-xl md:text-3xl text-nowrap tracking-tight">
                 App Name
               </span>
             </Link>

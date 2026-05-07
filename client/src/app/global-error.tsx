@@ -6,7 +6,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { MdError } from "react-icons/md";
 import { staticImagesConfig } from "@/config/common.config";
-import { alkatra, arima, inter, poppins, tourney } from "@/config/font.config";
+import { alkatra, arima, inter, poppins } from "@/config/font.config";
 import { ToastProvider } from "@/hooks/toast";
 import ThemeManager from "@/components/theme/theme.manager";
 import Orb from "@/components/background/orb";
@@ -19,7 +19,7 @@ const GlobalError = () => {
   return (
     <html lang="en">
       <body
-        className={`${poppins.variable} ${inter.variable} ${alkatra.variable} ${arima.variable} ${tourney.variable} antialiased`}
+        className={`${poppins.variable} ${inter.variable} ${alkatra.variable} ${arima.variable} antialiased`}
         suppressHydrationWarning
       >
         <ToastProvider>
@@ -47,7 +47,7 @@ const GlobalError = () => {
 
                 <div className="flex justify-center items-center gap-2 mx-auto">
                   <MdError className="text-status-error-text text-2xl md:text-5xl" />
-                  <h3 className="font-poppins text-status-error-text text-lg md:text-3xl">
+                  <h3 className="text-status-error-text text-lg md:text-3xl">
                     Oops! An unexpected error occurred.
                   </h3>
                 </div>

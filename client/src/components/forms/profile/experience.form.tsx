@@ -213,7 +213,7 @@ const ExperienceForm = ({
               <div className="flex justify-between items-center mb-4">
                 <div className="flex items-center gap-2 text-text-secondary">
                   <LuBriefcase size={15} />
-                  <span className="font-semibold text-xs uppercase tracking-wider">
+                  <span className="font-semibold text-xs uppercase tracking-wide">
                     Experience {entries.length > 1 ? `#${idx + 1}` : ""}
                   </span>
                 </div>

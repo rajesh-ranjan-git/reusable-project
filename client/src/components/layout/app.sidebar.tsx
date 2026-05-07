@@ -145,7 +145,7 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
   return (
     <aside className="flex flex-col border-glass-border border-r border-b-0 md:w-64 lg:w-72 h-full transition-all duration-500 glass-nav shrink-0">
       <div className="p-2 pt-3 border-glass-border border-b">
-        <h2 className="font-arima md:text-3xl tracking-wider">Network</h2>
+        <h2 className="md:text-3xl tracking-wide">Network</h2>
       </div>
       <div className="md:hidden p-2">
         <div className="relative flex-1 max-w-md">
@@ -157,7 +157,7 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
       </div>
       <div className="flex-1 p-2 overflow-y-auto">
         <div className="mb-2">
-          <h6 className="mb-3 font-poppins text-text-secondary uppercase tracking-wider">
+          <h6 className="mb-3 font-poppins text-text-secondary uppercase tracking-wide">
             Requests
           </h6>
           <div className="flex items-center gap-3 mb-3 alert alert-info">
@@ -275,7 +275,7 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
           onClose={() => connectionRequestsSheet.close()}
         >
           <div className="flex flex-col h-full">
-            <h4 className="mb-3 p-1 font-poppins text-text-secondary uppercase tracking-wider">
+            <h4 className="mb-3 p-1 font-poppins text-text-secondary uppercase tracking-wide">
               Requests
               {connectionRequestsPagination?.total &&
               connectionRequestsPagination.total > 0 ? (
@@ -391,7 +391,7 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
         </Sheet>
 
         <div>
-          <h6 className="mb-3 font-poppins text-text-secondary uppercase tracking-wider">
+          <h6 className="mb-3 font-poppins text-text-secondary uppercase tracking-wide">
             Connections
             {connectionsPagination?.total && connectionsPagination.total > 0 ? (
               <span>&nbsp;({connectionsPagination.total})</span>

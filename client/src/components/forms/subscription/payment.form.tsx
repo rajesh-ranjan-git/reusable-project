@@ -50,7 +50,7 @@ const PaymentForm = () => {
     <form onSubmit={handleSubmit} className="p-6 md:p-8 glass-heavy">
       <div className="flex flex-col gap-4">
         <div>
-          <h2 className="mb-1 font-arima font-bold text-text-primary text-xl tracking-wide">
+          <h2 className="mb-1 font-bold text-text-primary text-xl tracking-wide">
             Payment Method
           </h2>
           <p className="text-text-secondary text-sm">
@@ -130,7 +130,7 @@ const PaymentForm = () => {
 
         <div className="flex justify-center items-center gap-2 mt-2 text-text-secondary">
           <LuShieldCheck size={16} className="text-status-success-text" />
-          <span className="font-medium text-status-success-text text-xs uppercase tracking-wider">
+          <span className="font-medium text-status-success-text text-xs uppercase tracking-wide">
             Secured Payments
           </span>
         </div>
