@@ -6,9 +6,12 @@ export const fetchConversationsList = async (
   page: number = 1,
 ): Promise<ApiResponseType> => {
   try {
-    return await api.get(`${apiUrls.conversation.actionConversations}?page=${page}`, {
-      requireAuth: true,
-    });
+    return await api.get(
+      `${apiUrls.conversation.actionConversations}?page=${page}`,
+      {
+        requireAuth: true,
+      },
+    );
   } catch (error) {
     return error as ApiErrorResponseType;
   }

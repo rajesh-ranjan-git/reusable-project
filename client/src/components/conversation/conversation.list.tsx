@@ -41,9 +41,16 @@ const ConversationList = ({
     useState(false);
   const socketRef = useRef<Socket | null>(null);
   const isFetchingConversationsRef = useRef(false);
+  // Mirrors conversationPagination as a ref so the scroll handler never reads
+  // stale closure values between a fetch starting and the state update landing.
+  const conversationPaginationRef = useRef(conversationPagination);
+
   const conversationRoomKey = conversationList
     .map((conversation) => conversation.id)
     .join("|");
+
+  // Keep the pagination ref in sync with the store value on every render.
+  conversationPaginationRef.current = conversationPagination;
 
   const getMessageSenderId = (message: MessageResponseType) =>
     typeof message.sender === "string" ? message.sender : message.sender.userId;
@@ -91,21 +98,34 @@ const ConversationList = ({
       }
 
       setIsLoadingMoreConversations(false);
-      isFetchingConversationsRef.current = false;
+      // Defer clearing the fetch lock by one tick so it only resets after
+      // React has flushed the state updates above. Without this, a scroll
+      // event firing synchronously after the await sees the ref as false while
+      // scrollHeight hasn't grown yet, causing a duplicate fetch.
+      setTimeout(() => {
+        isFetchingConversationsRef.current = false;
+      }, 0);
     },
     [setConversationList, setConversationPagination],
   );
 
   const handleConversationListScroll = (e: UIEvent<HTMLDivElement>) => {
-    if (!loggedInUser || !conversationPagination) return;
-    if (conversationPagination.page >= conversationPagination.totalPages)
-      return;
+    // Read pagination from the ref, not from the closure, so we always have
+    // the latest page number even if the state update hasn't re-rendered yet.
+    const pagination = conversationPaginationRef.current;
+
+    if (!loggedInUser || !pagination) return;
+    if (pagination.page >= pagination.totalPages) return;
+    // isFetchingConversationsRef guards the in-flight window before the state
+    // update lands — no need for a separate hasFired ref here because the
+    // pagination page check above handles the settled case.
+    if (isFetchingConversationsRef.current) return;
 
     const el = e.currentTarget;
     const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
 
-    if (distanceFromBottom <= 96) {
-      getConversationList(loggedInUser, conversationPagination.page + 1);
+    if (distanceFromBottom <= 40) {
+      getConversationList(loggedInUser, pagination.page + 1);
     }
   };
 

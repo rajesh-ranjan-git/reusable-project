@@ -105,7 +105,7 @@ conversationRouter.patch(
 
 conversationRouter.get(
   "/",
-  requestMiddleware({}),
+  requestMiddleware({ requireQuery: true }),
   authenticate,
   authorize({ permissions: [PERMISSIONS.PROFILE_READ_OWN] }),
   listConversations,
