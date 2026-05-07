@@ -49,6 +49,9 @@ const AppChrome = ({ children }: ReactNodeProps) => {
   const accessToken = useAppStore((state) => state.accessToken);
   const conversationList = useAppStore((state) => state.conversationList);
   const setConversationList = useAppStore((state) => state.setConversationList);
+  const setConversationListPagination = useAppStore(
+    (state) => state.setConversationListPagination,
+  );
   const { showToast } = useToast();
 
   const isAppRoute = APP_ROUTES.some(
@@ -116,8 +119,9 @@ const AppChrome = ({ children }: ReactNodeProps) => {
           getConversationDisplay(conversation, loggedInUser),
         ),
       );
+      setConversationListPagination(data.pagination);
     }
-  }, [loggedInUser, setConversationList]);
+  }, [loggedInUser, setConversationList, setConversationListPagination]);
 
   const handleRequestAction = useCallback(
     async (userId: string, direction: RequestDirectionType) => {

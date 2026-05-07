@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ConversationPageProps } from "@/types/props/conversation.props";
 import {
   ConversationResponseType,
   DirectConversationResponseType,
 } from "@/types/types/response.types";
+import { useAppStore } from "@/store/store";
+import { getConversationDisplay } from "@/helpers/conversation.helpers";
 import { fetchDirectConversation } from "@/lib/actions/conversation.action";
 import { conversationRoutes } from "@/lib/routes/routes";
 import BottomNavbar from "@/components/layout/bottom.navbar";
@@ -16,23 +18,77 @@ const ConversationPage = ({ userName }: ConversationPageProps) => {
   const [selectedConversation, setSelectedConversation] =
     useState<ConversationResponseType | null>(null);
 
-  const getDirectConversation = async (userName: string) => {
-    const directConversationResponse = await fetchDirectConversation(userName);
+  const setConversationList = useAppStore((state) => state.setConversationList);
+  const setConversationListPagination = useAppStore(
+    (state) => state.setConversationListPagination,
+  );
 
-    if (directConversationResponse.success && directConversationResponse.data) {
-      const data =
-        directConversationResponse.data as DirectConversationResponseType;
+  const upsertConversationListItem = useCallback(
+    (conversation: ConversationResponseType) => {
+      const loggedInUser = useAppStore.getState().loggedInUser;
+      if (!loggedInUser) return;
 
-      setSelectedConversation(data.conversation);
-    }
-  };
+      let isNewConversation = false;
+      const conversationDisplay = getConversationDisplay(
+        conversation,
+        loggedInUser,
+      );
+
+      setConversationList((prev) => {
+        isNewConversation = !prev.some(
+          (currentConversation) =>
+            currentConversation.id === conversationDisplay.id,
+        );
+
+        return [
+          conversationDisplay,
+          ...prev.filter(
+            (currentConversation) =>
+              currentConversation.id !== conversationDisplay.id,
+          ),
+        ];
+      });
+
+      if (isNewConversation) {
+        setConversationListPagination((prev) =>
+          prev
+            ? {
+                ...prev,
+                total: prev.total + 1,
+                totalPages: Math.ceil((prev.total + 1) / prev.limit),
+              }
+            : prev,
+        );
+      }
+    },
+    [setConversationList, setConversationListPagination],
+  );
+
+  const getDirectConversation = useCallback(
+    async (userName: string) => {
+      const directConversationResponse =
+        await fetchDirectConversation(userName);
+
+      if (
+        directConversationResponse.success &&
+        directConversationResponse.data
+      ) {
+        const data =
+          directConversationResponse.data as DirectConversationResponseType;
+
+        setSelectedConversation(data.conversation);
+        upsertConversationListItem(data.conversation);
+      }
+    },
+    [upsertConversationListItem],
+  );
 
   const clearSelectedConversation = () => {
     window.history.pushState({}, "", conversationRoutes.conversation);
     setSelectedConversation(null);
   };
 
-  const syncConversationFromPath = () => {
+  const syncConversationFromPath = useCallback(() => {
     const pathParts = window.location.pathname.split("/").filter(Boolean);
     const routeUserName =
       pathParts[0] === "conversation" ? pathParts[1] : undefined;
@@ -43,13 +99,13 @@ const ConversationPage = ({ userName }: ConversationPageProps) => {
     }
 
     setSelectedConversation(null);
-  };
+  }, [getDirectConversation]);
 
   useEffect(() => {
     if (!userName) return;
 
     getDirectConversation(userName);
-  }, [userName]);
+  }, [getDirectConversation, userName]);
 
   useEffect(() => {
     window.addEventListener("popstate", syncConversationFromPath);
@@ -57,7 +113,7 @@ const ConversationPage = ({ userName }: ConversationPageProps) => {
     return () => {
       window.removeEventListener("popstate", syncConversationFromPath);
     };
-  }, []);
+  }, [syncConversationFromPath]);
 
   return (
     <>

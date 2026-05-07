@@ -3,10 +3,7 @@ import Image from "next/image";
 import { Socket } from "socket.io-client";
 import { LuSearch } from "react-icons/lu";
 import { ConversationListProps } from "@/types/props/conversation.props";
-import {
-  ConversationListResponseType,
-  ResponsePaginationType,
-} from "@/types/types/response.types";
+import { ConversationListResponseType } from "@/types/types/response.types";
 import { LoggedInUserType } from "@/types/types/auth.types";
 import { MessageResponseType } from "@/types/types/message.types";
 import { useAppStore } from "@/store/store";
@@ -26,6 +23,12 @@ const ConversationList = ({
   const loggedInUser = useAppStore((state) => state.loggedInUser);
   const conversationList = useAppStore((state) => state.conversationList);
   const setConversationList = useAppStore((state) => state.setConversationList);
+  const conversationPagination = useAppStore(
+    (state) => state.conversationListPagination,
+  );
+  const setConversationPagination = useAppStore(
+    (state) => state.setConversationListPagination,
+  );
   const resetConversationUnread = useAppStore(
     (state) => state.resetConversationUnread,
   );
@@ -33,8 +36,7 @@ const ConversationList = ({
   const updateConversationWithMessage = useAppStore(
     (state) => state.updateConversationWithMessage,
   );
-  const [conversationPagination, setConversationPagination] =
-    useState<ResponsePaginationType | null>(null);
+
   const [isLoadingMoreConversations, setIsLoadingMoreConversations] =
     useState(false);
   const socketRef = useRef<Socket | null>(null);
@@ -91,7 +93,7 @@ const ConversationList = ({
       setIsLoadingMoreConversations(false);
       isFetchingConversationsRef.current = false;
     },
-    [setConversationList],
+    [setConversationList, setConversationPagination],
   );
 
   const handleConversationListScroll = (e: UIEvent<HTMLDivElement>) => {
@@ -121,10 +123,10 @@ const ConversationList = ({
   };
 
   useEffect(() => {
-    if (loggedInUser) {
+    if (loggedInUser && conversationList.length === 0) {
       getConversationList(loggedInUser);
     }
-  }, [getConversationList, loggedInUser]);
+  }, [conversationList.length, getConversationList, loggedInUser]);
 
   useEffect(() => {
     if (!accessToken || conversationList.length === 0) return;
@@ -132,7 +134,7 @@ const ConversationList = ({
     const socket = createSocketConnection({ token: accessToken });
     socketRef.current = socket;
 
-    conversationList.forEach((conversation) => {
+    useAppStore.getState().conversationList.forEach((conversation) => {
       if (conversation.conversation.type === "direct") {
         const targetUserId = conversation.otherParticipants[0]?.user.userId;
         if (targetUserId) socket.emit("join-chat", { targetUserId });
@@ -151,9 +153,11 @@ const ConversationList = ({
 
       const messageId = getMessageId(message);
       const senderId = getMessageSenderId(message);
-      const matchedConversation = conversationList.find(
-        (conversation) => conversation.id === message.conversation,
-      );
+      const matchedConversation = useAppStore
+        .getState()
+        .conversationList.find(
+          (conversation) => conversation.id === message.conversation,
+        );
 
       if (
         !messageId ||
@@ -192,6 +196,7 @@ const ConversationList = ({
     };
   }, [
     accessToken,
+    conversationList.length,
     conversationRoomKey,
     loggedInUser?.userId,
     selectedConversationId,
