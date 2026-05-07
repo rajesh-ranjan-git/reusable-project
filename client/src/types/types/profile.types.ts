@@ -1,6 +1,10 @@
 import { ReactNode } from "react";
 import { IconType } from "react-icons";
 import { allowedSkillLevelsConfig } from "@/config/profile.config";
+import {
+  ConnectionDirectionType,
+  ConnectionStatusType,
+} from "@/types/types/connection.types";
 
 export type CurrentFormType =
   | "basic"
@@ -107,6 +111,8 @@ export type UserProfileType = {
   experiences?: ExperienceType[] | null;
   totalExperience?: string | null;
   currentJobRole?: string | null;
+  connectionStatus?: ConnectionStatusType;
+  connectionDirection?: ConnectionDirectionType;
   lastSeen?: string | null;
   createdAt: string;
   updatedAt?: string | null;

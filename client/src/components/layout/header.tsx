@@ -28,6 +28,7 @@ const Header = ({
   const [isSearchResultsOpen, setIsSearchResultsOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isNotificationMenuOpen, setIsNotificationMenuOpen] = useState(false);
+  const [searchInputValue, setSearchInputValue] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -48,7 +49,9 @@ const Header = ({
     setIsProfileMenuOpen(false);
     setIsNotificationMenuOpen(false);
 
-    setIsSearchResultsOpen(!isSearchResultsOpen);
+    if (searchInputValue.trim()) {
+      setIsSearchResultsOpen(true);
+    }
   };
 
   const toggleProfileMenu = (e: MouseEvent) => {
@@ -74,7 +77,18 @@ const Header = ({
   };
 
   const handleSearchChange = (value: string) => {
+    setSearchInputValue(value);
+
     if (debounceRef.current) clearTimeout(debounceRef.current);
+
+    if (!value.trim()) {
+      setDebouncedSearchQuery("");
+      setIsSearchResultsOpen(false);
+      return;
+    }
+
+    setIsSearchResultsOpen(true);
+
     debounceRef.current = setTimeout(() => {
       setDebouncedSearchQuery(value);
     }, SEARCH_DEBOUNCE_MS);
@@ -141,6 +155,7 @@ const Header = ({
         ) : (
           <div className="hidden md:block relative flex-1 mx-6 max-w-md">
             <FormInput
+              value={searchInputValue}
               placeholder={
                 type === "admin"
                   ? "Search stats, users..."

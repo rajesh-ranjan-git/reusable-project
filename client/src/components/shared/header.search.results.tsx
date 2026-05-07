@@ -1,17 +1,29 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
-import { LuMessageCircle, LuLoader } from "react-icons/lu";
+import {
+  LuCheck,
+  LuClock,
+  LuLoader,
+  LuMessageCircle,
+  LuUserPlus,
+  LuX,
+} from "react-icons/lu";
 import { staticImagesConfig } from "@/config/common.config";
 import { HeaderSearchResultsProps } from "@/types/props/common.props.types";
 import { UserProfileType } from "@/types/types/profile.types";
 import { ProfilesResponseType } from "@/types/types/response.types";
 import { RequestDirectionType } from "@/types/types/connection.types";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
+import { useToast } from "@/hooks/toast";
+import { toTitleCase } from "@/utils/common.utils";
 import { getFullName } from "@/helpers/profile.helpers";
 import { conversationRoutes } from "@/lib/routes/routes";
+import { connect } from "@/lib/actions/connection.actions";
 import { fetchProfiles } from "@/lib/actions/discover.actions";
+
+type SearchRelationshipType = "incoming" | "outgoing" | "connected" | "none";
 
 const HeaderSearchResults = ({
   isOpen,
@@ -36,6 +48,7 @@ const HeaderSearchResults = ({
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const router = useRouter();
+  const { showToast } = useToast();
 
   useOutsideClick({
     ref: searchResultsRef,
@@ -45,7 +58,14 @@ const HeaderSearchResults = ({
   });
 
   const loadProfiles = useCallback(
-    async (query: string, page: number = 1, reset: boolean = true) => {
+    async (search: string, page: number = 1, reset: boolean = true) => {
+      const normalizedSearch = search.trim();
+
+      if (!normalizedSearch) {
+        setSearchedUserProfiles([]);
+        return;
+      }
+
       if (isFetchingRef.current) {
         abortControllerRef.current?.abort();
       }
@@ -54,10 +74,13 @@ const HeaderSearchResults = ({
       setIsLoading(true);
 
       try {
-        const response = await fetchProfiles(page, query);
+        const fetchProfilesResponse = await fetchProfiles(
+          page,
+          normalizedSearch,
+        );
 
-        if (response.success && response?.data) {
-          const data = response?.data as ProfilesResponseType;
+        if (fetchProfilesResponse.success && fetchProfilesResponse?.data) {
+          const data = fetchProfilesResponse?.data as ProfilesResponseType;
 
           setSearchedUserProfiles((prev) =>
             reset ? data.users : [...prev, ...data.users],
@@ -73,15 +96,13 @@ const HeaderSearchResults = ({
   );
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || !searchQuery.trim()) return;
 
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadProfiles(searchQuery, 1, true);
   }, [searchQuery, isOpen, loadProfiles]);
 
   useEffect(() => {
     if (!isOpen) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSearchedUserProfiles([]);
       setExitDirection({});
     }
@@ -93,10 +114,23 @@ const HeaderSearchResults = ({
   };
 
   const getRelationship = (
-    userId: string,
-  ): "pending" | "connected" | "none" => {
-    if (connectionRequests.some((r) => r.userId === userId)) return "pending";
-    if (connections.some((c) => c.userId === userId)) return "connected";
+    profile: UserProfileType,
+  ): SearchRelationshipType => {
+    if (profile.connectionStatus === "accepted") return "connected";
+    if (profile.connectionStatus === "interested") {
+      return profile.connectionDirection === "incoming"
+        ? "incoming"
+        : "outgoing";
+    }
+
+    if (connectionRequests.some((r) => r.userId === profile.userId)) {
+      return "incoming";
+    }
+
+    if (connections.some((c) => c.userId === profile.userId)) {
+      return "connected";
+    }
+
     return "none";
   };
 
@@ -106,6 +140,31 @@ const HeaderSearchResults = ({
   ) => {
     setExitDirection((prev) => ({ ...prev, [userId]: direction }));
     await onRequestAction(userId, direction);
+  };
+
+  const handleConnect = async (userId: string) => {
+    const connectResponse = await connect(userId, "interested");
+
+    if (!connectResponse.success) {
+      showToast({
+        title: toTitleCase(connectResponse.code),
+        message: connectResponse.message ?? "",
+        variant: "error",
+      });
+      return;
+    }
+
+    setSearchedUserProfiles((prev) =>
+      prev.map((profile) =>
+        profile.userId === userId
+          ? {
+              ...profile,
+              connectionStatus: "interested",
+              connectionDirection: "outgoing",
+            }
+          : profile,
+      ),
+    );
   };
 
   return (
@@ -123,11 +182,11 @@ const HeaderSearchResults = ({
             {isLoading ? (
               <div className="flex justify-center items-center gap-2 px-4 py-3 text-text-secondary text-sm">
                 <LuLoader size={14} className="animate-spin" />
-                Searching…
+                Searching...
               </div>
-            ) : searchedUserProfiles?.length > 0 ? (
+            ) : searchedUserProfiles.length > 0 ? (
               searchedUserProfiles.map((profile) => {
-                const relationship = getRelationship(profile.userId);
+                const relationship = getRelationship(profile);
 
                 return (
                   <motion.div
@@ -189,7 +248,7 @@ const HeaderSearchResults = ({
                       </div>
 
                       <div className="flex items-center gap-1.5 shrink-0">
-                        {relationship === "pending" && (
+                        {relationship === "incoming" && (
                           <>
                             <div className="p-0 rounded-md alert alert-success">
                               <button
@@ -200,7 +259,7 @@ const HeaderSearchResults = ({
                                 className="p-0 w-8 h-8 font-medium text-status-success-text text-sm"
                                 title="Accept request"
                               >
-                                ✓
+                                <LuCheck size={16} />
                               </button>
                             </div>
                             <div className="p-0 rounded-md alert alert-error">
@@ -212,10 +271,21 @@ const HeaderSearchResults = ({
                                 className="p-0 w-8 h-8 font-medium text-status-error-text text-sm"
                                 title="Reject request"
                               >
-                                ✕
+                                <LuX size={16} />
                               </button>
                             </div>
                           </>
+                        )}
+
+                        {relationship === "outgoing" && (
+                          <div className="p-0 rounded-md alert alert-info">
+                            <div
+                              className="flex justify-center items-center p-0 w-8 h-8 text-status-info-text"
+                              title="Request pending"
+                            >
+                              <LuClock size={16} />
+                            </div>
+                          </div>
                         )}
 
                         {relationship === "connected" && (
@@ -232,6 +302,21 @@ const HeaderSearchResults = ({
                               title="Message"
                             >
                               <LuMessageCircle size={16} />
+                            </button>
+                          </div>
+                        )}
+
+                        {relationship === "none" && (
+                          <div className="p-0 rounded-md alert alert-success">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleConnect(profile.userId);
+                              }}
+                              className="p-0 w-8 h-8 font-medium text-status-success-text text-sm"
+                              title="Connect"
+                            >
+                              <LuUserPlus size={16} />
                             </button>
                           </div>
                         )}

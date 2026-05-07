@@ -4,10 +4,17 @@ import { api } from "@/lib/api/apiHandler";
 
 export const fetchProfiles = async (
   page: number,
-  query?: string,
+  search?: string,
 ): Promise<ApiResponseType> => {
   try {
-    return await api.get(`${apiUrls.discover.fetchProfiles}?page=${page}`, {
+    const params = new URLSearchParams({ page: String(page) });
+    const normalizedSearch = search?.trim();
+
+    if (normalizedSearch) {
+      params.set("search", normalizedSearch);
+    }
+
+    return await api.get(`${apiUrls.discover.fetchProfiles}?${params}`, {
       requireAuth: true,
     });
   } catch (error) {
