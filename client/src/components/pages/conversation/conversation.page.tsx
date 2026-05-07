@@ -7,6 +7,7 @@ import {
   DirectConversationResponseType,
 } from "@/types/types/response.types";
 import { fetchDirectConversation } from "@/lib/actions/conversation.action";
+import { conversationRoutes } from "@/lib/routes/routes";
 import BottomNavbar from "@/components/layout/bottom.navbar";
 import ConversationList from "@/components/conversation/conversation.list";
 import ConversationWindow from "@/components/conversation/conversation.window";
@@ -26,11 +27,37 @@ const ConversationPage = ({ userName }: ConversationPageProps) => {
     }
   };
 
+  const clearSelectedConversation = () => {
+    window.history.pushState({}, "", conversationRoutes.conversation);
+    setSelectedConversation(null);
+  };
+
+  const syncConversationFromPath = () => {
+    const pathParts = window.location.pathname.split("/").filter(Boolean);
+    const routeUserName =
+      pathParts[0] === "conversation" ? pathParts[1] : undefined;
+
+    if (routeUserName) {
+      getDirectConversation(decodeURIComponent(routeUserName));
+      return;
+    }
+
+    setSelectedConversation(null);
+  };
+
   useEffect(() => {
     if (!userName) return;
 
     getDirectConversation(userName);
   }, [userName]);
+
+  useEffect(() => {
+    window.addEventListener("popstate", syncConversationFromPath);
+
+    return () => {
+      window.removeEventListener("popstate", syncConversationFromPath);
+    };
+  }, []);
 
   return (
     <>
@@ -49,7 +76,7 @@ const ConversationPage = ({ userName }: ConversationPageProps) => {
         >
           <ConversationWindow
             conversation={selectedConversation}
-            onBack={() => setSelectedConversation(null)}
+            onBack={clearSelectedConversation}
           />
         </div>
       </main>

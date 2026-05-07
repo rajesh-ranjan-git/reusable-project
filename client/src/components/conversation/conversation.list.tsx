@@ -107,8 +107,22 @@ const ConversationList = ({
     }
   };
 
+  const getConversationPath = (
+    conversation: (typeof conversationList)[number],
+  ) => {
+    const userName =
+      conversation.conversation.type === "direct"
+        ? conversation.otherParticipants[0]?.user.userName
+        : null;
+
+    return userName
+      ? `${conversationRoutes.conversation}/${encodeURIComponent(userName)}`
+      : conversationRoutes.conversation;
+  };
+
   useEffect(() => {
     if (loggedInUser) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       getConversationList(loggedInUser);
     }
   }, [getConversationList, loggedInUser]);
@@ -207,14 +221,11 @@ const ConversationList = ({
               <button
                 key={conversation.id}
                 onClick={() => {
-                  if (window) {
-                    window.history.pushState(
-                      {},
-                      "",
-                      conversationRoutes.conversation,
-                    );
-                  }
-
+                  window.history.pushState(
+                    {},
+                    "",
+                    getConversationPath(conversation),
+                  );
                   onSelectConversation(conversation.conversation);
                   resetConversationUnread(conversation.id);
                 }}
