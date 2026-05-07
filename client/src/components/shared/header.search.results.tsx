@@ -162,7 +162,32 @@ const HeaderSearchResults = ({
     direction: RequestDirectionType,
   ) => {
     setExitDirection((prev) => ({ ...prev, [userId]: direction }));
-    await onRequestAction(userId, direction);
+    const isActionSuccessful = await onRequestAction(userId, direction);
+
+    if (isActionSuccessful === false) return;
+
+    setSearchedUserProfiles((prev) =>
+      prev.map((profile) => {
+        if (profile.userId !== userId) return profile;
+
+        return direction === "right"
+          ? {
+              ...profile,
+              connectionStatus: "accepted",
+              connectionDirection: null,
+            }
+          : {
+              ...profile,
+              connectionStatus: "rejected",
+              connectionDirection: null,
+            };
+      }),
+    );
+    setExitDirection((prev) => {
+      const next = { ...prev };
+      delete next[userId];
+      return next;
+    });
   };
 
   const handleConnect = async (userId: string) => {
@@ -184,6 +209,31 @@ const HeaderSearchResults = ({
               ...profile,
               connectionStatus: "interested",
               connectionDirection: "outgoing",
+            }
+          : profile,
+      ),
+    );
+  };
+
+  const handleCancelRequest = async (userId: string) => {
+    const connectResponse = await connect(userId, "not-interested");
+
+    if (!connectResponse.success) {
+      showToast({
+        title: toTitleCase(connectResponse.code),
+        message: connectResponse.message ?? "",
+        variant: "error",
+      });
+      return;
+    }
+
+    setSearchedUserProfiles((prev) =>
+      prev.map((profile) =>
+        profile.userId === userId
+          ? {
+              ...profile,
+              connectionStatus: "not-interested",
+              connectionDirection: null,
             }
           : profile,
       ),
@@ -309,12 +359,16 @@ const HeaderSearchResults = ({
 
                           {relationship === "outgoing" && (
                             <div className="p-0 rounded-md alert alert-info">
-                              <div
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleCancelRequest(profile.userId);
+                                }}
                                 className="flex justify-center items-center p-0 w-8 h-8 text-status-info-text"
-                                title="Request pending"
+                                title="Cancel request"
                               >
                                 <LuClock size={16} />
-                              </div>
+                              </button>
                             </div>
                           )}
 

@@ -141,24 +141,6 @@ export const connect = asyncHandler(async (req, res) => {
       }
 
       if (
-        existingConnection.connectionStatus === "interested" &&
-        existingConnection.lastActionedBy.toString() === userId
-      ) {
-        throw AppError.badRequest({
-          message: "Invalid connection request!",
-          code: "CONNECTION REQUEST FAILED",
-          details: {
-            status: validatedConnectionStatus,
-            existingConnection: {
-              sender: existingConnection.sender.toString(),
-              receiver: existingConnection.receiver.toString(),
-              connectionStatus: existingConnection.connectionStatus,
-            },
-          },
-        });
-      }
-
-      if (
         existingConnection.connectionStatus === "rejected" &&
         (existingConnection.rejectedBySenderCount >= 5 ||
           existingConnection.rejectedByReceiverCount >= 5)

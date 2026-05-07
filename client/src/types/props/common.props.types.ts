@@ -33,7 +33,7 @@ export interface HeaderSearchResultsProps {
   onRequestAction: (
     userId: string,
     direction: RequestDirectionType,
-  ) => Promise<void>;
+  ) => Promise<boolean | void>;
 }
 
 export interface HeaderNotificationMenuProps {
@@ -58,7 +58,7 @@ export interface AppSidebarProps {
   onRequestAction: (
     userId: string,
     direction: RequestDirectionType,
-  ) => Promise<void>;
+  ) => Promise<boolean | void>;
   onLoadMoreRequests: (page: number) => Promise<void>;
   onLoadMoreConnections: (page?: number) => Promise<void>;
 }

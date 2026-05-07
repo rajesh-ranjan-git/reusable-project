@@ -122,7 +122,6 @@ const ConversationList = ({
 
   useEffect(() => {
     if (loggedInUser) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       getConversationList(loggedInUser);
     }
   }, [getConversationList, loggedInUser]);

@@ -12,11 +12,6 @@ const ConversationHeader = ({
 }: ConversationHeaderProps) => {
   const router = useRouter();
 
-  logger.debug(
-    "debug from ConversationHeader conversationDisplay:",
-    conversationDisplay,
-  );
-
   const otherParticipantProfileRoute =
     conversationDisplay?.conversation.type === "direct" &&
     conversationDisplay?.otherParticipants.length > 0

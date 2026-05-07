@@ -167,7 +167,7 @@ const AppSidebar = ({
               ) : null}
             </h4>
 
-            <div className="flex-1 space-y-2 overflow-y-auto">
+            <div className="flex-1 space-y-2 overflow-x-hidden overflow-y-auto">
               <AnimatePresence>
                 {connectionRequests?.length > 0 ? (
                   connectionRequests.map((request) => (

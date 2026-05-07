@@ -124,16 +124,19 @@ const AppChrome = ({ children }: ReactNodeProps) => {
       const selectedRequest = connectionRequests.find(
         (r) => r.userId === userId,
       );
-      if (!selectedRequest) return;
 
       setExitDirection((prev) => ({ ...prev, [userId]: direction }));
 
-      setConnectionRequests((prev) => prev.filter((r) => r.userId !== userId));
-      setConnectionRequestsPagination((prev) =>
-        prev ? { ...prev, total: Math.max(0, prev.total - 1) } : prev,
-      );
+      if (selectedRequest) {
+        setConnectionRequests((prev) =>
+          prev.filter((r) => r.userId !== userId),
+        );
+        setConnectionRequestsPagination((prev) =>
+          prev ? { ...prev, total: Math.max(0, prev.total - 1) } : prev,
+        );
+      }
 
-      if (direction === "right") {
+      if (direction === "right" && selectedRequest) {
         setConnections((prev) => [selectedRequest, ...prev]);
         setConnectionsPagination((prev) =>
           prev
@@ -146,14 +149,16 @@ const AppChrome = ({ children }: ReactNodeProps) => {
       const response = await connect(userId, status);
 
       if (!response.success) {
-        setConnectionRequests((prev) =>
-          mergeUniqueUsersByKey([selectedRequest], prev, "userId"),
-        );
-        setConnectionRequestsPagination((prev) =>
-          prev ? { ...prev, total: prev.total + 1 } : prev,
-        );
+        if (selectedRequest) {
+          setConnectionRequests((prev) =>
+            mergeUniqueUsersByKey([selectedRequest], prev, "userId"),
+          );
+          setConnectionRequestsPagination((prev) =>
+            prev ? { ...prev, total: prev.total + 1 } : prev,
+          );
+        }
 
-        if (direction === "right") {
+        if (direction === "right" && selectedRequest) {
           setConnections((prev) => prev.filter((c) => c.userId !== userId));
           setConnectionsPagination((prev) =>
             prev ? { ...prev, total: Math.max(0, prev.total - 1) } : prev,
@@ -165,9 +170,28 @@ const AppChrome = ({ children }: ReactNodeProps) => {
           message: response.message ?? "",
           variant: "error",
         });
+
+        return false;
       }
+
+      if (!selectedRequest) {
+        setConnectionRequestsPagination((prev) =>
+          prev ? { ...prev, total: Math.max(0, prev.total - 1) } : prev,
+        );
+
+        if (direction === "right") {
+          setConnectionsPagination((prev) =>
+            prev ? { ...prev, total: prev.total + 1 } : prev,
+          );
+          getConnections();
+        }
+
+        getConnectionRequests();
+      }
+
+      return true;
     },
-    [connectionRequests, showToast],
+    [connectionRequests, getConnectionRequests, getConnections, showToast],
   );
 
   useEffect(() => {
