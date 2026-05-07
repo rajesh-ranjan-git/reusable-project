@@ -6,7 +6,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { MdError } from "react-icons/md";
 import { staticImagesConfig } from "@/config/common.config";
-import { alkatra, arima, inter, poppins } from "@/config/font.config";
+import { alkatra, arima, poppins, lobster } from "@/config/font.config";
 import { ToastProvider } from "@/hooks/toast";
 import ThemeManager from "@/components/theme/theme.manager";
 import Orb from "@/components/background/orb";
@@ -19,7 +19,7 @@ const GlobalError = () => {
   return (
     <html lang="en">
       <body
-        className={`${poppins.variable} ${inter.variable} ${alkatra.variable} ${arima.variable} antialiased`}
+        className={`${poppins.variable} ${alkatra.variable} ${arima.variable} ${lobster.variable} antialiased`}
         suppressHydrationWarning
       >
         <ToastProvider>

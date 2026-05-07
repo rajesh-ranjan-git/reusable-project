@@ -1,7 +1,7 @@
 import "@/app/globals.css";
 import "@/services/logger/logger";
 import type { Metadata, Viewport } from "next";
-import { alkatra, arima, inter, poppins } from "@/config/font.config";
+import { alkatra, arima, poppins, lobster } from "@/config/font.config";
 import { ReactNodeProps } from "@/types/props/common.props.types";
 import Banner from "@/services/banner/banner";
 import { ToastProvider } from "@/hooks/toast";
@@ -29,7 +29,7 @@ const RootLayout = ({ children }: Readonly<ReactNodeProps>) => {
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <body
-        className={`${alkatra.variable} ${arima.variable} ${inter.variable} ${poppins.variable} antialiased`}
+        className={`${alkatra.variable} ${arima.variable} ${poppins.variable} ${lobster.variable} antialiased`}
         suppressHydrationWarning
       >
         <ServiceWorker />

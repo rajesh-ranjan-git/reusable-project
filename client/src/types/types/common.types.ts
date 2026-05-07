@@ -1,6 +1,6 @@
 import { storageConfig, themeConfig } from "@/config/common.config";
 
-export type HeaderType = "default" | "landing" | "admin";
+export type HeaderType = "default" | "landing" | "admin" | null;
 
 export type StaticImagesConfigType = Record<
   string,

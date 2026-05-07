@@ -10,6 +10,7 @@ import { HeaderProps } from "@/types/props/common.props.types";
 import { useAppStore } from "@/store/store";
 import { toTitleCase } from "@/utils/common.utils";
 import { adminRoutes, authRoutes, defaultRoutes } from "@/lib/routes/routes";
+import HeaderLogo from "@/components/logo/logo";
 import ThemeToggle from "@/components/theme/theme.toggle";
 import AppSidebar from "@/components/layout/app.sidebar";
 import HeaderNotificationMenu from "@/components/shared/header.notification.menu";
@@ -81,21 +82,7 @@ const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
               </h1>
             </Link>
           ) : (
-            <Link
-              href={defaultRoutes.discover}
-              className="group flex items-center gap-2"
-            >
-              <Image
-                src={staticImagesConfig.mainLogo.src}
-                alt={staticImagesConfig.mainLogo.alt}
-                width={100}
-                height={100}
-                className={`shadow-glass-bg shadow-md rounded-full w-10 select-none ${type === "landing" ? "md:w-12 md:h-12" : ""}`}
-              />
-              <span className="font-semibold text-gradient text-xl md:text-3xl text-nowrap tracking-tight">
-                App Name
-              </span>
-            </Link>
+            <HeaderLogo type={type} />
           )}
         </div>
 

@@ -1,8 +1,5 @@
-import Image from "next/image";
-import Link from "next/link";
 import { LuGithub, LuLinkedin, LuTwitter } from "react-icons/lu";
-import { staticImagesConfig } from "@/config/common.config";
-import { defaultRoutes } from "@/lib/routes/routes";
+import HeaderLogo from "@/components/logo/logo";
 
 const Footer = () => {
   return (
@@ -10,23 +7,9 @@ const Footer = () => {
       <div className="mx-auto px-6 max-w-7xl">
         <div className="gap-12 grid grid-cols-1 md:grid-cols-4 mb-16">
           <div className="md:col-span-1">
-            <Link
-              href={defaultRoutes.discover}
-              className="group flex items-center gap-2 mb-6"
-            >
-              <Image
-                src={staticImagesConfig.mainLogo.src}
-                alt={staticImagesConfig.mainLogo.alt}
-                width={100}
-                height={100}
-                className="shadow-glass-bg shadow-md rounded-full w-10 md:w-12 h-auto select-none"
-              />
-              <span className="font-semibold text-gradient text-2xl md:text-3xl tracking-tight">
-                App Name
-              </span>
-            </Link>
+            <HeaderLogo />
 
-            <p className="mb-6 text-sm leading-relaxed">
+            <p className="my-6 text-sm leading-relaxed">
               Building the future of developer networking. Connect, pair
               program, and launch products together.
             </p>

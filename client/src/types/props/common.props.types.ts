@@ -11,6 +11,10 @@ export interface HeaderProps {
   setIsSidebarOpen?: Dispatch<SetStateAction<boolean>>;
 }
 
+export interface LogoProps {
+  type?: HeaderType;
+}
+
 export interface HeaderNotificationMenuProps {
   isOpen: boolean;
   onClose: () => void;

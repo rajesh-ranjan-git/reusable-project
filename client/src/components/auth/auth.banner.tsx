@@ -33,11 +33,11 @@ const AuthBanner = ({ isLogin, handleToggleMode }: AuthBannerProps) => {
               alt={staticImagesConfig.mainLogo.alt}
               width={200}
               height={200}
-              className="shadow-md rounded-full select-none"
+              className="shadow-lg rounded-full shadow-accent-purple-dark select-none"
             />
           </div>
           <div className="flex flex-col items-start md:items-center gap-0 md:gap-1 mt-0 md:mt-2">
-            <span className="font-bold text-text-on-accent text-2xl md:text-4xl leading-none tracking-wide">
+            <span className="text-shadow-accent-purple-dark text-shadow-lg font-lobster font-bold text-text-on-accent text-2xl md:text-4xl leading-none tracking-widest">
               App Name
             </span>
           </div>
