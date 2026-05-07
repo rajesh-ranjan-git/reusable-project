@@ -9,18 +9,21 @@ import {
 import { UserProfileType } from "@/types/types/profile.types";
 import { RequestDirectionType } from "@/types/types/connection.types";
 import {
+  ConversationListResponseType,
   ProfilesResponseType,
   ResponsePaginationType,
 } from "@/types/types/response.types";
 import { useAppStore } from "@/store/store";
 import { useToast } from "@/hooks/toast";
 import { toTitleCase } from "@/utils/common.utils";
+import { getConversationDisplay } from "@/helpers/conversation.helpers";
 import { mergeUniqueUsersByKey } from "@/helpers/profile.helpers";
 import {
   connect,
   fetchConnectionRequests,
   fetchConnections,
 } from "@/lib/actions/connection.actions";
+import { fetchConversationsList } from "@/lib/actions/conversation.action";
 import Header from "@/components/layout/header";
 import AppSidebar from "@/components/layout/app.sidebar";
 import BottomNavbar from "@/components/layout/bottom.navbar";
@@ -42,7 +45,10 @@ const AppChrome = ({ children }: ReactNodeProps) => {
     useState<ResponsePaginationType | null>(null);
 
   const pathname = usePathname();
-  const loggedInUserId = useAppStore((state) => state.loggedInUser?.userId);
+  const loggedInUser = useAppStore((state) => state.loggedInUser);
+  const accessToken = useAppStore((state) => state.accessToken);
+  const conversationList = useAppStore((state) => state.conversationList);
+  const setConversationList = useAppStore((state) => state.setConversationList);
   const { showToast } = useToast();
 
   const isAppRoute = APP_ROUTES.some(
@@ -92,6 +98,26 @@ const AppChrome = ({ children }: ReactNodeProps) => {
       setConnectionsPagination(data.pagination);
     }
   }, []);
+
+  const getConversationList = useCallback(async () => {
+    if (!loggedInUser) return;
+
+    const fetchConversationsListResponse = await fetchConversationsList();
+
+    if (
+      fetchConversationsListResponse.success &&
+      fetchConversationsListResponse?.data
+    ) {
+      const data =
+        fetchConversationsListResponse.data as ConversationListResponseType;
+
+      setConversationList(
+        data.conversations.map((conversation) =>
+          getConversationDisplay(conversation, loggedInUser),
+        ),
+      );
+    }
+  }, [loggedInUser, setConversationList]);
 
   const handleRequestAction = useCallback(
     async (userId: string, direction: RequestDirectionType) => {
@@ -145,13 +171,33 @@ const AppChrome = ({ children }: ReactNodeProps) => {
   );
 
   useEffect(() => {
-    if (loggedInUserId) {
+    if (loggedInUser?.userId) {
       getConnectionRequests();
       getConnections();
     }
-  }, [getConnectionRequests, getConnections, loggedInUserId]);
+  }, [getConnectionRequests, getConnections, loggedInUser?.userId]);
 
   useEffect(() => {
+    if (
+      !accessToken ||
+      !loggedInUser ||
+      isConversationRoute ||
+      conversationList.length > 0
+    ) {
+      return;
+    }
+
+    getConversationList();
+  }, [
+    accessToken,
+    conversationList.length,
+    getConversationList,
+    isConversationRoute,
+    loggedInUser,
+  ]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsSidebarOpen(false);
   }, [pathname]);
 

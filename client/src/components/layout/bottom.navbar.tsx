@@ -5,9 +5,17 @@ import {
   defaultRoutes,
   profileRoutes,
 } from "@/lib/routes/routes";
+import { useAppStore } from "@/store/store";
 
 const BottomNavbar = ({ activeTab = "chats", hidden = false }) => {
   const router = useRouter();
+  const totalUnreadMessages = useAppStore((state) =>
+    state.conversationList.reduce(
+      (total, conversation) => total + conversation.unreadCount,
+      0,
+    ),
+  );
+
   if (hidden) return null;
 
   const tabs = [
@@ -21,7 +29,7 @@ const BottomNavbar = ({ activeTab = "chats", hidden = false }) => {
       id: "chats",
       icon: LuMessageSquare,
       label: "Chats",
-      badge: 3,
+      badge: totalUnreadMessages,
       path: conversationRoutes.conversation,
     },
     {
@@ -37,6 +45,8 @@ const BottomNavbar = ({ activeTab = "chats", hidden = false }) => {
       {tabs.map((tab) => {
         const Icon = tab.icon;
         const isActive = activeTab === tab.id;
+        const badge = tab.badge ?? 0;
+
         return (
           <button
             key={tab.id}
@@ -45,9 +55,9 @@ const BottomNavbar = ({ activeTab = "chats", hidden = false }) => {
           >
             <Icon size={24} className={isActive ? "fill-primary/20" : ""} />
             <span className="font-medium text-[10px]">{tab.label}</span>
-            {tab.badge && (
+            {badge > 0 && (
               <span className="-top-1 -right-2 absolute flex justify-center items-center p-2 rounded-full w-6 h-6 text-xs alert alert-error">
-                {tab.badge}
+                {badge > 99 ? "99+" : badge}
               </span>
             )}
           </button>
