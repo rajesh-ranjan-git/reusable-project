@@ -72,7 +72,7 @@ const adminDashboardMenuItem = {
 const HeaderProfileMenu = ({
   isOpen,
   onClose,
-  positionClass = "top-full right-0 mt-3",
+  positionClass = "top-full right-0 rounded-md mt-2",
 }: HeaderProfileMenuProps) => {
   const menuRef = useRef<HTMLDivElement | null>(null);
 

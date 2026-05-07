@@ -25,122 +25,20 @@ import {
 import FormInput from "@/components/forms/shared/form.input";
 import Sheet from "@/components/ui/sheet/sheet";
 
-const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
-  const [connectionRequests, setConnectionRequests] = useState<
-    UserProfileType[]
-  >([]);
-  const [connections, setConnections] = useState<UserProfileType[]>([]);
-  const [exitDirection, setExitDirection] = useState<
-    Record<string, RequestDirectionType>
-  >({});
-  const [connectionRequestsPagination, setConnectionRequestsPagination] =
-    useState<ResponsePaginationType | null>(null);
-  const [connectionsPagination, setConnectionsPagination] =
-    useState<ResponsePaginationType | null>(null);
-
+const AppSidebar = ({
+  setIsSidebarOpen,
+  connectionRequests,
+  connections,
+  exitDirection,
+  connectionRequestsPagination,
+  connectionsPagination,
+  onRequestAction,
+  onLoadMoreRequests,
+  onLoadMoreConnections,
+}: AppSidebarProps) => {
   const router = useRouter();
 
-  const { showToast } = useToast();
-
   const connectionRequestsSheet = useSheet({ type: "connectionRequests" });
-
-  const handleAction = async (
-    userId: string,
-    direction: RequestDirectionType,
-  ) => {
-    const selectedRequest = connectionRequests.find(
-      (request) => request.userId === userId,
-    );
-
-    if (!selectedRequest) return;
-
-    setExitDirection((prev) => ({
-      ...prev,
-      [userId]: direction,
-    }));
-
-    setTimeout(() => {
-      setConnectionRequests((prev) =>
-        prev.filter((request) => request.userId !== userId),
-      );
-
-      setConnectionRequestsPagination((prev) =>
-        prev ? { ...prev, total: Math.max(0, prev.total - 1) } : prev,
-      );
-
-      if (direction === "right") {
-        setConnections((prev) => [selectedRequest, ...prev]);
-
-        setConnectionsPagination((prev) =>
-          prev
-            ? { ...prev, total: prev.total + 1 }
-            : { page: 1, limit: 10, total: 1, totalPages: 1 },
-        );
-      }
-    }, 0);
-
-    const status = direction === "right" ? "accepted" : "rejected";
-
-    const response = await connect(userId, status);
-
-    if (!response.success) {
-      setConnectionRequests((prev) => [selectedRequest, ...prev]);
-
-      setConnectionRequestsPagination((prev) =>
-        prev ? { ...prev, total: prev.total + 1 } : prev,
-      );
-
-      if (direction === "right") {
-        setConnections((prev) =>
-          prev.filter((connection) => connection.userId !== userId),
-        );
-
-        setConnectionsPagination((prev) =>
-          prev ? { ...prev, total: Math.max(0, prev.total - 1) } : prev,
-        );
-      }
-
-      showToast({
-        title: toTitleCase(response.code),
-        message: response.message ?? "",
-        variant: "error",
-      });
-    }
-  };
-
-  const getConnectionRequests = async (page: number = 1) => {
-    const connectionRequestsResponse = await fetchConnectionRequests(page);
-
-    if (!connectionRequestsResponse?.success) {
-    } else {
-      const data = connectionRequestsResponse.data as ProfilesResponseType;
-
-      setConnectionRequests((prev) =>
-        mergeUniqueUsersByKey(prev, data.users, "userId"),
-      );
-
-      setConnectionRequestsPagination(data.pagination);
-    }
-  };
-
-  const getConnections = async (page?: number) => {
-    const connectionsResponse = await fetchConnections(page);
-
-    if (!connectionsResponse?.success) {
-    } else {
-      const data = connectionsResponse.data as ProfilesResponseType;
-
-      setConnections((prev) =>
-        mergeUniqueUsersByKey(prev, data.users, "userId"),
-      );
-      setConnectionsPagination(data.pagination);
-    }
-  };
-
-  useEffect(() => {
-    getConnectionRequests();
-    getConnections();
-  }, []);
 
   return (
     <aside className="flex flex-col border-glass-border border-r border-b-0 md:w-64 lg:w-72 h-full transition-all duration-500 glass-nav shrink-0">
@@ -234,7 +132,7 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleAction(request.userId, "right");
+                                onRequestAction(request.userId, "right");
                               }}
                               className="p-0 w-8 h-8 font-medium text-status-success-text text-sm"
                             >
@@ -245,7 +143,7 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleAction(request.userId, "left");
+                                onRequestAction(request.userId, "left");
                               }}
                               className="p-0 w-8 h-8 font-medium text-status-error-text text-sm"
                             >
@@ -260,7 +158,7 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
             </AnimatePresence>
           </div>
 
-          {connectionRequests.length > 2 && (
+          {connectionRequests?.length > 2 && (
             <button
               onClick={() => connectionRequestsSheet.toggle()}
               className="my-2 w-full btn btn-secondary"
@@ -343,7 +241,7 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleAction(request.userId, "right");
+                                onRequestAction(request.userId, "right");
                               }}
                               className="p-0 w-8 h-8 font-medium text-status-success-text text-sm"
                             >
@@ -354,7 +252,7 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleAction(request.userId, "left");
+                                onRequestAction(request.userId, "left");
                               }}
                               className="p-0 w-8 h-8 font-medium text-status-error-text text-sm"
                             >
@@ -377,9 +275,7 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
                   connectionRequests.length && (
                   <button
                     onClick={() =>
-                      getConnectionRequests(
-                        connectionRequestsPagination.page + 1,
-                      )
+                      onLoadMoreRequests(connectionRequestsPagination.page + 1)
                     }
                     className="my-2 w-full btn btn-secondary"
                   >
@@ -458,7 +354,7 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
                 connectionsPagination.total > connections.length && (
                   <button
                     onClick={() =>
-                      getConnections(connectionsPagination.page + 1)
+                      onLoadMoreConnections(connectionsPagination.page + 1)
                     }
                     className="my-2 w-full btn btn-secondary"
                   >

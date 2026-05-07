@@ -5,15 +5,15 @@ import { BATCH_SIZE, PREFETCH_AT } from "@/constants/common.constants";
 import { SwipeDirectionType } from "@/types/types/discover.types";
 import { ProfilesResponseType } from "@/types/types/response.types";
 import { UserProfileType } from "@/types/types/profile.types";
+import { toTitleCase } from "@/utils/common.utils";
+import { useToast } from "@/hooks/toast";
 import { fetchProfiles } from "@/lib/actions/discover.actions";
 import Header from "@/components/layout/header";
+import { connect } from "@/lib/actions/connection.actions";
 import AppSidebar from "@/components/layout/app.sidebar";
 import BottomNav from "@/components/layout/bottom.navbar";
 import ActionBar from "@/components/discover/action.bar";
 import SwipeCard from "@/components/discover/swipe.card";
-import { connect } from "@/lib/actions/connection.actions";
-import { useToast } from "@/hooks/toast";
-import { toTitleCase } from "@/utils/common.utils";
 
 const DiscoverPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -62,7 +62,7 @@ const DiscoverPage = () => {
     }
   };
 
-  const loadProfiles = async (page: number) => {
+  const loadProfiles = async () => {
     if (isFetchingRef.current) return;
     isFetchingRef.current = true;
 
@@ -83,7 +83,7 @@ const DiscoverPage = () => {
 
   useEffect(() => {
     if (bufferProfiles.length <= BATCH_SIZE) {
-      loadProfiles(pageRef.current);
+      loadProfiles();
     }
   }, [bufferProfiles]);
 
@@ -100,7 +100,7 @@ const DiscoverPage = () => {
   }, [visibleProfiles, bufferProfiles]);
 
   useEffect(() => {
-    loadProfiles(pageRef.current);
+    loadProfiles();
   }, []);
 
   return (

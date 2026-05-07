@@ -8,7 +8,7 @@ import { conversationRoutes, profileRoutes } from "@/lib/routes/routes";
 const HeaderNotificationMenu = ({
   isOpen,
   onClose,
-  positionClass = "top-full right-0 mt-3",
+  positionClass = "top-full right-0 rounded-md mt-2",
 }: HeaderNotificationMenuProps) => {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
@@ -115,14 +115,12 @@ const HeaderNotificationMenu = ({
             )}
           </ul>
 
-          <div
+          <button
             onClick={onClose}
-            className="flex justify-center items-center gap-2 hover:bg-glass-bg-subtle mt-1 px-4 py-1 border-accent-purple-dark/30 border-t w-full text-status-error-text text-left cursor-pointer"
+            className="flex justify-center items-center gap-2 hover:bg-glass-bg-subtle mt-1 px-4 py-2 border-accent-purple-dark/30 border-t w-full text-text-secondary hover:text-text-primary text-xs cursor-pointer"
           >
-            <button className="w-full h-full text-text-secondary hover:text-text-primary text-xs leading-snug">
               Mark all as read
-            </button>
-          </div>
+          </button>
         </motion.div>
       )}
     </AnimatePresence>

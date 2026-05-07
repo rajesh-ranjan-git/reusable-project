@@ -10,6 +10,7 @@ export const MAX_ADDRESSES = 5;
 export const MAX_IMAGE_SIZE = 2 * 1024 * 1024;
 export const MOBILE_MAX_SCREEN_WIDTH = 767;
 export const TABLET_MAX_SCREEN_WIDTH = 1023;
+export const SEARCH_DEBOUNCE_MS = 350;
 export const DAYS = [
   "Sunday",
   "Monday",

@@ -65,8 +65,7 @@ export const useAppStore = create<AppStateType>()(
                     ...conversation.conversation,
                     participants: conversation.conversation.participants.map(
                       (participant) =>
-                        participant.user.userId ===
-                        state.loggedInUser?.userId
+                        participant.user.userId === state.loggedInUser?.userId
                           ? { ...participant, unreadCount: 0 }
                           : participant,
                     ),
@@ -123,8 +122,7 @@ export const useAppStore = create<AppStateType>()(
                     updatedAt: message.createdAt,
                     participants: conversation.conversation.participants.map(
                       (participant) =>
-                        participant.user.userId ===
-                        state.loggedInUser?.userId
+                        participant.user.userId === state.loggedInUser?.userId
                           ? { ...participant, unreadCount }
                           : participant,
                     ),
