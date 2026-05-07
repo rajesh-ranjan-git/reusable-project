@@ -35,9 +35,12 @@ export interface MessagesContainerProps {
   messagesContainerRef: RefObject<HTMLDivElement | null>;
   shouldAutoScrollRef: RefObject<boolean>;
   isLoadingMessages: boolean;
+  isLoadingOlderMessages: boolean;
+  hasOlderMessages: boolean;
   displayMessages: MessageDisplayType[];
   messages: MessageResponseType[];
   isSending: boolean;
+  onLoadOlderMessages: () => void;
   setNewMessagesCount: Dispatch<SetStateAction<number>>;
   persistAndEmitMessage: (
     clientMessageId: string,

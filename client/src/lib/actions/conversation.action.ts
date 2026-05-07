@@ -2,9 +2,11 @@ import { ApiErrorResponseType, ApiResponseType } from "@/types/types/api.types";
 import { api } from "@/lib/api/apiHandler";
 import { apiUrls } from "@/lib/api/apiUtils";
 
-export const fetchConversationsList = async (): Promise<ApiResponseType> => {
+export const fetchConversationsList = async (
+  page: number = 1,
+): Promise<ApiResponseType> => {
   try {
-    return await api.get(apiUrls.conversation.actionConversations, {
+    return await api.get(`${apiUrls.conversation.actionConversations}?page=${page}`, {
       requireAuth: true,
     });
   } catch (error) {
@@ -28,10 +30,19 @@ export const fetchDirectConversation = async (
 
 export const fetchConversationMessages = async (
   conversationId: string,
+  cursor?: string | null,
 ): Promise<ApiResponseType> => {
   try {
+    const params = new URLSearchParams();
+
+    if (cursor) {
+      params.set("cursor", cursor);
+    }
+
+    const query = params.toString();
+
     return await api.get(
-      `${apiUrls.conversation.actionMessage}/${conversationId}/messages`,
+      `${apiUrls.conversation.actionMessage}/${conversationId}/messages${query ? `?${query}` : ""}`,
       { requireAuth: true },
     );
   } catch (error) {

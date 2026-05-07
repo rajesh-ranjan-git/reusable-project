@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { UIEvent, useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
@@ -13,7 +13,10 @@ import { TbLoader3 } from "react-icons/tb";
 import { staticImagesConfig } from "@/config/common.config";
 import { HeaderSearchResultsProps } from "@/types/props/common.props.types";
 import { UserProfileType } from "@/types/types/profile.types";
-import { ProfilesResponseType } from "@/types/types/response.types";
+import {
+  ProfilesResponseType,
+  ResponsePaginationType,
+} from "@/types/types/response.types";
 import { RequestDirectionType } from "@/types/types/connection.types";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
 import { useToast } from "@/hooks/toast";
@@ -38,9 +41,12 @@ const HeaderSearchResults = ({
     UserProfileType[]
   >([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [exitDirection, setExitDirection] = useState<
     Record<string, RequestDirectionType>
   >({});
+  const [searchPagination, setSearchPagination] =
+    useState<ResponsePaginationType | null>(null);
 
   const searchResultsRef = useRef<HTMLDivElement | null>(null);
   const pageRef = useRef(1);
@@ -71,7 +77,8 @@ const HeaderSearchResults = ({
       }
 
       isFetchingRef.current = true;
-      setIsLoading(true);
+      setIsLoading(reset);
+      setIsLoadingMore(!reset);
 
       try {
         const fetchProfilesResponse = await fetchProfiles(
@@ -85,11 +92,13 @@ const HeaderSearchResults = ({
           setSearchedUserProfiles((prev) =>
             reset ? data.users : [...prev, ...data.users],
           );
+          setSearchPagination(data.pagination);
           pageRef.current = page;
         }
       } finally {
         isFetchingRef.current = false;
         setIsLoading(false);
+        setIsLoadingMore(false);
       }
     },
     [],
@@ -105,8 +114,22 @@ const HeaderSearchResults = ({
     if (!isOpen) {
       setSearchedUserProfiles([]);
       setExitDirection({});
+      setSearchPagination(null);
     }
   }, [isOpen]);
+
+  const handleResultsScroll = (e: UIEvent<HTMLUListElement>) => {
+    if (!searchPagination) return;
+    if (searchPagination.page >= searchPagination.totalPages) return;
+    if (isFetchingRef.current || isLoading || isLoadingMore) return;
+
+    const el = e.currentTarget;
+    const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+
+    if (distanceFromBottom <= 96) {
+      loadProfiles(searchQuery, searchPagination.page + 1, false);
+    }
+  };
 
   const handleNavigation = (path: string) => {
     router.push(path);
@@ -178,157 +201,172 @@ const HeaderSearchResults = ({
           transition={{ duration: 0.15 }}
           className={`absolute ${positionClass} w-72 glass-heavy backdrop-blur-md z-(--z-dropdown) pt-1 flex flex-col overflow-hidden`}
         >
-          <ul className="max-h-75 overflow-y-auto">
+          <ul
+            className="max-h-75 overflow-y-auto"
+            onScroll={handleResultsScroll}
+          >
             {isLoading ? (
               <div className="flex justify-center items-center gap-2 px-4 py-3 text-text-secondary text-sm">
                 <TbLoader3 size={14} className="animate-spin" />
                 Searching...
               </div>
             ) : searchedUserProfiles.length > 0 ? (
-              searchedUserProfiles.map((profile) => {
-                const relationship = getRelationship(profile);
+              <>
+                {searchedUserProfiles.map((profile) => {
+                  const relationship = getRelationship(profile);
 
-                return (
-                  <motion.div
-                    key={profile.userId}
-                    initial={{ opacity: 0, height: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, height: "auto", scale: 1 }}
-                    exit={{
-                      opacity: 0,
-                      x: exitDirection[profile.userId] === "right" ? 100 : -100,
-                      height: 0,
-                      marginTop: 0,
-                      marginBottom: 0,
-                      transition: { duration: 0.25, ease: "backIn" },
-                    }}
-                    transition={{ duration: 0.2 }}
-                    className="overflow-hidden"
-                  >
-                    <div
-                      className="group flex justify-between items-center hover:bg-glass-bg-hover p-2 rounded-md overflow-hidden cursor-pointer"
-                      onClick={() =>
-                        handleNavigation(`/profile/${profile.userName}`)
-                      }
+                  return (
+                    <motion.div
+                      key={profile.userId}
+                      initial={{ opacity: 0, height: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, height: "auto", scale: 1 }}
+                      exit={{
+                        opacity: 0,
+                        x:
+                          exitDirection[profile.userId] === "right"
+                            ? 100
+                            : -100,
+                        height: 0,
+                        marginTop: 0,
+                        marginBottom: 0,
+                        transition: { duration: 0.25, ease: "backIn" },
+                      }}
+                      transition={{ duration: 0.2 }}
+                      className="overflow-hidden"
                     >
-                      <div className="flex items-center gap-2 pr-1 min-w-0">
-                        <div className="relative shrink-0">
-                          <Image
-                            src={
-                              profile?.avatar
-                                ? profile.avatar
-                                : staticImagesConfig.avatarPlaceholder.src
-                            }
-                            alt={
-                              profile?.fullName
-                                ? profile.fullName
-                                : staticImagesConfig.avatarPlaceholder.alt
-                            }
-                            width={100}
-                            height={100}
-                            className="shadow-glass rounded-full w-10 h-10 object-cover shrink-0"
-                          />
+                      <div
+                        className="group flex justify-between items-center hover:bg-glass-bg-hover p-2 rounded-md overflow-hidden cursor-pointer"
+                        onClick={() =>
+                          handleNavigation(`/profile/${profile.userName}`)
+                        }
+                      >
+                        <div className="flex items-center gap-2 pr-1 min-w-0">
+                          <div className="relative shrink-0">
+                            <Image
+                              src={
+                                profile?.avatar
+                                  ? profile.avatar
+                                  : staticImagesConfig.avatarPlaceholder.src
+                              }
+                              alt={
+                                profile?.fullName
+                                  ? profile.fullName
+                                  : staticImagesConfig.avatarPlaceholder.alt
+                              }
+                              width={100}
+                              height={100}
+                              className="shadow-glass rounded-full w-10 h-10 object-cover shrink-0"
+                            />
+
+                            {relationship === "connected" && (
+                              <div
+                                className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border border-bg ${profile?.lastSeen ? "bg-green-500" : "bg-gray-500"}`}
+                              />
+                            )}
+                          </div>
+
+                          <div className="flex-1 min-w-0">
+                            <h6 className="font-medium text-text-primary text-sm truncate">
+                              {getFullName(profile)}
+                            </h6>
+                            {profile?.currentJobRole && (
+                              <p className="text-text-secondary text-xs truncate">
+                                {profile.currentJobRole}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          {relationship === "incoming" && (
+                            <>
+                              <div className="p-0 rounded-md alert alert-success">
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleAction(profile.userId, "right");
+                                  }}
+                                  className="p-0 w-8 h-8 font-medium text-status-success-text text-sm"
+                                  title="Accept request"
+                                >
+                                  <LuCheck size={16} />
+                                </button>
+                              </div>
+                              <div className="p-0 rounded-md alert alert-error">
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleAction(profile.userId, "left");
+                                  }}
+                                  className="p-0 w-8 h-8 font-medium text-status-error-text text-sm"
+                                  title="Reject request"
+                                >
+                                  <LuX size={16} />
+                                </button>
+                              </div>
+                            </>
+                          )}
+
+                          {relationship === "outgoing" && (
+                            <div className="p-0 rounded-md alert alert-info">
+                              <div
+                                className="flex justify-center items-center p-0 w-8 h-8 text-status-info-text"
+                                title="Request pending"
+                              >
+                                <LuClock size={16} />
+                              </div>
+                            </div>
+                          )}
 
                           {relationship === "connected" && (
-                            <div
-                              className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border border-bg ${profile?.lastSeen ? "bg-green-500" : "bg-gray-500"}`}
-                            />
+                            <div className="p-0 rounded-md alert alert-info">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onClose();
+                                  router.push(
+                                    `${conversationRoutes.conversation}/${profile.userName}`,
+                                  );
+                                }}
+                                className="p-0 w-8 h-8 font-medium text-status-info-text text-sm"
+                                title="Message"
+                              >
+                                <LuMessageCircle size={16} />
+                              </button>
+                            </div>
                           )}
-                        </div>
 
-                        <div className="flex-1 min-w-0">
-                          <h6 className="font-medium text-text-primary text-sm truncate">
-                            {getFullName(profile)}
-                          </h6>
-                          {profile?.currentJobRole && (
-                            <p className="text-text-secondary text-xs truncate">
-                              {profile.currentJobRole}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        {relationship === "incoming" && (
-                          <>
+                          {relationship === "none" && (
                             <div className="p-0 rounded-md alert alert-success">
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  handleAction(profile.userId, "right");
+                                  handleConnect(profile.userId);
                                 }}
                                 className="p-0 w-8 h-8 font-medium text-status-success-text text-sm"
-                                title="Accept request"
+                                title="Connect"
                               >
-                                <LuCheck size={16} />
+                                <LuUserPlus size={16} />
                               </button>
                             </div>
-                            <div className="p-0 rounded-md alert alert-error">
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleAction(profile.userId, "left");
-                                }}
-                                className="p-0 w-8 h-8 font-medium text-status-error-text text-sm"
-                                title="Reject request"
-                              >
-                                <LuX size={16} />
-                              </button>
-                            </div>
-                          </>
-                        )}
-
-                        {relationship === "outgoing" && (
-                          <div className="p-0 rounded-md alert alert-info">
-                            <div
-                              className="flex justify-center items-center p-0 w-8 h-8 text-status-info-text"
-                              title="Request pending"
-                            >
-                              <LuClock size={16} />
-                            </div>
-                          </div>
-                        )}
-
-                        {relationship === "connected" && (
-                          <div className="p-0 rounded-md alert alert-info">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                onClose();
-                                router.push(
-                                  `${conversationRoutes.conversation}/${profile.userName}`,
-                                );
-                              }}
-                              className="p-0 w-8 h-8 font-medium text-status-info-text text-sm"
-                              title="Message"
-                            >
-                              <LuMessageCircle size={16} />
-                            </button>
-                          </div>
-                        )}
-
-                        {relationship === "none" && (
-                          <div className="p-0 rounded-md alert alert-success">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleConnect(profile.userId);
-                              }}
-                              className="p-0 w-8 h-8 font-medium text-status-success-text text-sm"
-                              title="Connect"
-                            >
-                              <LuUserPlus size={16} />
-                            </button>
-                          </div>
-                        )}
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </motion.div>
-                );
-              })
+                    </motion.div>
+                  );
+                })}
+
+                {isLoadingMore && (
+                  <div className="flex justify-center items-center gap-2 px-4 py-3 text-text-secondary text-sm">
+                    <TbLoader3 size={14} className="animate-spin" />
+                    Loading more...
+                  </div>
+                )}
+              </>
             ) : (
               <div
                 onClick={onClose}
-                className="flex justify-center items-center gap-2 px-4 py-3 w-full text-text-secondary text-sm text-left cursor-pointer"
+                className="flex justify-center items-center gap-2 px-4 py-3 w-full text-text-secondary text-sm text-left select-none"
               >
                 {searchQuery
                   ? `No results for "${searchQuery}"`

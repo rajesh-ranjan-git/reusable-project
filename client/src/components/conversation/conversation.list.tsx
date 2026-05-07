@@ -1,9 +1,12 @@
-import { useEffect, useRef } from "react";
+import { UIEvent, useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Socket } from "socket.io-client";
 import { LuSearch } from "react-icons/lu";
 import { ConversationListProps } from "@/types/props/conversation.props";
-import { ConversationListResponseType } from "@/types/types/response.types";
+import {
+  ConversationListResponseType,
+  ResponsePaginationType,
+} from "@/types/types/response.types";
 import { LoggedInUserType } from "@/types/types/auth.types";
 import { MessageResponseType } from "@/types/types/message.types";
 import { useAppStore } from "@/store/store";
@@ -30,7 +33,12 @@ const ConversationList = ({
   const updateConversationWithMessage = useAppStore(
     (state) => state.updateConversationWithMessage,
   );
+  const [conversationPagination, setConversationPagination] =
+    useState<ResponsePaginationType | null>(null);
+  const [isLoadingMoreConversations, setIsLoadingMoreConversations] =
+    useState(false);
   const socketRef = useRef<Socket | null>(null);
+  const isFetchingConversationsRef = useRef(false);
   const conversationRoomKey = conversationList
     .map((conversation) => conversation.id)
     .join("|");
@@ -41,23 +49,61 @@ const ConversationList = ({
   const getMessageId = (message: MessageResponseType) =>
     message.messageId ?? message.id;
 
-  const getConversationList = async (loggedInUser: LoggedInUserType) => {
-    const fetchConversationsListResponse = await fetchConversationsList();
+  const getConversationList = useCallback(
+    async (loggedInUser: LoggedInUserType, page: number = 1) => {
+      if (isFetchingConversationsRef.current) return;
 
-    if (
-      fetchConversationsListResponse.success &&
-      fetchConversationsListResponse?.data
-    ) {
-      const data =
-        fetchConversationsListResponse?.data as ConversationListResponseType;
+      isFetchingConversationsRef.current = true;
+      setIsLoadingMoreConversations(page > 1);
 
-      setConversationList(
-        data.conversations.map((conversation) =>
+      const fetchConversationsListResponse = await fetchConversationsList(page);
+
+      if (
+        fetchConversationsListResponse.success &&
+        fetchConversationsListResponse?.data
+      ) {
+        const data =
+          fetchConversationsListResponse?.data as ConversationListResponseType;
+        const nextConversations = data.conversations.map((conversation) =>
           getConversationDisplay(conversation, loggedInUser),
-        ),
-      );
-    } else {
-      setConversationList([]);
+        );
+
+        setConversationPagination(data.pagination);
+        setConversationList((prev) => {
+          if (page === 1) return nextConversations;
+
+          const existingIds = new Set(
+            prev.map((conversation) => conversation.id),
+          );
+
+          return [
+            ...prev,
+            ...nextConversations.filter(
+              (conversation) => !existingIds.has(conversation.id),
+            ),
+          ];
+        });
+      } else if (page === 1) {
+        setConversationPagination(null);
+        setConversationList([]);
+      }
+
+      setIsLoadingMoreConversations(false);
+      isFetchingConversationsRef.current = false;
+    },
+    [setConversationList],
+  );
+
+  const handleConversationListScroll = (e: UIEvent<HTMLDivElement>) => {
+    if (!loggedInUser || !conversationPagination) return;
+    if (conversationPagination.page >= conversationPagination.totalPages)
+      return;
+
+    const el = e.currentTarget;
+    const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+
+    if (distanceFromBottom <= 96) {
+      getConversationList(loggedInUser, conversationPagination.page + 1);
     }
   };
 
@@ -65,7 +111,7 @@ const ConversationList = ({
     if (loggedInUser) {
       getConversationList(loggedInUser);
     }
-  }, [loggedInUser]);
+  }, [getConversationList, loggedInUser]);
 
   useEffect(() => {
     if (!accessToken || conversationList.length === 0) return;
@@ -151,61 +197,72 @@ const ConversationList = ({
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto">
+      <div
+        className="flex-1 overflow-y-auto"
+        onScroll={handleConversationListScroll}
+      >
         {conversationList.length > 0 ? (
-          conversationList.map((conversation) => (
-            <button
-              key={conversation.id}
-              onClick={() => {
-                if (window) {
-                  window.history.pushState(
-                    {},
-                    "",
-                    conversationRoutes.conversation,
-                  );
-                }
+          <>
+            {conversationList.map((conversation) => (
+              <button
+                key={conversation.id}
+                onClick={() => {
+                  if (window) {
+                    window.history.pushState(
+                      {},
+                      "",
+                      conversationRoutes.conversation,
+                    );
+                  }
 
-                onSelectConversation(conversation.conversation);
-                resetConversationUnread(conversation.id);
-              }}
-              className={`w-full text-left p-3 flex gap-2 items-center border-b border-glass-border duration-200 hover:bg-glass-bg-subtle ${selectedConversationId === conversation.id ? "bg-glass-bg-strong" : "bg-glass-bg"}`}
-            >
-              <div className="relative shrink-0">
-                <Image
-                  src={conversation.avatar}
-                  alt={conversation.title}
-                  width={100}
-                  height={100}
-                  className="shadow-glass rounded-full w-10 h-10 object-cover shrink-0"
-                />
-                {conversation.isOnline ? (
-                  <span className="right-0 bottom-0 absolute bg-green-500 border-[#0B0F1A] border-2 rounded-full w-3 h-3"></span>
-                ) : (
-                  <span className="right-0 bottom-0 absolute bg-gray-500 border-[#0B0F1A] border-2 rounded-full w-3 h-3"></span>
+                  onSelectConversation(conversation.conversation);
+                  resetConversationUnread(conversation.id);
+                }}
+                className={`w-full text-left p-3 flex gap-2 items-center border-b border-glass-border duration-200 hover:bg-glass-bg-subtle ${selectedConversationId === conversation.id ? "bg-glass-bg-strong" : "bg-glass-bg"}`}
+              >
+                <div className="relative shrink-0">
+                  <Image
+                    src={conversation.avatar}
+                    alt={conversation.title}
+                    width={100}
+                    height={100}
+                    className="shadow-glass rounded-full w-10 h-10 object-cover shrink-0"
+                  />
+                  {conversation.isOnline ? (
+                    <span className="right-0 bottom-0 absolute bg-green-500 border-[#0B0F1A] border-2 rounded-full w-3 h-3"></span>
+                  ) : (
+                    <span className="right-0 bottom-0 absolute bg-gray-500 border-[#0B0F1A] border-2 rounded-full w-3 h-3"></span>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-baseline mb-1">
+                    <h6 className="font-medium text-text-primary truncate">
+                      {conversation.title}
+                    </h6>
+                    <span className="ml-2 text-text-secondary text-xs shrink-0">
+                      {conversation.lastActivity}
+                    </span>
+                  </div>
+                  <p className="font-light text-text-secondary text-sm truncate">
+                    {conversation.subtitle}
+                  </p>
+                </div>
+                {conversation.unreadCount > 0 && (
+                  <div className="flex justify-center items-center bg-status-info-bg border border-status-info-border rounded-full w-5 h-5 shrink-0">
+                    <span className="font-bold text-[10px] text-status-info-text">
+                      {conversation.unreadCount}
+                    </span>
+                  </div>
                 )}
+              </button>
+            ))}
+
+            {isLoadingMoreConversations && (
+              <div className="py-3 text-text-secondary text-sm text-center">
+                Loading more conversations...
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex justify-between items-baseline mb-1">
-                  <h6 className="font-medium text-text-primary truncate">
-                    {conversation.title}
-                  </h6>
-                  <span className="ml-2 text-text-secondary text-xs shrink-0">
-                    {conversation.lastActivity}
-                  </span>
-                </div>
-                <p className="font-light text-text-secondary text-sm truncate">
-                  {conversation.subtitle}
-                </p>
-              </div>
-              {conversation.unreadCount > 0 && (
-                <div className="flex justify-center items-center bg-status-info-bg border border-status-info-border rounded-full w-5 h-5 shrink-0">
-                  <span className="font-bold text-[10px] text-status-info-text">
-                    {conversation.unreadCount}
-                  </span>
-                </div>
-              )}
-            </button>
-          ))
+            )}
+          </>
         ) : (
           <div className="flex justify-center items-center h-full">
             <p className="my-auto text-sm text-center">

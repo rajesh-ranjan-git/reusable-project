@@ -197,7 +197,6 @@ const AppChrome = ({ children }: ReactNodeProps) => {
   ]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsSidebarOpen(false);
   }, [pathname]);
 

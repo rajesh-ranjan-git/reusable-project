@@ -4,6 +4,10 @@ import Conversation from "../../models/conversation/conversation.model.js";
 import Message from "../../models/conversation/message.model.js";
 import { httpStatusConfig } from "../../config/http.config.js";
 import { propertyConstraints } from "../../config/common.config.js";
+import {
+  DEFAULT_PAGE_SIZE,
+  MAX_PAGE_SIZE,
+} from "../../constants/common.constants.js";
 import { asyncHandler } from "../../utils/common.utils.js";
 import { normalizeConversation } from "../../utils/conversation.utils.js";
 import { sanitizeMongoData } from "../../db/db.utils.js";
@@ -584,31 +588,43 @@ export const updateMemberRole = asyncHandler(async (req, res) => {
 
 export const listConversations = asyncHandler(async (req, res) => {
   const currentUserId = req.data.userId;
+  const { page = 1, limit = DEFAULT_PAGE_SIZE } = req.data.query;
 
-  const conversations = await Conversation.find({
+  const pageNum = Math.max(1, parseInt(page));
+  const limitNum = Math.min(MAX_PAGE_SIZE, Math.max(1, parseInt(limit)));
+  const skip = (pageNum - 1) * limitNum;
+
+  const filter = {
     "participants.user": currentUserId,
     "participants.leftAt": null,
     deletedAt: null,
-  })
-    .sort({ updatedAt: -1 })
-    .populate({
-      path: "participants.user",
-      select: "status lastSeen",
-      populate: [
-        {
-          path: "account",
-          select: "email",
-        },
-        {
-          path: "profile",
-          select: "userName firstName lastName fullName avatar experiences",
-        },
-      ],
-    })
-    .populate({
-      path: "lastMessage.messageId",
-      select: "content contentType createdAt sender",
-    });
+  };
+
+  const [conversations, total] = await Promise.all([
+    Conversation.find(filter)
+      .sort({ updatedAt: -1 })
+      .skip(skip)
+      .limit(limitNum)
+      .populate({
+        path: "participants.user",
+        select: "status lastSeen",
+        populate: [
+          {
+            path: "account",
+            select: "email",
+          },
+          {
+            path: "profile",
+            select: "userName firstName lastName fullName avatar experiences",
+          },
+        ],
+      })
+      .populate({
+        path: "lastMessage.messageId",
+        select: "content contentType createdAt sender",
+      }),
+    Conversation.countDocuments(filter),
+  ]);
 
   const normalizedConversations = sanitizeMongoData(conversations).map(
     (conversation) => normalizeConversation(conversation),
@@ -617,7 +633,15 @@ export const listConversations = asyncHandler(async (req, res) => {
   return responseService.successResponseHandler(req, res, {
     status: "CONVERSATIONS FETCH SUCCESS",
     message: "Conversations fetched successfully!",
-    data: { conversations: normalizedConversations },
+    data: {
+      conversations: normalizedConversations,
+      pagination: {
+        total,
+        page: pageNum,
+        limit: limitNum,
+        totalPages: Math.ceil(total / limitNum),
+      },
+    },
   });
 });
 

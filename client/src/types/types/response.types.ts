@@ -58,6 +58,7 @@ export interface ConversationResponseType {
 
 export type ConversationListResponseType = {
   conversations: ConversationResponseType[];
+  pagination: ResponsePaginationType;
 };
 
 export type DirectConversationResponseType = {

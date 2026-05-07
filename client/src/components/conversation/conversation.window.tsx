@@ -41,6 +41,10 @@ const ConversationWindow = ({
   );
   const [messages, setMessages] = useState<MessageResponseType[]>([]);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+  const [isLoadingOlderMessages, setIsLoadingOlderMessages] = useState(false);
+  const [nextMessagesCursor, setNextMessagesCursor] = useState<string | null>(
+    null,
+  );
   const [isSending, setIsSending] = useState(false);
   const [newMessagesCount, setNewMessagesCount] = useState(0);
 
@@ -52,6 +56,8 @@ const ConversationWindow = ({
   const shouldAutoScrollRef = useRef(true);
   const previousMessagesLengthRef = useRef(0);
   const seenMessageIdsRef = useRef(new Set<string>());
+  const isFetchingOlderMessagesRef = useRef(false);
+  const suppressNextMessageCountRef = useRef(false);
 
   const loggedInUser = useAppStore((state) => state.loggedInUser);
   const loggedInUserRef = useRef(loggedInUser);
@@ -185,11 +191,23 @@ const ConversationWindow = ({
 
   const getConversationMessages = async (
     conversation: ConversationResponseType,
+    cursor?: string | null,
   ) => {
-    setIsLoadingMessages(true);
+    const isLoadingOlder = !!cursor;
+    const container = messagesContainerRef.current;
+    const previousScrollHeight = container?.scrollHeight ?? 0;
+
+    if (isLoadingOlder) {
+      if (isFetchingOlderMessagesRef.current) return;
+      isFetchingOlderMessagesRef.current = true;
+      setIsLoadingOlderMessages(true);
+    } else {
+      setIsLoadingMessages(true);
+    }
 
     const fetchConversationMessagesResponse = await fetchConversationMessages(
       conversation.id,
+      cursor,
     );
 
     if (
@@ -199,12 +217,46 @@ const ConversationWindow = ({
       const data =
         fetchConversationMessagesResponse.data as MessagesResponseType;
 
-      setMessages(data.messages);
+      setNextMessagesCursor(data.nextCursor);
+      setMessages((prev) => {
+        if (!isLoadingOlder) return data.messages;
+
+        const existingIds = new Set(
+          prev.map((message) => getMessageId(message)).filter(Boolean),
+        );
+        const olderMessages = data.messages.filter((message) => {
+          const messageId = getMessageId(message);
+          return !messageId || !existingIds.has(messageId);
+        });
+
+        return [...olderMessages, ...prev];
+      });
+
+      if (isLoadingOlder) {
+        suppressNextMessageCountRef.current = true;
+        requestAnimationFrame(() => {
+          const el = messagesContainerRef.current;
+          if (!el) return;
+
+          el.scrollTop = el.scrollHeight - previousScrollHeight + el.scrollTop;
+        });
+      }
     } else {
-      setMessages([]);
+      if (!isLoadingOlder) setMessages([]);
     }
 
-    setIsLoadingMessages(false);
+    if (isLoadingOlder) {
+      setIsLoadingOlderMessages(false);
+      isFetchingOlderMessagesRef.current = false;
+    } else {
+      setIsLoadingMessages(false);
+    }
+  };
+
+  const loadOlderMessages = () => {
+    if (!conversation || !nextMessagesCursor || isLoadingOlderMessages) return;
+
+    getConversationMessages(conversation, nextMessagesCursor);
   };
 
   const persistConversationReadState = async (conversationId: string) => {
@@ -298,6 +350,7 @@ const ConversationWindow = ({
     shouldAutoScrollRef.current = true;
     previousMessagesLengthRef.current = 0;
     seenMessageIdsRef.current = new Set();
+    setNextMessagesCursor(null);
     setNewMessagesCount(0);
     if (conversation?.id) {
       resetConversationUnread(conversation.id);
@@ -352,6 +405,11 @@ const ConversationWindow = ({
     const newMessagesLength = nextMessagesLength - previousMessagesLength;
 
     previousMessagesLengthRef.current = nextMessagesLength;
+
+    if (suppressNextMessageCountRef.current) {
+      suppressNextMessageCountRef.current = false;
+      return;
+    }
 
     if (!conversation?.id || newMessagesLength <= 0) return;
 
@@ -431,9 +489,12 @@ const ConversationWindow = ({
         messagesContainerRef={messagesContainerRef}
         shouldAutoScrollRef={shouldAutoScrollRef}
         isLoadingMessages={isLoadingMessages}
+        isLoadingOlderMessages={isLoadingOlderMessages}
+        hasOlderMessages={!!nextMessagesCursor}
         displayMessages={displayMessages}
         messages={messages}
         isSending={isSending}
+        onLoadOlderMessages={loadOlderMessages}
         setNewMessagesCount={setNewMessagesCount}
         persistAndEmitMessage={persistAndEmitMessage}
       />
