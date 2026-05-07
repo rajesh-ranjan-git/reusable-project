@@ -5,11 +5,11 @@ import { motion, AnimatePresence } from "motion/react";
 import {
   LuCheck,
   LuClock,
-  LuLoader,
   LuMessageCircle,
   LuUserPlus,
   LuX,
 } from "react-icons/lu";
+import { TbLoader3 } from "react-icons/tb";
 import { staticImagesConfig } from "@/config/common.config";
 import { HeaderSearchResultsProps } from "@/types/props/common.props.types";
 import { UserProfileType } from "@/types/types/profile.types";
@@ -181,7 +181,7 @@ const HeaderSearchResults = ({
           <ul className="max-h-75 overflow-y-auto">
             {isLoading ? (
               <div className="flex justify-center items-center gap-2 px-4 py-3 text-text-secondary text-sm">
-                <LuLoader size={14} className="animate-spin" />
+                <TbLoader3 size={14} className="animate-spin" />
                 Searching...
               </div>
             ) : searchedUserProfiles.length > 0 ? (
