@@ -16,6 +16,7 @@ export interface HeaderProps {
   type: HeaderType;
   isSidebarOpen?: boolean;
   setIsSidebarOpen?: Dispatch<SetStateAction<boolean>>;
+  sidebarProps?: Omit<AppSidebarProps, "setIsSidebarOpen">;
 }
 
 export interface LogoProps {

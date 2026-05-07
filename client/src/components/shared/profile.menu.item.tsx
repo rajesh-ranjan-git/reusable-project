@@ -1,13 +1,4 @@
-import { ReactNode } from "react";
-
-export interface ProfileMenuItemProps {
-  item: {
-    title: string;
-    url?: string;
-    icon: ReactNode;
-  };
-  handleNavigation: (url: string) => void;
-}
+import { ProfileMenuItemProps } from "@/types/props/profile.props.types";
 
 const ProfileMenuItem = ({ item, handleNavigation }: ProfileMenuItemProps) => {
   return (

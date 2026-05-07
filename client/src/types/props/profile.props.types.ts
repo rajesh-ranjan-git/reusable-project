@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 import {
   ActivityType,
   ExperienceType,
@@ -20,6 +20,15 @@ export interface ProfilePageProps {
 export interface ProfileHeaderProps {
   isOwnProfile: boolean;
   userProfile: UserProfileType | null;
+}
+
+export interface ProfileMenuItemProps {
+  item: {
+    title: string;
+    url?: string;
+    icon: ReactNode;
+  };
+  handleNavigation: (url: string) => void;
 }
 
 export interface ProfileImageProps {

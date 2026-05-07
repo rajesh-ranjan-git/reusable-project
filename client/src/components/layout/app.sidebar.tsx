@@ -1,27 +1,13 @@
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { LuMessageCircle, LuSearch, LuUserPlus } from "react-icons/lu";
 import { staticImagesConfig } from "@/config/common.config";
-import {
-  ProfilesResponseType,
-  ResponsePaginationType,
-} from "@/types/types/response.types";
 import { AppSidebarProps } from "@/types/props/common.props.types";
-import { UserProfileType } from "@/types/types/profile.types";
-import { RequestDirectionType } from "@/types/types/connection.types";
-import { useToast } from "@/hooks/toast";
 import useSheet from "@/hooks/useSheet";
-import { toTitleCase } from "@/utils/common.utils";
-import { getFullName, mergeUniqueUsersByKey } from "@/helpers/profile.helpers";
+import { getFullName } from "@/helpers/profile.helpers";
 import { conversationRoutes, defaultRoutes } from "@/lib/routes/routes";
-import {
-  connect,
-  fetchConnections,
-  fetchConnectionRequests,
-} from "@/lib/actions/connection.actions";
 import FormInput from "@/components/forms/shared/form.input";
 import Sheet from "@/components/ui/sheet/sheet";
 

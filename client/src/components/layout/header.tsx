@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { LuBell, LuMenu, LuSearch, LuX } from "react-icons/lu";
+import { SEARCH_DEBOUNCE_MS } from "@/constants/common.constants";
 import { staticImagesConfig } from "@/config/common.config";
 import { HeaderProps } from "@/types/props/common.props.types";
 import { useAppStore } from "@/store/store";
@@ -16,48 +17,26 @@ import AppSidebar from "@/components/layout/app.sidebar";
 import HeaderNotificationMenu from "@/components/shared/header.notification.menu";
 import HeaderProfileMenu from "@/components/shared/header.profile.menu";
 import FormInput from "@/components/forms/shared/form.input";
-import HeaderSearchResults from "../shared/header.search.results";
-import { UserProfileType } from "@/types/types/profile.types";
-import { RequestDirectionType } from "@/types/types/connection.types";
-import {
-  ProfilesResponseType,
-  ResponsePaginationType,
-} from "@/types/types/response.types";
-import { useToast } from "@/hooks/toast";
-import { mergeUniqueUsersByKey } from "@/helpers/profile.helpers";
-import {
-  connect,
-  fetchConnectionRequests,
-  fetchConnections,
-} from "@/lib/actions/connection.actions";
-import { SEARCH_DEBOUNCE_MS } from "@/constants/common.constants";
+import HeaderSearchResults from "@/components/shared/header.search.results";
 
-const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
-  const [currentAdminPath, setCurrentAdminPath] = useState<string | null>(null);
+const Header = ({
+  type,
+  isSidebarOpen,
+  setIsSidebarOpen,
+  sidebarProps,
+}: HeaderProps) => {
   const [isSearchResultsOpen, setIsSearchResultsOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isNotificationMenuOpen, setIsNotificationMenuOpen] = useState(false);
-  const [searchInputValue, setSearchInputValue] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
-  const [connectionRequests, setConnectionRequests] = useState<
-    UserProfileType[]
-  >([]);
-  const [connections, setConnections] = useState<UserProfileType[]>([]);
-  const [exitDirection, setExitDirection] = useState<
-    Record<string, RequestDirectionType>
-  >({});
-  const [connectionRequestsPagination, setConnectionRequestsPagination] =
-    useState<ResponsePaginationType | null>(null);
-  const [connectionsPagination, setConnectionsPagination] =
-    useState<ResponsePaginationType | null>(null);
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const pathname = usePathname();
 
   const loggedInUser = useAppStore((state) => state.loggedInUser);
-
-  const { showToast } = useToast();
+  const currentAdminPath =
+    type === "admin" ? toTitleCase(pathname.split("/")[2] ?? "") : null;
 
   const toggleSearchResultsBox = (e: MouseEvent) => {
     e.stopPropagation();
@@ -94,100 +73,7 @@ const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
     setIsProfileMenuOpen(false);
   };
 
-  const getConnectionRequests = async (page: number = 1) => {
-    const connectionRequestsResponse = await fetchConnectionRequests(page);
-
-    if (!connectionRequestsResponse?.success) {
-    } else {
-      const data = connectionRequestsResponse.data as ProfilesResponseType;
-
-      setConnectionRequests((prev) =>
-        mergeUniqueUsersByKey(prev, data.users, "userId"),
-      );
-
-      setConnectionRequestsPagination(data.pagination);
-    }
-  };
-
-  const getConnections = async (page: number = 1) => {
-    const connectionsResponse = await fetchConnections(page);
-
-    if (!connectionsResponse?.success) {
-    } else {
-      const data = connectionsResponse.data as ProfilesResponseType;
-
-      setConnections((prev) =>
-        mergeUniqueUsersByKey(prev, data.users, "userId"),
-      );
-      setConnectionsPagination(data.pagination);
-    }
-  };
-
-  const handleRequestAction = async (
-    userId: string,
-    direction: RequestDirectionType,
-  ) => {
-    const selectedRequest = connectionRequests.find((r) => r.userId === userId);
-    if (!selectedRequest) return;
-
-    setExitDirection((prev) => ({ ...prev, [userId]: direction }));
-
-    setTimeout(() => {
-      setConnectionRequests((prev) => prev.filter((r) => r.userId !== userId));
-      setConnectionRequestsPagination((prev) =>
-        prev ? { ...prev, total: Math.max(0, prev.total - 1) } : prev,
-      );
-
-      if (direction === "right") {
-        setConnections((prev) => [selectedRequest, ...prev]);
-        setConnectionsPagination((prev) =>
-          prev
-            ? { ...prev, total: prev.total + 1 }
-            : { page: 1, limit: 10, total: 1, totalPages: 1 },
-        );
-      }
-    }, 0);
-
-    const status = direction === "right" ? "accepted" : "rejected";
-    const response = await connect(userId, status);
-
-    if (!response.success) {
-      setConnectionRequests((prev) => [selectedRequest, ...prev]);
-      setConnectionRequestsPagination((prev) =>
-        prev ? { ...prev, total: prev.total + 1 } : prev,
-      );
-
-      if (direction === "right") {
-        setConnections((prev) => prev.filter((c) => c.userId !== userId));
-        setConnectionsPagination((prev) =>
-          prev ? { ...prev, total: Math.max(0, prev.total - 1) } : prev,
-        );
-      }
-
-      showToast({
-        title: toTitleCase(response.code),
-        message: response.message ?? "",
-        variant: "error",
-      });
-    }
-  };
-
-  useEffect(() => {
-    if (type === "admin") {
-      setCurrentAdminPath(toTitleCase(pathname.split("/")[2]));
-    }
-  }, [pathname]);
-
-  useEffect(() => {
-    if (loggedInUser) {
-      getConnectionRequests();
-      getConnections();
-    }
-  }, [loggedInUser]);
-
   const handleSearchChange = (value: string) => {
-    setSearchInputValue(value);
-
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
       setDebouncedSearchQuery(value);
@@ -206,7 +92,7 @@ const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
         className={`top-0 right-0 left-0 z-(--z-sticky) flex justify-between items-center px-2 md:px-6 backdrop-blur-sm h-16 glass-nav ${type === "landing" ? "fixed px-4 md:px-16 md:h-20" : "sticky"}`}
       >
         <div className="flex items-center gap-2 md:gap-4">
-          {type !== "landing" && (
+          {type !== "landing" && sidebarProps && (
             <button
               onClick={
                 setIsSidebarOpen ? () => setIsSidebarOpen(true) : () => {}
@@ -269,9 +155,11 @@ const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
               isOpen={isSearchResultsOpen}
               onClose={() => setIsSearchResultsOpen(false)}
               searchQuery={debouncedSearchQuery}
-              connectionRequests={connectionRequests}
-              connections={connections}
-              onRequestAction={handleRequestAction}
+              connectionRequests={sidebarProps?.connectionRequests ?? []}
+              connections={sidebarProps?.connections ?? []}
+              onRequestAction={
+                sidebarProps?.onRequestAction ?? (async () => {})
+              }
             />
           </div>
         )}
@@ -341,7 +229,7 @@ const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
         )}
       </header>
 
-      {type === "default" && (
+      {type === "default" && sidebarProps && (
         <>
           <div
             className={`fixed inset-0 z-(--z-dropdown) backdrop-blur-sm transition-opacity duration-300 md:hidden ${isSidebarOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
@@ -376,14 +264,16 @@ const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
             <div className="w-full h-full overflow-hidden">
               <AppSidebar
                 setIsSidebarOpen={setIsSidebarOpen}
-                connectionRequests={connectionRequests}
-                connections={connections}
-                exitDirection={exitDirection}
-                connectionRequestsPagination={connectionRequestsPagination}
-                connectionsPagination={connectionsPagination}
-                onRequestAction={handleRequestAction}
-                onLoadMoreRequests={getConnectionRequests}
-                onLoadMoreConnections={getConnections}
+                connectionRequests={sidebarProps.connectionRequests}
+                connections={sidebarProps.connections}
+                exitDirection={sidebarProps.exitDirection}
+                connectionRequestsPagination={
+                  sidebarProps.connectionRequestsPagination
+                }
+                connectionsPagination={sidebarProps.connectionsPagination}
+                onRequestAction={sidebarProps.onRequestAction}
+                onLoadMoreRequests={sidebarProps.onLoadMoreRequests}
+                onLoadMoreConnections={sidebarProps.onLoadMoreConnections}
               />
             </div>
           </div>

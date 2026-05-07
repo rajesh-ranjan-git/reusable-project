@@ -5,6 +5,7 @@ import { MdOutlineEdit } from "react-icons/md";
 import { FiMoreHorizontal } from "react-icons/fi";
 import { ProfileHeaderProps } from "@/types/props/profile.props.types";
 import { ImageTargetType } from "@/types/types/profile.types";
+import { UploadImageResponseType } from "@/types/types/response.types";
 import { useAppStore } from "@/store/store";
 import { compressImage, dataURLtoImage } from "@/helpers/profile.helpers";
 import { validateImage } from "@/validators/profile.validators";
@@ -17,7 +18,6 @@ import ProfileCover from "@/components/profile/cover";
 import ProfileAvatar from "@/components/profile/avatar";
 import ProfileMain from "@/components/profile/profile.main";
 import ProfileImagePreview from "@/components/profile/image.preview";
-import { UploadImageResponseType } from "@/types/types/response.types";
 
 const ProfileHeader = ({ isOwnProfile, userProfile }: ProfileHeaderProps) => {
   const [activeMenu, setActiveMenu] = useState<ImageTargetType>(null);

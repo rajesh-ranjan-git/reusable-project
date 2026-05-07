@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import { FiCheckCircle } from "react-icons/fi";
-import { EmailVerificationModalProps } from "@/types/props/forms.props.types";
-import { useToast } from "@/hooks/toast";
-import ModalPortal from "@/components/forms/shared/form.modal";
-import FormButton from "@/components/forms/shared/form.button";
-import { resendVerificationEmail } from "@/lib/actions/auth.actions";
-import { emailValidator } from "@/validators/auth.validators";
 import { LuAlarmClock } from "react-icons/lu";
 import { MdOutlineError } from "react-icons/md";
-import { TbLoader3 } from "react-icons/tb";
+import { EmailVerificationModalProps } from "@/types/props/forms.props.types";
+import { emailValidator } from "@/validators/auth.validators";
+import { useToast } from "@/hooks/toast";
+import { resendVerificationEmail } from "@/lib/actions/auth.actions";
+import ModalPortal from "@/components/forms/shared/form.modal";
+import FormButton from "@/components/forms/shared/form.button";
 
 const EmailVerificationModal = ({
   isOpen,

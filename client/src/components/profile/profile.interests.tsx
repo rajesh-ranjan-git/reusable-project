@@ -1,8 +1,8 @@
 import { IoMdAdd } from "react-icons/io";
 import { MdOutlineEdit } from "react-icons/md";
 import { ProfileInterestsProps } from "@/types/props/profile.props.types";
-import Interests from "@/components/profile/interests";
 import { useAppStore } from "@/store/store";
+import Interests from "@/components/profile/interests";
 
 const ProfileInterests = ({
   interests,

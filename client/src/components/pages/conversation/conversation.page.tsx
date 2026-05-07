@@ -7,13 +7,11 @@ import {
   DirectConversationResponseType,
 } from "@/types/types/response.types";
 import { fetchDirectConversation } from "@/lib/actions/conversation.action";
-import Header from "@/components/layout/header";
 import BottomNavbar from "@/components/layout/bottom.navbar";
 import ConversationList from "@/components/conversation/conversation.list";
 import ConversationWindow from "@/components/conversation/conversation.window";
 
 const ConversationPage = ({ userName }: ConversationPageProps) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedConversation, setSelectedConversation] =
     useState<ConversationResponseType | null>(null);
 
@@ -35,13 +33,7 @@ const ConversationPage = ({ userName }: ConversationPageProps) => {
   }, [userName]);
 
   return (
-    <div className="flex flex-col bg-bg-page h-dvh overflow-hidden text-text-primary">
-      <Header
-        type="default"
-        isSidebarOpen={isSidebarOpen}
-        setIsSidebarOpen={setIsSidebarOpen}
-      />
-
+    <>
       <main className="relative flex flex-1 overflow-hidden">
         <div
           className={`w-full h-full pb-16 md:pb-0 md:w-72 lg:w-80 shrink-0 md:flex ${selectedConversation ? "hidden md:flex" : "flex"}`}
@@ -63,7 +55,7 @@ const ConversationPage = ({ userName }: ConversationPageProps) => {
       </main>
 
       <BottomNavbar activeTab="chats" hidden={!!selectedConversation} />
-    </div>
+    </>
   );
 };
 

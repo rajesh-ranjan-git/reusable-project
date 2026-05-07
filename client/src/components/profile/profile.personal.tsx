@@ -1,10 +1,10 @@
 import { MdOutlineEdit, MdVerifiedUser } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
 import { LuArrowRight } from "react-icons/lu";
-import { useAppStore } from "@/store/store";
 import { ProfilePersonalProps } from "@/types/props/profile.props.types";
-import { formatDate } from "@/utils/date.utils";
+import { useAppStore } from "@/store/store";
 import { getPersonalDetails } from "@/helpers/profile.helpers";
+import { formatDate } from "@/utils/date.utils";
 
 const ProfilePersonal = ({
   userProfile,

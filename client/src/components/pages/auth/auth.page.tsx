@@ -3,26 +3,26 @@
 import { useActionState, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence, LayoutGroup } from "motion/react";
+import { initialState } from "@/config/forms.config";
 import { ProviderLoginDataType } from "@/types/types/auth.types";
+import { FormStateType } from "@/types/types/actions.types";
 import { useAppStore } from "@/store/store";
+import { useToast } from "@/hooks/toast";
 import {
   emailValidator,
   nameValidator,
   passwordValidator,
   validateLoginIdentifier,
 } from "@/validators/auth.validators";
-import { authRoutes, defaultRoutes } from "@/lib/routes/routes";
-import { loginAction, registerAction } from "@/lib/actions/auth.actions";
-import { useToast } from "@/hooks/toast";
 import useInputFieldValidator from "@/hooks/useInputFieldValidation";
 import { useOAuthListener } from "@/hooks/useOAuthListener";
+import { getFormVariants } from "@/utils/auth.utils";
+import { authRoutes, defaultRoutes } from "@/lib/routes/routes";
+import { loginAction, registerAction } from "@/lib/actions/auth.actions";
 import { loginWithProvider, providerLogin } from "@/lib/actions/oauth.actions";
+import RegisterForm from "@/components/forms/auth/register.form";
 import AuthBanner from "@/components/auth/auth.banner";
 import LoginForm from "@/components/forms/auth/login.form";
-import { getFormVariants } from "@/utils/auth.utils";
-import RegisterForm from "@/components/forms/auth/register.form";
-import { initialState } from "@/config/forms.config";
-import { FormStateType } from "@/types/types/actions.types";
 
 const AuthPage = () => {
   const pathname = usePathname();

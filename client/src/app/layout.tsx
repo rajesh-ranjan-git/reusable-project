@@ -10,6 +10,7 @@ import Orb from "@/components/background/orb";
 import ThemeManager from "@/components/theme/theme.manager";
 import ErrorWrapper from "@/components/errors/error.wrapper";
 import AuthWrapper from "@/components/auth/auth.wrapper";
+import AppChrome from "@/components/layout/app.chrome";
 
 export const metadata: Metadata = {
   title: {
@@ -39,7 +40,9 @@ const RootLayout = ({ children }: Readonly<ReactNodeProps>) => {
           <Orb />
 
           <AuthWrapper>
-            <ErrorWrapper>{children}</ErrorWrapper>
+            <AppChrome>
+              <ErrorWrapper>{children}</ErrorWrapper>
+            </AppChrome>
           </AuthWrapper>
         </ToastProvider>
       </body>

@@ -1,18 +1,15 @@
 import { useEffect, useRef, useState, useCallback } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { LuMessageCircle, LuLoader } from "react-icons/lu";
-import { HeaderSearchResultsProps } from "@/types/props/common.props.types";
-import { conversationRoutes } from "@/lib/routes/routes";
-import { UserProfileType } from "@/types/types/profile.types";
-import { RequestDirectionType } from "@/types/types/connection.types";
-import Image from "next/image";
 import { staticImagesConfig } from "@/config/common.config";
-import { getFullName } from "@/helpers/profile.helpers";
+import { HeaderSearchResultsProps } from "@/types/props/common.props.types";
+import { UserProfileType } from "@/types/types/profile.types";
 import { ProfilesResponseType } from "@/types/types/response.types";
-import { connect } from "@/lib/actions/connection.actions";
-import { useToast } from "@/hooks/toast";
-import { toTitleCase } from "@/utils/common.utils";
+import { RequestDirectionType } from "@/types/types/connection.types";
+import { getFullName } from "@/helpers/profile.helpers";
+import { conversationRoutes } from "@/lib/routes/routes";
 import { fetchProfiles } from "@/lib/actions/discover.actions";
 
 const HeaderSearchResults = ({

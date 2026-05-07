@@ -1,8 +1,8 @@
 import { IoMdAdd } from "react-icons/io";
 import { MdOutlineEdit } from "react-icons/md";
 import { ProfileExperienceProps } from "@/types/props/profile.props.types";
-import Experience from "@/components/profile/experience";
 import { useAppStore } from "@/store/store";
+import Experience from "@/components/profile/experience";
 
 const ProfileExperience = ({
   experiences,

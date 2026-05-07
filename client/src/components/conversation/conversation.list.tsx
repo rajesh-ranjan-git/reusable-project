@@ -7,13 +7,13 @@ import { ConversationListResponseType } from "@/types/types/response.types";
 import { LoggedInUserType } from "@/types/types/auth.types";
 import { MessageResponseType } from "@/types/types/message.types";
 import { useAppStore } from "@/store/store";
+import { createSocketConnection } from "@/socket/socket";
 import { getConversationDisplay } from "@/utils/conversation.utils";
 import {
   fetchConversationsList,
   markMessageDelivered,
 } from "@/lib/actions/conversation.action";
 import { conversationRoutes } from "@/lib/routes/routes";
-import { createSocketConnection } from "@/socket/socket";
 import FormInput from "@/components/forms/shared/form.input";
 
 const ConversationList = ({

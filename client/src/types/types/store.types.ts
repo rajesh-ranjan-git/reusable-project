@@ -21,6 +21,9 @@ export type AppStateType = {
   resetConversationUnread: (conversationId: string) => void;
   updateConversationWithMessage: (
     message: MessageResponseType,
-    options?: { activeConversationId?: string | null; incrementUnread?: boolean },
+    options?: {
+      activeConversationId?: string | null;
+      incrementUnread?: boolean;
+    },
   ) => void;
 };

@@ -56,9 +56,9 @@ const ImageUploadMenu = ({
                 onClose();
                 onUploadClick();
               }}
-              className="flex items-center gap-3 hover:bg-glass-bg-hover px-4 py-2 w-full text-left"
+              className="flex items-center gap-3 hover:bg-glass-bg-hover px-4 py-2 w-full text-left cursor-pointer select-none"
             >
-              <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
+              <div className="mt-0.5 p-1 border border-accent-purple-dark/30 rounded-full">
                 <LuUpload size={16} />
               </div>
               <div className="flex-1">
@@ -72,9 +72,9 @@ const ImageUploadMenu = ({
                 onClose();
                 onCameraClick();
               }}
-              className="flex items-center gap-3 hover:bg-glass-bg-hover px-4 py-2 w-full text-left"
+              className="flex items-center gap-3 hover:bg-glass-bg-hover px-4 py-2 w-full text-left cursor-pointer select-none"
             >
-              <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
+              <div className="mt-0.5 p-1 border border-accent-purple-dark/30 rounded-full">
                 <LuCamera size={16} />
               </div>
               <div className="flex-1">

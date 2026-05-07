@@ -8,9 +8,6 @@ import { useAppStore } from "@/store/store";
 import { toTitleCase } from "@/utils/common.utils";
 import { fetchProfile } from "@/lib/actions/profile.actions";
 import { mockActivities } from "@/lib/data/profile.data";
-import Header from "@/components/layout/header";
-import AppSidebar from "@/components/layout/app.sidebar";
-import BottomNav from "@/components/layout/bottom.navbar";
 import ProfileHeader from "@/components/profile/profile.header";
 import Activity from "@/components/profile/activity";
 import ProfileInterests from "@/components/profile/profile.interests";
@@ -21,7 +18,6 @@ import ProfilePersonal from "@/components/profile/profile.personal";
 import ProfileForms from "@/components/profile/profile.forms";
 
 const ProfilePage = ({ userName }: ProfilePageProps) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfileType | null>(null);
   const [isOwnProfile] = useState<boolean>(!userName);
 
@@ -101,58 +97,36 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
   }, [userName, setCurrentForm]);
 
   return (
-    <div className="flex flex-col bg-bg h-dvh overflow-hidden text-text-primary">
-      <Header
-        type="default"
-        isSidebarOpen={isSidebarOpen}
-        setIsSidebarOpen={setIsSidebarOpen}
-      />
+    <div className="flex-1 bg-bg/50 overflow-y-auto">
+      <div className="mx-auto p-4 md:p-8 pb-24 md:pb-8 max-w-7xl">
+        <ProfileHeader isOwnProfile={isOwnProfile} userProfile={userProfile} />
 
-      <main className="relative flex flex-1 overflow-hidden">
-        <div className="hidden md:flex">
-          <AppSidebar />
-        </div>
+        <ProfilePersonal
+          userProfile={userProfile}
+          isOwnProfile={isOwnProfile}
+        />
 
-        <div className="flex-1 bg-bg/50 overflow-y-auto">
-          <div className="mx-auto p-4 md:p-8 pb-24 md:pb-8 max-w-7xl">
-            <ProfileHeader
-              isOwnProfile={isOwnProfile}
-              userProfile={userProfile}
-            />
+        <ProfileBio bio={userProfile?.bio} isOwnProfile={isOwnProfile} />
 
-            <ProfilePersonal
-              userProfile={userProfile}
-              isOwnProfile={isOwnProfile}
-            />
+        <ProfileExperience
+          experiences={userProfile?.experiences}
+          isOwnProfile={isOwnProfile}
+        />
 
-            <ProfileBio bio={userProfile?.bio} isOwnProfile={isOwnProfile} />
+        <ProfileSkills
+          skills={userProfile?.skills}
+          isOwnProfile={isOwnProfile}
+        />
 
-            <ProfileExperience
-              experiences={userProfile?.experiences}
-              isOwnProfile={isOwnProfile}
-            />
+        <ProfileInterests
+          interests={userProfile?.interests}
+          isOwnProfile={isOwnProfile}
+        />
 
-            <ProfileSkills
-              skills={userProfile?.skills}
-              isOwnProfile={isOwnProfile}
-            />
+        <Activity isOwnProfile={isOwnProfile} activities={mockActivities} />
 
-            <ProfileInterests
-              interests={userProfile?.interests}
-              isOwnProfile={isOwnProfile}
-            />
-
-            <Activity isOwnProfile={isOwnProfile} activities={mockActivities} />
-
-            <ProfileForms
-              userProfile={userProfile}
-              onSave={handleProfileSave}
-            />
-          </div>
-        </div>
-      </main>
-
-      <BottomNav activeTab="profile" />
+        <ProfileForms userProfile={userProfile} onSave={handleProfileSave} />
+      </div>
     </div>
   );
 };
