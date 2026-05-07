@@ -411,7 +411,7 @@ const ConversationWindow = ({
     shouldAutoScrollRef.current = false;
     el.scrollTop =
       el.scrollHeight - snapshot.scrollHeight + snapshot.scrollTop;
-  }, [messages.length]);
+  }, [displayMessages.length]);
 
   useEffect(() => {
     if (!conversation?.id || !socketRef.current) return;
