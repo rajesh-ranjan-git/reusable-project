@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Socket } from "socket.io-client";
 import { ConversationWindowProps } from "@/types/props/conversation.props";
 import {
@@ -58,9 +58,12 @@ const ConversationWindow = ({
   const seenMessageIdsRef = useRef(new Set<string>());
   const isFetchingOlderMessagesRef = useRef(false);
   const suppressNextMessageCountRef = useRef(false);
-  const suppressAutoScrollOnOlderLoadRef = useRef(false);
   const hasInitialScrolledRef = useRef(false);
   const isLoadingOlderMessagesRef = useRef(false);
+  const olderMessagesScrollSnapshotRef = useRef<{
+    scrollHeight: number;
+    scrollTop: number;
+  } | null>(null);
 
   const loggedInUser = useAppStore((state) => state.loggedInUser);
   const loggedInUserRef = useRef(loggedInUser);
@@ -198,12 +201,17 @@ const ConversationWindow = ({
   ) => {
     const isLoadingOlder = !!cursor;
     const container = messagesContainerRef.current;
-    const previousScrollHeight = container?.scrollHeight ?? 0;
 
     if (isLoadingOlder) {
       if (isFetchingOlderMessagesRef.current) return;
       isFetchingOlderMessagesRef.current = true;
       isLoadingOlderMessagesRef.current = true;
+      olderMessagesScrollSnapshotRef.current = container
+        ? {
+            scrollHeight: container.scrollHeight,
+            scrollTop: container.scrollTop,
+          }
+        : null;
       setIsLoadingOlderMessages(true);
     } else {
       setIsLoadingMessages(true);
@@ -233,24 +241,20 @@ const ConversationWindow = ({
           return !messageId || !existingIds.has(messageId);
         });
 
+        if (olderMessages.length === 0) {
+          olderMessagesScrollSnapshotRef.current = null;
+          return prev;
+        }
+
         return [...olderMessages, ...prev];
       });
 
       if (isLoadingOlder) {
         suppressNextMessageCountRef.current = true;
-        suppressAutoScrollOnOlderLoadRef.current = true;
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            const el = messagesContainerRef.current;
-            if (!el) return;
-
-            el.scrollTop =
-              el.scrollHeight - previousScrollHeight + el.scrollTop;
-          });
-        });
       }
     } else {
       if (!isLoadingOlder) setMessages([]);
+      olderMessagesScrollSnapshotRef.current = null;
     }
 
     if (isLoadingOlder) {
@@ -367,6 +371,7 @@ const ConversationWindow = ({
     isFetchingOlderMessagesRef.current = false;
     isLoadingOlderMessagesRef.current = false;
     hasInitialScrolledRef.current = false;
+    olderMessagesScrollSnapshotRef.current = null;
     setNextMessagesCursor(null);
     setNewMessagesCount(0);
 
@@ -395,6 +400,18 @@ const ConversationWindow = ({
       messages.map((message) => getMessageDisplay(message, loggedInUser)),
     );
   }, [messages, loggedInUser]);
+
+  useLayoutEffect(() => {
+    const snapshot = olderMessagesScrollSnapshotRef.current;
+    const el = messagesContainerRef.current;
+
+    if (!snapshot || !el) return;
+
+    olderMessagesScrollSnapshotRef.current = null;
+    shouldAutoScrollRef.current = false;
+    el.scrollTop =
+      el.scrollHeight - snapshot.scrollHeight + snapshot.scrollTop;
+  }, [messages.length]);
 
   useEffect(() => {
     if (!conversation?.id || !socketRef.current) return;
@@ -425,13 +442,10 @@ const ConversationWindow = ({
     if (
       hasInitialScrolledRef.current &&
       shouldAutoScrollRef.current &&
-      !suppressNextMessageCountRef.current &&
-      !suppressAutoScrollOnOlderLoadRef.current
+      !suppressNextMessageCountRef.current
     ) {
       scrollMessagesToBottom("smooth");
     }
-
-    suppressAutoScrollOnOlderLoadRef.current = false;
   }, [conversation?.id, displayMessages.length]);
 
   useEffect(() => {
