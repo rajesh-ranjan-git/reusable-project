@@ -15,10 +15,6 @@ const MessagesContainer = ({
   setNewMessagesCount,
   persistAndEmitMessage,
 }: MessagesContainerProps) => {
-  // Tracks whether we have already called onLoadOlderMessages for the current
-  // scroll-to-top gesture. Flips back to false once the container scrolls away
-  // from the top zone, preventing repeated calls while the prop update for
-  // isLoadingOlderMessages is still in flight from the parent.
   const hasFiredLoadOlderRef = useRef(false);
 
   const isMessagesContainerNearBottom = () => {
@@ -42,18 +38,10 @@ const MessagesContainer = ({
       setNewMessagesCount(0);
     }
 
-    // Reset the local fire-guard once the user scrolls back down out of the
-    // trigger zone so the next deliberate scroll-to-top works correctly.
     if (el.scrollTop > 64) {
       hasFiredLoadOlderRef.current = false;
     }
 
-    // Only fire if:
-    // 1. There are older messages to load.
-    // 2. The parent isn't already loading them (prop check — covers the settled
-    //    state after the previous fetch completed).
-    // 3. We haven't already fired for this scroll-to-top gesture (ref check —
-    //    covers the in-flight window before isLoadingOlderMessages turns true).
     if (
       el.scrollTop <= 64 &&
       hasOlderMessages &&

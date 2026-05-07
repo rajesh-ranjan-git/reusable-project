@@ -37,12 +37,15 @@ export const fetchConversationMessages = async (
 ): Promise<ApiResponseType> => {
   try {
     const params = new URLSearchParams();
+    params.set("limit", "20");
 
     if (cursor) {
       params.set("cursor", cursor);
     }
 
     const query = params.toString();
+
+    logger.debug("debug from fetchConversationMessages query:", query);
 
     return await api.get(
       `${apiUrls.conversation.actionMessage}/${conversationId}/messages${query ? `?${query}` : ""}`,

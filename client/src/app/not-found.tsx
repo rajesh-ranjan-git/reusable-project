@@ -17,6 +17,7 @@ const NotFound = () => {
         isSidebarOpen={isSidebarOpen}
         setIsSidebarOpen={setIsSidebarOpen}
       />
+
       <main className="relative flex flex-1 overflow-hidden">
         <div className="relative flex flex-col flex-1 justify-center items-center gap-4 bg-status-warning-bg p-2 pb-20 md:pb-6 overflow-hidden">
           <div className="relative flex justify-center w-full overflow-hidden">

@@ -30,7 +30,7 @@ messageRouter.post(
 
 messageRouter.get(
   "/message/:conversationId/messages",
-  requestMiddleware({ requireParams: true }),
+  requestMiddleware({ requireParams: true, requireQuery: true }),
   authenticate,
   authorize({ permissions: [PERMISSIONS.PROFILE_READ_OWN] }),
   getMessages,

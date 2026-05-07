@@ -58,12 +58,8 @@ const ConversationWindow = ({
   const seenMessageIdsRef = useRef(new Set<string>());
   const isFetchingOlderMessagesRef = useRef(false);
   const suppressNextMessageCountRef = useRef(false);
-  // Tracks whether the initial instant scroll-to-bottom has been done for the
-  // current conversation. Reset to false whenever conversation changes so the
-  // first batch of messages always snaps to the bottom without animation.
+  const suppressAutoScrollOnOlderLoadRef = useRef(false);
   const hasInitialScrolledRef = useRef(false);
-  // Mirror of isLoadingOlderMessages as a ref so loadOlderMessages never reads
-  // a stale closure value between the call and the state update landing.
   const isLoadingOlderMessagesRef = useRef(false);
 
   const loggedInUser = useAppStore((state) => state.loggedInUser);
@@ -242,9 +238,7 @@ const ConversationWindow = ({
 
       if (isLoadingOlder) {
         suppressNextMessageCountRef.current = true;
-        // Restore scroll position after older messages prepend by compensating
-        // for the increase in scrollHeight. Uses double-rAF to ensure the DOM
-        // has painted the new nodes before we read/write scrollTop.
+        suppressAutoScrollOnOlderLoadRef.current = true;
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
             const el = messagesContainerRef.current;
@@ -269,7 +263,6 @@ const ConversationWindow = ({
   };
 
   const loadOlderMessages = () => {
-    // Guard against stale closure: use the ref, not the state value.
     if (
       !conversation ||
       !nextMessagesCursor ||
@@ -364,7 +357,6 @@ const ConversationWindow = ({
     });
   };
 
-  // Reset all per-conversation state when the active conversation changes.
   useEffect(() => {
     conversationRef.current = conversation;
     loggedInUserRef.current = loggedInUser;
@@ -374,7 +366,7 @@ const ConversationWindow = ({
     seenMessageIdsRef.current = new Set();
     isFetchingOlderMessagesRef.current = false;
     isLoadingOlderMessagesRef.current = false;
-    hasInitialScrolledRef.current = false; // must snap to bottom on first load
+    hasInitialScrolledRef.current = false;
     setNextMessagesCursor(null);
     setNewMessagesCount(0);
 
@@ -419,22 +411,10 @@ const ConversationWindow = ({
     });
   }, [conversation?.id, loggedInUser?.userId, messages]);
 
-  // Auto-scroll effect — intentionally split into two cases:
-  //
-  // 1. Initial load: the very first time messages arrive for a conversation we
-  //    always snap instantly to the bottom, regardless of shouldAutoScrollRef,
-  //    and mark the initial scroll as done.
-  //
-  // 2. Subsequent messages (live or sent): only scroll if shouldAutoScrollRef
-  //    is true (user is near the bottom), and always animate smoothly.
-  //
-  // Older-message loads are deliberately excluded here — their scroll position
-  // is restored by the anchor logic inside getConversationMessages.
   useEffect(() => {
     if (!conversation?.id) return;
     if (displayMessages.length === 0) return;
 
-    // Case 1: initial load — snap to bottom instantly and mark done.
     if (!hasInitialScrolledRef.current && !isLoadingMessages) {
       hasInitialScrolledRef.current = true;
       shouldAutoScrollRef.current = true;
@@ -442,17 +422,16 @@ const ConversationWindow = ({
       return;
     }
 
-    // Case 2: new messages while already loaded — smooth scroll only when
-    // the user is near the bottom. Older-message prepends are handled by the
-    // anchor rAF in getConversationMessages, so we skip them via
-    // suppressNextMessageCountRef (which is set for those batches).
     if (
       hasInitialScrolledRef.current &&
       shouldAutoScrollRef.current &&
-      !suppressNextMessageCountRef.current
+      !suppressNextMessageCountRef.current &&
+      !suppressAutoScrollOnOlderLoadRef.current
     ) {
       scrollMessagesToBottom("smooth");
     }
+
+    suppressAutoScrollOnOlderLoadRef.current = false;
   }, [conversation?.id, displayMessages.length]);
 
   useEffect(() => {
