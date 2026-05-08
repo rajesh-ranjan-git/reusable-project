@@ -22,6 +22,7 @@ import {
   RequestDirectionType,
 } from "@/types/types/connection.types";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
+import { useNetworkActions } from "@/hooks/useNetworkActions";
 import { useToast } from "@/hooks/toast";
 import { toTitleCase } from "@/utils/common.utils";
 import { getFullName } from "@/helpers/profile.helpers";
@@ -56,6 +57,7 @@ const HeaderSearchResults = ({
 
   const router = useRouter();
   const { showToast } = useToast();
+  const networkActions = useNetworkActions();
 
   useOutsideClick({
     ref: searchResultsRef,
@@ -189,21 +191,30 @@ const HeaderSearchResults = ({
     });
   };
 
-  const handleConnect = async (userId: string) => {
-    const connectResponse = await connect(userId, "interested");
+  const handleConnect = async (targetProfile: UserProfileType) => {
+    if (networkActions) {
+      const isActionSuccessful = await networkActions.onConnectionAction(
+        targetProfile,
+        "interested",
+      );
 
-    if (!connectResponse.success) {
-      showToast({
-        title: toTitleCase(connectResponse.code),
-        message: connectResponse.message ?? "",
-        variant: "error",
-      });
-      return;
+      if (isActionSuccessful === false) return;
+    } else {
+      const connectResponse = await connect(targetProfile.userId, "interested");
+
+      if (!connectResponse.success) {
+        showToast({
+          title: toTitleCase(connectResponse.code),
+          message: connectResponse.message ?? "",
+          variant: "error",
+        });
+        return;
+      }
     }
 
     setSearchedUserProfiles((prev) =>
       prev.map((profile) =>
-        profile.userId === userId
+        profile.userId === targetProfile.userId
           ? {
               ...profile,
               connectionStatus: "interested",
@@ -214,21 +225,33 @@ const HeaderSearchResults = ({
     );
   };
 
-  const handleCancelRequest = async (userId: string) => {
-    const connectResponse = await connect(userId, "not-interested");
+  const handleCancelRequest = async (targetProfile: UserProfileType) => {
+    if (networkActions) {
+      const isActionSuccessful = await networkActions.onConnectionAction(
+        targetProfile,
+        "not-interested",
+      );
 
-    if (!connectResponse.success) {
-      showToast({
-        title: toTitleCase(connectResponse.code),
-        message: connectResponse.message ?? "",
-        variant: "error",
-      });
-      return;
+      if (isActionSuccessful === false) return;
+    } else {
+      const connectResponse = await connect(
+        targetProfile.userId,
+        "not-interested",
+      );
+
+      if (!connectResponse.success) {
+        showToast({
+          title: toTitleCase(connectResponse.code),
+          message: connectResponse.message ?? "",
+          variant: "error",
+        });
+        return;
+      }
     }
 
     setSearchedUserProfiles((prev) =>
       prev.map((profile) =>
-        profile.userId === userId
+        profile.userId === targetProfile.userId
           ? {
               ...profile,
               connectionStatus: "not-interested",
@@ -361,7 +384,7 @@ const HeaderSearchResults = ({
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  handleCancelRequest(profile.userId);
+                                  handleCancelRequest(profile);
                                 }}
                                 className="flex justify-center items-center p-0 w-8 h-8 text-status-info-text"
                                 title="Cancel request"
@@ -394,7 +417,7 @@ const HeaderSearchResults = ({
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  handleConnect(profile.userId);
+                                  handleConnect(profile);
                                 }}
                                 className="p-0 w-8 h-8 font-medium text-status-success-text text-sm"
                                 title="Connect"

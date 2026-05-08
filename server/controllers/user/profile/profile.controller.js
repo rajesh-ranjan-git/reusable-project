@@ -148,9 +148,9 @@ export const getUserProfile = asyncHandler(async (req, res) => {
     social,
     connectionStatus: connection?.connectionStatus,
     connectionDirection: connection
-      ? connection.lastActionedBy !== userId
-        ? "incoming"
-        : "outgoing"
+      ? connection.lastActionedBy.toString() !== userId
+        ? "outgoing"
+        : "incoming"
       : "none",
     ...omitObjectProperties(sanitizeMongoData(profile), "id user address"),
   };
