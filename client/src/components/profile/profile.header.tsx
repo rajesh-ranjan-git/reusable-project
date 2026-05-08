@@ -1,13 +1,16 @@
 import { useState, useRef, ChangeEvent, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { LuMessageSquare, LuUserPlus } from "react-icons/lu";
 import { MdOutlineEdit } from "react-icons/md";
-import { FiMoreHorizontal } from "react-icons/fi";
 import { ProfileHeaderProps } from "@/types/props/profile.props.types";
 import { ImageTargetType } from "@/types/types/profile.types";
 import { UploadImageResponseType } from "@/types/types/response.types";
 import { useAppStore } from "@/store/store";
-import { compressImage, dataURLtoImage } from "@/helpers/profile.helpers";
+import {
+  compressImage,
+  dataURLtoImage,
+  getRelationship,
+  relationshipActions,
+} from "@/helpers/profile.helpers";
 import { validateImage } from "@/validators/profile.validators";
 import { useToast } from "@/hooks/toast";
 import { conversationRoutes } from "@/lib/routes/routes";
@@ -209,6 +212,8 @@ const ProfileHeader = ({ isOwnProfile, userProfile }: ProfileHeaderProps) => {
 
   if (!userProfile) return;
 
+  const relationshipType = getRelationship(userProfile);
+
   return (
     <div className="z-(--z-raised) relative mb-6 glass-heavy rounded-t-2xl">
       <ProfileCover
@@ -249,21 +254,41 @@ const ProfileHeader = ({ isOwnProfile, userProfile }: ProfileHeaderProps) => {
                 Update Profile
               </button>
             ) : (
-              <>
-                <button className="flex items-center gap-2 px-5 py-2 btn btn-primary">
-                  <LuUserPlus size={16} />
-                  Connect
-                </button>
-                <button
-                  className="flex items-center gap-2 p-3 focus:ring-1 focus:ring-accent-purple-light glass"
-                  onClick={() => router.push(conversationRoutes.conversation)}
-                >
-                  <LuMessageSquare size={16} />
-                </button>
-                <button className="flex items-center gap-2 p-3 focus:ring-1 focus:ring-accent-purple-light glass">
-                  <FiMoreHorizontal size={16} />
-                </button>
-              </>
+              relationshipActions[relationshipType].map(
+                ({
+                  label,
+                  ariaLabel,
+                  icon: Icon,
+                  className,
+                  wrapperClassName,
+                  action,
+                }) => {
+                  const button = (
+                    <button
+                      key={ariaLabel}
+                      aria-label={ariaLabel}
+                      title={ariaLabel}
+                      className={className}
+                      onClick={
+                        action === "message"
+                          ? () => router.push(conversationRoutes.conversation)
+                          : undefined
+                      }
+                    >
+                      <Icon size={16} />
+                      {label}
+                    </button>
+                  );
+
+                  return wrapperClassName ? (
+                    <div key={ariaLabel} className={wrapperClassName}>
+                      {button}
+                    </div>
+                  ) : (
+                    button
+                  );
+                },
+              )
             )}
           </div>
         </div>

@@ -22,9 +22,9 @@ const ProfileInterests = ({
       {interests && interests.length > 0 ? (
         <Interests interests={interests} />
       ) : (
-        <p className="text-text-muted">
+        <div className="relative p-5 text-text-muted text-sm glass-subtle">
           Add your interests and hobbies to show here...
-        </p>
+        </div>
       )}
 
       {isOwnProfile ? (

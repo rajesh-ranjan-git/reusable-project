@@ -45,8 +45,6 @@ export const fetchConversationMessages = async (
 
     const query = params.toString();
 
-    logger.debug("debug from fetchConversationMessages query:", query);
-
     return await api.get(
       `${apiUrls.conversation.actionMessage}/${conversationId}/messages${query ? `?${query}` : ""}`,
       { requireAuth: true },

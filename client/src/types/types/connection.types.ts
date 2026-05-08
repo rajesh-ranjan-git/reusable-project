@@ -8,4 +8,11 @@ export type ConnectionStatusType =
   | "rejected"
   | "blocked";
 
+export type RelationshipType =
+  | "incoming"
+  | "outgoing"
+  | "connected"
+  | "blocked"
+  | "none";
+
 export type ConnectionDirectionType = "incoming" | "outgoing" | null;

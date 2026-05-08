@@ -10,6 +10,7 @@ import User from "../../../models/user/auth/user.model.js";
 import Profile from "../../../models/user/profile/profile.model.js";
 import Address from "../../../models/user/profile/address.model.js";
 import Social from "../../../models/user/profile/social.model.js";
+import Connection from "../../../models/connection/connection.model.js";
 import {
   asyncHandler,
   isPlainObject,
@@ -131,6 +132,12 @@ export const getUserProfile = asyncHandler(async (req, res) => {
     .select("-_id facebook instagram twitter github linkedin youtube website")
     .lean();
 
+  const connection = await Connection.findOne({
+    $or: [{ sender: userId }, { receiver: userId }],
+  })
+    .select("sender receiver connectionStatus lastActionedBy")
+    .lean();
+
   const userFields = {
     userId: userId,
     email: account.email,
@@ -139,6 +146,12 @@ export const getUserProfile = asyncHandler(async (req, res) => {
     location: profile.address?.location || null,
     createdAt: account.createdAt,
     social,
+    connectionStatus: connection?.connectionStatus,
+    connectionDirection: connection
+      ? connection.lastActionedBy !== userId
+        ? "incoming"
+        : "outgoing"
+      : "none",
     ...omitObjectProperties(sanitizeMongoData(profile), "id user address"),
   };
 

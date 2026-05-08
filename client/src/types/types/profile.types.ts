@@ -6,6 +6,15 @@ import {
   ConnectionStatusType,
 } from "@/types/types/connection.types";
 
+export type ProfileActionButtonType = {
+  label?: string;
+  ariaLabel: string;
+  icon: IconType;
+  className: string;
+  wrapperClassName?: string;
+  action?: "message";
+};
+
 export type CurrentFormType =
   | "basic"
   | "username"

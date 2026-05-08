@@ -75,10 +75,10 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
   };
 
   const getUserProfile = async (userName?: string) => {
-    const response = await fetchProfile(userName);
+    const fetchProfileResponse = await fetchProfile(userName);
 
-    if (response.success && response?.data) {
-      const data = response?.data as ProfileResponseType;
+    if (fetchProfileResponse.success && fetchProfileResponse?.data) {
+      const data = fetchProfileResponse?.data as ProfileResponseType;
 
       setUserProfile(data.user);
     } else {

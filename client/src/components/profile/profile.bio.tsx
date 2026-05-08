@@ -31,7 +31,9 @@ const ProfileBio = ({ bio, isOwnProfile }: ProfileBioProps) => {
           toSentenceCase(bio.trim())
         )
       ) : (
-        <p className="text-text-muted">Add bio to show here...</p>
+        <div className="relative p-5 text-text-muted text-sm glass-subtle">
+          Add bio to show here...
+        </div>
       )}
 
       {isOwnProfile ? (

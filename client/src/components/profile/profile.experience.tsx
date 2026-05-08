@@ -22,9 +22,9 @@ const ProfileExperience = ({
       {experiences && experiences.length > 0 ? (
         <Experience experiences={experiences} />
       ) : (
-        <p className="text-text-muted">
+        <div className="relative p-5 text-text-muted text-sm glass-subtle">
           Add your work experiences to show here...
-        </p>
+        </div>
       )}
 
       {isOwnProfile ? (

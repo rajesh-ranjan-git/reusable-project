@@ -1,5 +1,15 @@
 import { MdEmail, MdHeartBroken } from "react-icons/md";
-import { LuAtSign, LuShare2, LuUser } from "react-icons/lu";
+import {
+  LuAtSign,
+  LuCheck,
+  LuClock,
+  LuMessageCircle,
+  LuShare2,
+  LuUser,
+  LuUserMinus,
+  LuUserPlus,
+  LuX,
+} from "react-icons/lu";
 import {
   FaBirthdayCake,
   FaFemale,
@@ -16,10 +26,13 @@ import {
   CurrentFormType,
   ExperienceType,
   PersonalDetailType,
+  ProfileActionButtonType,
   UserProfileType,
 } from "@/types/types/profile.types";
 import { toTitleCase } from "@/utils/common.utils";
 import { formatLocalDate } from "@/utils/date.utils";
+import { RelationshipType } from "@/types/types/connection.types";
+import { FiMoreHorizontal } from "react-icons/fi";
 
 export const getFullName = (user?: UserProfileType | LoggedInUserType) => {
   if (!user) return "John Doe";
@@ -116,6 +129,117 @@ export const mergeUniqueUsersByKey = <T, K extends keyof T>(
   if (additions.length === 0) return prev;
 
   return [...prev, ...additions];
+};
+
+const actionButtonClass = "flex items-center gap-2 px-4 py-2 btn";
+const primaryActionButtonClass = `${actionButtonClass} btn-primary`;
+const successActionButtonClass = `${actionButtonClass} text-status-success-text`;
+const errorActionButtonClass = `${actionButtonClass} text-status-error-text`;
+const infoActionButtonClass = `${actionButtonClass} text-status-info-text`;
+const successActionWrapperClass = "p-0 rounded-lg alert alert-success";
+const errorActionWrapperClass = "p-0 rounded-lg alert alert-error";
+const infoActionWrapperClass = "p-0 rounded-lg alert alert-info";
+const iconActionClass =
+  "flex items-center gap-2 p-3 focus:ring-1 focus:ring-accent-purple-light glass";
+
+export const getRelationship = (profile: UserProfileType): RelationshipType => {
+  if (profile.connectionStatus === "accepted") return "connected";
+  if (profile.connectionStatus === "blocked") return "blocked";
+  if (profile.connectionStatus === "interested") {
+    return profile.connectionDirection === "incoming" ? "incoming" : "outgoing";
+  }
+
+  return "none";
+};
+
+export const relationshipActions: Record<
+  RelationshipType,
+  ProfileActionButtonType[]
+> = {
+  connected: [
+    {
+      label: "Remove",
+      ariaLabel: "Remove connection",
+      icon: LuUserMinus,
+      className: errorActionButtonClass,
+      wrapperClassName: errorActionWrapperClass,
+    },
+    {
+      label: "Chat",
+      ariaLabel: "Open conversation",
+      icon: LuMessageCircle,
+      className: infoActionButtonClass,
+      wrapperClassName: infoActionWrapperClass,
+      action: "message",
+    },
+    {
+      ariaLabel: "More profile actions",
+      icon: FiMoreHorizontal,
+      className: iconActionClass,
+    },
+  ],
+  incoming: [
+    {
+      label: "Accept",
+      ariaLabel: "Accept connection request",
+      icon: LuCheck,
+      className: successActionButtonClass,
+      wrapperClassName: successActionWrapperClass,
+    },
+    {
+      label: "Reject",
+      ariaLabel: "Reject connection request",
+      icon: LuX,
+      className: errorActionButtonClass,
+      wrapperClassName: errorActionWrapperClass,
+    },
+    {
+      ariaLabel: "More profile actions",
+      icon: FiMoreHorizontal,
+      className: iconActionClass,
+    },
+  ],
+  outgoing: [
+    {
+      label: "Cancel",
+      ariaLabel: "Cancel connection request",
+      icon: LuClock,
+      className: infoActionButtonClass,
+      wrapperClassName: infoActionWrapperClass,
+    },
+    {
+      ariaLabel: "More profile actions",
+      icon: FiMoreHorizontal,
+      className: iconActionClass,
+    },
+  ],
+  blocked: [
+    {
+      label: "Unblock",
+      ariaLabel: "Unblock profile",
+      icon: LuUserPlus,
+      className: successActionButtonClass,
+      wrapperClassName: successActionWrapperClass,
+    },
+    {
+      ariaLabel: "More profile actions",
+      icon: FiMoreHorizontal,
+      className: iconActionClass,
+    },
+  ],
+  none: [
+    {
+      label: "Connect",
+      ariaLabel: "Send connection request",
+      icon: LuUserPlus,
+      className: primaryActionButtonClass,
+    },
+    {
+      ariaLabel: "More profile actions",
+      icon: FiMoreHorizontal,
+      className: iconActionClass,
+    },
+  ],
 };
 
 const getGenderIcon = (gender?: string | null) => {

@@ -20,7 +20,9 @@ const ProfileSkills = ({ skills, isOwnProfile }: ProfileSkillsProps) => {
       {skills && skills.length > 0 ? (
         <Skills skills={skills} />
       ) : (
-        <p className="text-text-muted">Add your skills to show here...</p>
+        <div className="relative p-5 text-text-muted text-sm glass-subtle">
+          Add your skills to show here...
+        </div>
       )}
 
       {isOwnProfile ? (

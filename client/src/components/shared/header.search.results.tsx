@@ -17,7 +17,10 @@ import {
   ProfilesResponseType,
   ResponsePaginationType,
 } from "@/types/types/response.types";
-import { RequestDirectionType } from "@/types/types/connection.types";
+import {
+  RelationshipType,
+  RequestDirectionType,
+} from "@/types/types/connection.types";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
 import { useToast } from "@/hooks/toast";
 import { toTitleCase } from "@/utils/common.utils";
@@ -25,8 +28,6 @@ import { getFullName } from "@/helpers/profile.helpers";
 import { conversationRoutes } from "@/lib/routes/routes";
 import { connect } from "@/lib/actions/connection.actions";
 import { fetchProfiles } from "@/lib/actions/discover.actions";
-
-type SearchRelationshipType = "incoming" | "outgoing" | "connected" | "none";
 
 const HeaderSearchResults = ({
   isOpen,
@@ -136,9 +137,7 @@ const HeaderSearchResults = ({
     onClose();
   };
 
-  const getRelationship = (
-    profile: UserProfileType,
-  ): SearchRelationshipType => {
+  const getRelationship = (profile: UserProfileType): RelationshipType => {
     if (profile.connectionStatus === "accepted") return "connected";
     if (profile.connectionStatus === "interested") {
       return profile.connectionDirection === "incoming"
