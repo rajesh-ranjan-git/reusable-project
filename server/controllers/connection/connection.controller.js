@@ -99,15 +99,11 @@ export const connect = asyncHandler(async (req, res) => {
       }
 
       connectionToUpdate = {
+        sender: userId,
+        receiver: otherUserId,
         connectionStatus: validatedConnectionStatus,
-        rejectedBySenderCount:
-          existingConnection.sender.toString() === userId
-            ? 0
-            : existingConnection.rejectedBySenderCount,
-        rejectedByReceiverCount:
-          existingConnection.receiver.toString() === userId
-            ? 0
-            : existingConnection.rejectedByReceiverCount,
+        rejectedBySenderCount: 0,
+        rejectedByReceiverCount: 0,
         ...connectionToUpdate,
       };
 
@@ -506,14 +502,15 @@ export const requests = asyncHandler(async (req, res) => {
   const skip = (pageNum - 1) * limitNum;
 
   const connections = await Connection.find({
-    receiver: userId,
+    lastActionedBy: { $ne: userId },
     connectionStatus: "interested",
+    $or: [{ sender: userId }, { receiver: userId }],
   })
     .sort({ updatedAt: -1 })
     .lean();
 
   const connectedUserIds = connections.map((connection) =>
-    connection.sender.toString(),
+    connection.lastActionedBy.toString(),
   );
 
   const filter = {
