@@ -163,6 +163,7 @@ export const relationshipActions: Record<
       icon: LuUserMinus,
       className: errorActionButtonClass,
       wrapperClassName: errorActionWrapperClass,
+      action: "remove",
     },
     {
       label: "Chat",
@@ -176,6 +177,7 @@ export const relationshipActions: Record<
       ariaLabel: "More profile actions",
       icon: FiMoreHorizontal,
       className: iconActionClass,
+      action: "more",
     },
   ],
   incoming: [
@@ -185,6 +187,7 @@ export const relationshipActions: Record<
       icon: LuCheck,
       className: successActionButtonClass,
       wrapperClassName: successActionWrapperClass,
+      action: "accept",
     },
     {
       label: "Reject",
@@ -192,11 +195,13 @@ export const relationshipActions: Record<
       icon: LuX,
       className: errorActionButtonClass,
       wrapperClassName: errorActionWrapperClass,
+      action: "reject",
     },
     {
       ariaLabel: "More profile actions",
       icon: FiMoreHorizontal,
       className: iconActionClass,
+      action: "more",
     },
   ],
   outgoing: [
@@ -206,11 +211,13 @@ export const relationshipActions: Record<
       icon: LuClock,
       className: infoActionButtonClass,
       wrapperClassName: infoActionWrapperClass,
+      action: "cancel",
     },
     {
       ariaLabel: "More profile actions",
       icon: FiMoreHorizontal,
       className: iconActionClass,
+      action: "more",
     },
   ],
   blocked: [
@@ -220,11 +227,13 @@ export const relationshipActions: Record<
       icon: LuUserPlus,
       className: successActionButtonClass,
       wrapperClassName: successActionWrapperClass,
+      action: "unblock",
     },
     {
       ariaLabel: "More profile actions",
       icon: FiMoreHorizontal,
       className: iconActionClass,
+      action: "more",
     },
   ],
   none: [
@@ -233,11 +242,13 @@ export const relationshipActions: Record<
       ariaLabel: "Send connection request",
       icon: LuUserPlus,
       className: primaryActionButtonClass,
+      action: "connect",
     },
     {
       ariaLabel: "More profile actions",
       icon: FiMoreHorizontal,
       className: iconActionClass,
+      action: "more",
     },
   ],
 };

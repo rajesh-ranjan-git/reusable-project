@@ -7,7 +7,10 @@ import {
   ReactNodeProps,
 } from "@/types/props/common.props.types";
 import { UserProfileType } from "@/types/types/profile.types";
-import { RequestDirectionType } from "@/types/types/connection.types";
+import {
+  ConnectionStatusType,
+  RequestDirectionType,
+} from "@/types/types/connection.types";
 import {
   ConversationListResponseType,
   ProfilesResponseType,
@@ -15,6 +18,10 @@ import {
 } from "@/types/types/response.types";
 import { useAppStore } from "@/store/store";
 import { useToast } from "@/hooks/toast";
+import {
+  NetworkActionsProvider,
+  RelationshipOverrideType,
+} from "@/hooks/useNetworkActions";
 import { toTitleCase } from "@/utils/common.utils";
 import { getConversationDisplay } from "@/helpers/conversation.helpers";
 import { mergeUniqueUsersByKey } from "@/helpers/profile.helpers";
@@ -36,6 +43,9 @@ const AppChrome = ({ children }: ReactNodeProps) => {
     UserProfileType[]
   >([]);
   const [connections, setConnections] = useState<UserProfileType[]>([]);
+  const [relationshipOverrides, setRelationshipOverrides] = useState<
+    Record<string, RelationshipOverrideType>
+  >({});
   const [exitDirection, setExitDirection] = useState<
     Record<string, RequestDirectionType>
   >({});
@@ -141,7 +151,14 @@ const AppChrome = ({ children }: ReactNodeProps) => {
       }
 
       if (direction === "right" && selectedRequest) {
-        setConnections((prev) => [selectedRequest, ...prev]);
+        setConnections((prev) => [
+          {
+            ...selectedRequest,
+            connectionStatus: "accepted",
+            connectionDirection: null,
+          },
+          ...prev,
+        ]);
         setConnectionsPagination((prev) =>
           prev
             ? { ...prev, total: prev.total + 1 }
@@ -150,9 +167,23 @@ const AppChrome = ({ children }: ReactNodeProps) => {
       }
 
       const status = direction === "right" ? "accepted" : "rejected";
+      setRelationshipOverrides((prev) => ({
+        ...prev,
+        [userId]: {
+          connectionStatus: status,
+          connectionDirection: null,
+        },
+      }));
+
       const response = await connect(userId, status);
 
       if (!response.success) {
+        setRelationshipOverrides((prev) => {
+          const next = { ...prev };
+          delete next[userId];
+          return next;
+        });
+
         if (selectedRequest) {
           setConnectionRequests((prev) =>
             mergeUniqueUsersByKey([selectedRequest], prev, "userId"),
@@ -196,6 +227,67 @@ const AppChrome = ({ children }: ReactNodeProps) => {
       return true;
     },
     [connectionRequests, getConnectionRequests, getConnections, showToast],
+  );
+
+  const handleConnectionAction = useCallback(
+    async (profile: UserProfileType, status: ConnectionStatusType) => {
+      const previousOverride = relationshipOverrides[profile.userId];
+      const wasConnected = connections.some((c) => c.userId === profile.userId);
+      const nextOverride: RelationshipOverrideType = {
+        connectionStatus: status,
+        connectionDirection: status === "interested" ? "outgoing" : null,
+      };
+
+      setRelationshipOverrides((prev) => ({
+        ...prev,
+        [profile.userId]: nextOverride,
+      }));
+
+      if (status === "rejected" && wasConnected) {
+        setConnections((prev) =>
+          prev.filter((connection) => connection.userId !== profile.userId),
+        );
+        setConnectionsPagination((prev) =>
+          prev ? { ...prev, total: Math.max(0, prev.total - 1) } : prev,
+        );
+      }
+
+      const response = await connect(profile.userId, status);
+
+      if (!response.success) {
+        setRelationshipOverrides((prev) => {
+          const next = { ...prev };
+
+          if (previousOverride) {
+            next[profile.userId] = previousOverride;
+          } else {
+            delete next[profile.userId];
+          }
+
+          return next;
+        });
+
+        if (status === "rejected" && wasConnected) {
+          setConnections((prev) =>
+            mergeUniqueUsersByKey([profile], prev, "userId"),
+          );
+          setConnectionsPagination((prev) =>
+            prev ? { ...prev, total: prev.total + 1 } : prev,
+          );
+        }
+
+        showToast({
+          title: toTitleCase(response.code),
+          message: response.message ?? "",
+          variant: "error",
+        });
+
+        return false;
+      }
+
+      return true;
+    },
+    [connections, relationshipOverrides, showToast],
   );
 
   useEffect(() => {
@@ -251,10 +343,46 @@ const AppChrome = ({ children }: ReactNodeProps) => {
     ],
   );
 
+  const networkActionsValue = useMemo(
+    () => ({
+      connectionRequests,
+      connections,
+      relationshipOverrides,
+      onRequestAction: handleRequestAction,
+      onConnectionAction: handleConnectionAction,
+    }),
+    [
+      connectionRequests,
+      connections,
+      relationshipOverrides,
+      handleRequestAction,
+      handleConnectionAction,
+    ],
+  );
+
   if (!isAppRoute) return <>{children}</>;
 
   if (isConversationRoute) {
     return (
+      <NetworkActionsProvider value={networkActionsValue}>
+        <div
+          className={`flex flex-col ${backgroundClassName} h-dvh overflow-hidden text-text-primary`}
+        >
+          <Header
+            type="default"
+            isSidebarOpen={isSidebarOpen}
+            setIsSidebarOpen={setIsSidebarOpen}
+            sidebarProps={sidebarProps}
+          />
+
+          {children}
+        </div>
+      </NetworkActionsProvider>
+    );
+  }
+
+  return (
+    <NetworkActionsProvider value={networkActionsValue}>
       <div
         className={`flex flex-col ${backgroundClassName} h-dvh overflow-hidden text-text-primary`}
       >
@@ -265,34 +393,22 @@ const AppChrome = ({ children }: ReactNodeProps) => {
           sidebarProps={sidebarProps}
         />
 
-        {children}
+        <main className="relative flex flex-1 overflow-hidden">
+          {hasNetworkSidebar && (
+            <div className={sidebarClassName}>
+              <AppSidebar
+                setIsSidebarOpen={setIsSidebarOpen}
+                {...sidebarProps}
+              />
+            </div>
+          )}
+
+          {children}
+        </main>
+
+        <BottomNavbar activeTab={activeTab} />
       </div>
-    );
-  }
-
-  return (
-    <div
-      className={`flex flex-col ${backgroundClassName} h-dvh overflow-hidden text-text-primary`}
-    >
-      <Header
-        type="default"
-        isSidebarOpen={isSidebarOpen}
-        setIsSidebarOpen={setIsSidebarOpen}
-        sidebarProps={sidebarProps}
-      />
-
-      <main className="relative flex flex-1 overflow-hidden">
-        {hasNetworkSidebar && (
-          <div className={sidebarClassName}>
-            <AppSidebar setIsSidebarOpen={setIsSidebarOpen} {...sidebarProps} />
-          </div>
-        )}
-
-        {children}
-      </main>
-
-      <BottomNavbar activeTab={activeTab} />
-    </div>
+    </NetworkActionsProvider>
   );
 };
 

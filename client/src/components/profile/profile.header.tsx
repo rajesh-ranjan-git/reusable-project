@@ -2,9 +2,13 @@ import { useState, useRef, ChangeEvent, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { MdOutlineEdit } from "react-icons/md";
 import { ProfileHeaderProps } from "@/types/props/profile.props.types";
-import { ImageTargetType } from "@/types/types/profile.types";
+import {
+  ImageTargetType,
+  ProfileActionButtonType,
+} from "@/types/types/profile.types";
 import { UploadImageResponseType } from "@/types/types/response.types";
 import { useAppStore } from "@/store/store";
+import { useNetworkActions } from "@/hooks/useNetworkActions";
 import {
   compressImage,
   dataURLtoImage,
@@ -39,6 +43,7 @@ const ProfileHeader = ({ isOwnProfile, userProfile }: ProfileHeaderProps) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const { showToast } = useToast();
+  const networkActions = useNetworkActions();
 
   const loggedInUser = useAppStore((state) => state.loggedInUser);
   const setLoggedInUser = useAppStore((state) => state.setLoggedInUser);
@@ -205,6 +210,10 @@ const ProfileHeader = ({ isOwnProfile, userProfile }: ProfileHeaderProps) => {
     return imageUrl;
   };
 
+  const [pendingRelationshipAction, setPendingRelationshipAction] = useState<
+    string | null
+  >(null);
+
   useEffect(() => {
     setLocalAvatar(userProfile?.avatar);
     setLocalCover(userProfile?.cover);
@@ -212,7 +221,71 @@ const ProfileHeader = ({ isOwnProfile, userProfile }: ProfileHeaderProps) => {
 
   if (!userProfile) return;
 
-  const relationshipType = getRelationship(userProfile);
+  const sharedRelationshipState = {
+    ...(networkActions?.connections.some(
+      (connection) => connection.userId === userProfile.userId,
+    )
+      ? {
+          connectionStatus: "accepted" as const,
+          connectionDirection: null,
+        }
+      : {}),
+    ...(networkActions?.connectionRequests.some(
+      (request) => request.userId === userProfile.userId,
+    )
+      ? {
+          connectionStatus: "interested" as const,
+          connectionDirection: "incoming" as const,
+        }
+      : {}),
+    ...(networkActions?.relationshipOverrides[userProfile.userId] ?? {}),
+  };
+  const syncedUserProfile = {
+    ...userProfile,
+    ...sharedRelationshipState,
+  };
+  const relationshipType = getRelationship(syncedUserProfile);
+
+  const handleRelationshipAction = async (
+    action: ProfileActionButtonType["action"],
+  ) => {
+    if (action === "more") return;
+
+    if (action === "message") {
+      router.push(`${conversationRoutes.conversation}/${userProfile.userName}`);
+      return;
+    }
+
+    if (!networkActions || pendingRelationshipAction) return;
+
+    setPendingRelationshipAction(action);
+
+    try {
+      if (action === "accept") {
+        await networkActions.onRequestAction(userProfile.userId, "right");
+        return;
+      }
+
+      if (action === "reject") {
+        await networkActions.onRequestAction(userProfile.userId, "left");
+        return;
+      }
+
+      const connectionStatusByAction = {
+        connect: "interested",
+        cancel: "not-interested",
+        remove: "rejected",
+        unblock: "not-interested",
+      } as const;
+
+      await networkActions.onConnectionAction(
+        syncedUserProfile,
+        connectionStatusByAction[action],
+      );
+    } finally {
+      setPendingRelationshipAction(null);
+    }
+  };
 
   return (
     <div className="z-(--z-raised) relative mb-6 glass-heavy rounded-t-2xl">
@@ -269,11 +342,8 @@ const ProfileHeader = ({ isOwnProfile, userProfile }: ProfileHeaderProps) => {
                       aria-label={ariaLabel}
                       title={ariaLabel}
                       className={className}
-                      onClick={
-                        action === "message"
-                          ? () => router.push(conversationRoutes.conversation)
-                          : undefined
-                      }
+                      disabled={pendingRelationshipAction === action}
+                      onClick={() => handleRelationshipAction(action)}
                     >
                       <Icon size={16} />
                       {label}

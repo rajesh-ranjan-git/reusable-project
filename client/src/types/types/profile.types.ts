@@ -12,7 +12,15 @@ export type ProfileActionButtonType = {
   icon: IconType;
   className: string;
   wrapperClassName?: string;
-  action?: "message";
+  action:
+    | "accept"
+    | "reject"
+    | "connect"
+    | "cancel"
+    | "remove"
+    | "unblock"
+    | "message"
+    | "more";
 };
 
 export type CurrentFormType =

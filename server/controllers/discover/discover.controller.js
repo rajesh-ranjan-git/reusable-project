@@ -39,7 +39,7 @@ export const discoverProfiles = asyncHandler(async (req, res) => {
     .select("user")
     .lean();
 
-  const restrictedUserIds = restrictedUsers.map((u) => u.user);
+  const restrictedUserIds = restrictedUsers.map((u) => u.user.toString());
 
   const connections = await Connection.find({
     $or: [{ sender: currentUserId }, { receiver: currentUserId }],
@@ -85,7 +85,9 @@ export const discoverProfiles = asyncHandler(async (req, res) => {
     });
   });
 
-  const excludedConnectionUserIds = hasSearch ? blockedUserIds : connectedUserIds;
+  const excludedConnectionUserIds = hasSearch
+    ? blockedUserIds
+    : connectedUserIds;
 
   const excludedUserIds = [
     ...restrictedUserIds,
@@ -100,12 +102,26 @@ export const discoverProfiles = asyncHandler(async (req, res) => {
   };
 
   if (hasSearch) {
-    filter.$or = [
-      { userName: { $regex: normalizedSearch, $options: "i" } },
-      { firstName: { $regex: normalizedSearch, $options: "i" } },
-      { lastName: { $regex: normalizedSearch, $options: "i" } },
-      { headline: { $regex: normalizedSearch, $options: "i" } },
-    ];
+    const tokens = normalizedSearch.split(/\s+/).filter(Boolean);
+
+    filter.$and = tokens.map((token) => ({
+      $or: [
+        { userName: { $regex: token, $options: "i" } },
+        { firstName: { $regex: token, $options: "i" } },
+        { lastName: { $regex: token, $options: "i" } },
+        { nickName: { $regex: token, $options: "i" } },
+        { bio: { $regex: token, $options: "i" } },
+        {
+          $expr: {
+            $regexMatch: {
+              input: { $concat: ["$firstName", " ", "$lastName"] },
+              regex: token,
+              options: "i",
+            },
+          },
+        },
+      ],
+    }));
   }
 
   const [profiles, total] = await Promise.all([
