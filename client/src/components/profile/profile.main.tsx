@@ -9,7 +9,7 @@ import { getCurrentJobRole, getFullName } from "@/helpers/profile.helpers";
 import { toTitleCase } from "@/utils/common.utils";
 import { formatDate } from "@/utils/date.utils";
 
-const ProfileMain = ({ user }: ProfileMainProps) => {
+const ProfileMain = ({ isOwnProfile, userProfile }: ProfileMainProps) => {
   const setCurrentProfileForm = useAppStore(
     (state) => state.setCurrentProfileForm,
   );
@@ -18,52 +18,63 @@ const ProfileMain = ({ user }: ProfileMainProps) => {
     <div className="pointer-events-auto">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <h1 className="text-shadow-accent-purple-dark text-shadow-lg font-alkatra font-extrabold">
-          {getFullName(user)}
+          {getFullName(userProfile)}
         </h1>
 
-        {user?.nickName ? (
+        {userProfile?.nickName ? (
           <span className="text-text-muted text-base md:text-lg italic">
-            &ldquo;{toTitleCase(user.nickName)}&rdquo;
+            &ldquo;{toTitleCase(userProfile.nickName)}&rdquo;
           </span>
         ) : null}
 
-        <button
-          type="button"
-          className="relative flex-none group-hover:opacity-100 p-1.5 text-sm transition-opacity duration-200 btn btn-ghost"
-          onClick={() => setCurrentProfileForm("basic")}
-          aria-label="Edit Name"
-        >
-          <MdOutlineEdit size={16} />
-        </button>
-      </div>
-
-      {user?.userName && (
-        <div className="flex gap-2">
-          <p className="mt-0.5 text-text-muted text-sm">@{user.userName}</p>
-
+        {isOwnProfile && (
           <button
             type="button"
-            className="relative flex-none group-hover:opacity-100 p-1 text-sm transition-opacity duration-200 btn btn-ghost"
-            onClick={() => setCurrentProfileForm("username")}
-            aria-label="Edit Username"
+            className="relative flex-none group-hover:opacity-100 p-1.5 text-sm transition-opacity duration-200 btn btn-ghost"
+            onClick={() => setCurrentProfileForm("basic")}
+            aria-label="Edit Name"
           >
-            <MdOutlineEdit size={12} />
+            <MdOutlineEdit size={16} />
           </button>
+        )}
+      </div>
+
+      {userProfile?.userName && (
+        <div className="flex gap-2">
+          <p className="mt-0.5 text-text-muted text-sm">
+            @{userProfile.userName}
+          </p>
+
+          {isOwnProfile && (
+            <button
+              type="button"
+              className="relative flex-none group-hover:opacity-100 p-1 text-sm transition-opacity duration-200 btn btn-ghost"
+              onClick={() => setCurrentProfileForm("username")}
+              aria-label="Edit Username"
+            >
+              <MdOutlineEdit size={12} />
+            </button>
+          )}
         </div>
       )}
 
-      {user?.experiences?.length && user?.experiences?.length > 0 ? (
+      {userProfile?.experiences?.length &&
+      userProfile?.experiences?.length > 0 ? (
         <p className="mt-1 text-text-secondary text-base md:text-lg">
-          {toTitleCase(getCurrentJobRole(user?.experiences) ?? "No role")}
+          {toTitleCase(
+            getCurrentJobRole(userProfile?.experiences) ?? "No role",
+          )}
         </p>
       ) : null}
 
       <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-text-secondary text-sm">
-        {user?.social && (
+        {userProfile?.social && (
           <div className="flex flex-wrap items-center gap-2 mt-4 pointer-events-auto">
             {socialPlatformsConfig.map(({ name, Icon, label }) => {
               const href =
-                user.social?.[name as keyof NonNullable<typeof user.social>];
+                userProfile.social?.[
+                  name as keyof NonNullable<typeof userProfile.social>
+                ];
               if (!href) return null;
               return (
                 <Link
@@ -83,29 +94,29 @@ const ProfileMain = ({ user }: ProfileMainProps) => {
       </div>
 
       <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-4 text-text-secondary text-sm">
-        {user?.location && (
+        {userProfile?.location && (
           <div className="flex items-center gap-1.5 hover:text-text-primary transition-colors cursor-pointer">
             <LuMapPin size={16} />
-            {toTitleCase(user.location)}
+            {toTitleCase(userProfile.location)}
           </div>
         )}
 
-        {user?.social?.website && (
+        {userProfile?.social?.website && (
           <Link
-            href={user.social.website}
+            href={userProfile.social.website}
             target="_blank"
             rel="noreferrer"
             className="flex items-center gap-1.5 text-primary hover:text-indigo-400 transition-colors"
           >
             <FaLink size={16} />
-            {user.social.website.replace(/^https?:\/\//, "")}
+            {userProfile.social.website.replace(/^https?:\/\//, "")}
           </Link>
         )}
 
-        {user?.createdAt && (
+        {userProfile?.createdAt && (
           <div className="flex items-center gap-1.5">
             <LuCalendar size={16} />
-            Joined on {formatDate(user.createdAt)}
+            Joined on {formatDate(userProfile.createdAt)}
           </div>
         )}
       </div>

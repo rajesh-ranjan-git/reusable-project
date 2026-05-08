@@ -18,8 +18,8 @@ export interface ProfilePageProps {
 }
 
 export interface ProfileHeaderProps {
-  isOwnProfile: boolean;
   userProfile: UserProfileType | null;
+  isOwnProfile: boolean;
 }
 
 export interface ProfileMenuItemProps {
@@ -58,7 +58,8 @@ export interface ImagePreviewProps {
 }
 
 export interface ProfileMainProps {
-  user: UserProfileType;
+  userProfile: UserProfileType;
+  isOwnProfile: boolean;
 }
 
 export interface CameraModalProps {

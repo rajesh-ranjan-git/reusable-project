@@ -22,7 +22,7 @@ const ActivitySection = ({
       </div>
 
       {isOwnProfile ? (
-        <button className="top-2 right-2 absolute pl-3 text-sm btn btn-secondary">
+        <button className="top-2 right-2 absolute pr-2 md:pr-3 pl-3 text-sm btn btn-secondary">
           <MdDeleteSweep size={20} />
 
           <span className="hidden md:block">Clear</span>

@@ -99,7 +99,7 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
   return (
     <div className="flex-1 bg-bg/50 overflow-y-auto">
       <div className="mx-auto p-4 md:p-8 pb-24 md:pb-8 max-w-7xl">
-        <ProfileHeader isOwnProfile={isOwnProfile} userProfile={userProfile} />
+        <ProfileHeader userProfile={userProfile} isOwnProfile={isOwnProfile} />
 
         <ProfilePersonal
           userProfile={userProfile}

@@ -26,7 +26,7 @@ import ProfileAvatar from "@/components/profile/avatar";
 import ProfileMain from "@/components/profile/profile.main";
 import ProfileImagePreview from "@/components/profile/image.preview";
 
-const ProfileHeader = ({ isOwnProfile, userProfile }: ProfileHeaderProps) => {
+const ProfileHeader = ({ userProfile, isOwnProfile }: ProfileHeaderProps) => {
   const [activeMenu, setActiveMenu] = useState<ImageTargetType>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
@@ -363,7 +363,7 @@ const ProfileHeader = ({ isOwnProfile, userProfile }: ProfileHeaderProps) => {
           </div>
         </div>
 
-        <ProfileMain user={userProfile} />
+        <ProfileMain isOwnProfile={isOwnProfile} userProfile={userProfile} />
       </div>
 
       <input

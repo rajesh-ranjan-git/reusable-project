@@ -92,7 +92,7 @@ const ProfilePersonal = ({
                         {isOwnProfile ? (
                           !hasValue ? (
                             <button
-                              className="relative flex gap-0 opacity-0 group-hover:opacity-100 p-1.5 pr-2.5 text-sm btn btn-secondary"
+                              className="relative flex gap-0 opacity-100 md:group-hover:opacity-100 md:opacity-0 p-1.5 md:pr-2.5 text-sm transition-opacity duration-200 btn btn-secondary"
                               onClick={() => setCurrentForm(key)}
                             >
                               <IoMdAdd size={16} />
@@ -101,7 +101,7 @@ const ProfilePersonal = ({
                           ) : key !== "gender" && key !== "dob" ? (
                             <button
                               type="button"
-                              className="relative flex-none opacity-0 group-hover:opacity-100 p-1.5 text-sm transition-opacity duration-200 btn btn-ghost"
+                              className="relative flex-none opacity-100 md:group-hover:opacity-100 md:opacity-0 p-1.5 text-sm transition-opacity duration-200 btn btn-ghost"
                               onClick={() => setCurrentForm(key)}
                               aria-label={`${hasValue ? "Edit" : "Add"} ${label}`}
                             >
