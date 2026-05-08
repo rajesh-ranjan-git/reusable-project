@@ -6,6 +6,7 @@ import {
   LuCheck,
   LuClock,
   LuMessageCircle,
+  LuUserMinus,
   LuUserPlus,
   LuX,
 } from "react-icons/lu";
@@ -146,6 +147,12 @@ const HeaderSearchResults = ({
         ? "incoming"
         : "outgoing";
     }
+    if (
+      profile.connectionStatus === "rejected" ||
+      profile.connectionStatus === "not-interested"
+    ) {
+      return "none";
+    }
 
     if (connectionRequests.some((r) => r.userId === profile.userId)) {
       return "incoming";
@@ -219,6 +226,40 @@ const HeaderSearchResults = ({
               ...profile,
               connectionStatus: "interested",
               connectionDirection: "outgoing",
+            }
+          : profile,
+      ),
+    );
+  };
+
+  const handleRemoveConnection = async (targetProfile: UserProfileType) => {
+    if (networkActions) {
+      const isActionSuccessful = await networkActions.onConnectionAction(
+        targetProfile,
+        "rejected",
+      );
+
+      if (isActionSuccessful === false) return;
+    } else {
+      const connectResponse = await connect(targetProfile.userId, "rejected");
+
+      if (!connectResponse.success) {
+        showToast({
+          title: toTitleCase(connectResponse.code),
+          message: connectResponse.message ?? "",
+          variant: "error",
+        });
+        return;
+      }
+    }
+
+    setSearchedUserProfiles((prev) =>
+      prev.map((profile) =>
+        profile.userId === targetProfile.userId
+          ? {
+              ...profile,
+              connectionStatus: "rejected",
+              connectionDirection: null,
             }
           : profile,
       ),
@@ -395,21 +436,35 @@ const HeaderSearchResults = ({
                           )}
 
                           {relationship === "connected" && (
-                            <div className="p-0 rounded-md alert alert-info">
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  onClose();
-                                  router.push(
-                                    `${conversationRoutes.conversation}/${profile.userName}`,
-                                  );
-                                }}
-                                className="p-0 w-8 h-8 font-medium text-status-info-text text-sm"
-                                title="Message"
-                              >
-                                <LuMessageCircle size={16} />
-                              </button>
-                            </div>
+                            <>
+                              <div className="p-0 rounded-md alert alert-error">
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleRemoveConnection(profile);
+                                  }}
+                                  className="p-0 w-8 h-8 font-medium text-status-error-text text-sm"
+                                  title="Remove connection"
+                                >
+                                  <LuUserMinus size={16} />
+                                </button>
+                              </div>
+                              <div className="p-0 rounded-md alert alert-info">
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    onClose();
+                                    router.push(
+                                      `${conversationRoutes.conversation}/${profile.userName}`,
+                                    );
+                                  }}
+                                  className="p-0 w-8 h-8 font-medium text-status-info-text text-sm"
+                                  title="Message"
+                                >
+                                  <LuMessageCircle size={16} />
+                                </button>
+                              </div>
+                            </>
                           )}
 
                           {relationship === "none" && (
