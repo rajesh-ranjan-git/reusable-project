@@ -270,7 +270,8 @@ const AppChrome = ({ children }: ReactNodeProps) => {
         setConversationList((prev) =>
           prev.filter((conversation) => {
             return !removedConversations.some(
-              (removedConversation) => removedConversation.id === conversation.id,
+              (removedConversation) =>
+                removedConversation.id === conversation.id,
             );
           }),
         );

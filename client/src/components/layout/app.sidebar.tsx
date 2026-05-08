@@ -25,6 +25,17 @@ const AppSidebar = ({
   const router = useRouter();
 
   const connectionRequestsSheet = useSheet({ type: "connectionRequests" });
+  const getRequestExit = (
+    userId: string,
+    directions: typeof exitDirection = exitDirection,
+  ) => ({
+    opacity: 0,
+    x: directions[userId] === "right" ? 100 : -100,
+    height: 0,
+    marginTop: 0,
+    marginBottom: 0,
+    transition: { duration: 0.25, ease: "backIn" as const },
+  });
 
   return (
     <aside className="flex flex-col border-glass-border border-r border-b-0 md:w-64 lg:w-72 h-full transition-all duration-500 glass-nav shrink-0">
@@ -59,24 +70,18 @@ const AppSidebar = ({
           </div>
 
           <div className="space-y-2">
-            <AnimatePresence>
+            <AnimatePresence custom={exitDirection}>
               {connectionRequests?.length > 0
                 ? connectionRequests.slice(0, 2).map((request) => (
                     <motion.div
                       key={request.userId}
                       initial={{ opacity: 0, height: 0, scale: 0.95 }}
                       animate={{ opacity: 1, height: "auto", scale: 1 }}
-                      exit={{
-                        opacity: 0,
-                        x:
-                          exitDirection[request.userId] === "right"
-                            ? 100
-                            : -100,
-                        height: 0,
-                        marginTop: 0,
-                        marginBottom: 0,
-                        transition: { duration: 0.25, ease: "backIn" },
+                      variants={{
+                        exit: (directions: typeof exitDirection) =>
+                          getRequestExit(request.userId, directions),
                       }}
+                      exit="exit"
                       transition={{ duration: 0.2 }}
                       className="overflow-hidden"
                     >
@@ -168,24 +173,18 @@ const AppSidebar = ({
             </h4>
 
             <div className="flex-1 space-y-2 overflow-x-hidden overflow-y-auto">
-              <AnimatePresence>
+              <AnimatePresence custom={exitDirection}>
                 {connectionRequests?.length > 0 ? (
                   connectionRequests.map((request) => (
                     <motion.div
                       key={request.userId}
                       initial={{ opacity: 0, height: 0, scale: 0.95 }}
                       animate={{ opacity: 1, height: "auto", scale: 1 }}
-                      exit={{
-                        opacity: 0,
-                        x:
-                          exitDirection[request.userId] === "right"
-                            ? 100
-                            : -100,
-                        height: 0,
-                        marginTop: 0,
-                        marginBottom: 0,
-                        transition: { duration: 0.25, ease: "backIn" },
+                      variants={{
+                        exit: (directions: typeof exitDirection) =>
+                          getRequestExit(request.userId, directions),
                       }}
+                      exit="exit"
                       transition={{ duration: 0.2 }}
                       className="overflow-hidden"
                     >
