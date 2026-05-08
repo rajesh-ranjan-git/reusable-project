@@ -1,5 +1,6 @@
 import { isValidObjectId } from "mongoose";
 import Conversation from "../models/conversation/conversation.model.js";
+import Connection from "../models/connection/connection.model.js";
 import { sanitizeMongoData } from "../db/db.utils.js";
 import { omitObjectProperties } from "./common.utils.js";
 import AppError from "../services/error/error.service.js";
@@ -49,6 +50,58 @@ export const normalizeMessage = (message) => {
   return normalizedMessage;
 };
 
+export const getAcceptedConnectionUserIds = async (userId) => {
+  const connections = await Connection.find({
+    $or: [{ sender: userId }, { receiver: userId }],
+    connectionStatus: "accepted",
+  }).select("sender receiver");
+
+  return connections.map((connection) =>
+    connection.sender.toString() === userId
+      ? connection.receiver
+      : connection.sender,
+  );
+};
+
+export const assertDirectConversationConnected = async (
+  conversation,
+  userId,
+) => {
+  if (conversation.type !== "direct") return;
+
+  const targetParticipant = conversation.participants.find((participant) => {
+    const participantUserId = (
+      participant.user?._id ?? participant.user
+    ).toString();
+
+    return participantUserId !== userId && !participant.leftAt;
+  });
+
+  if (!targetParticipant) {
+    throw AppError.forbidden({
+      message: "You can only chat with users you are connected with!",
+      code: "CONVERSATION ACCESS DENIED",
+    });
+  }
+
+  const targetUserId = targetParticipant.user?._id ?? targetParticipant.user;
+
+  const connection = await Connection.findOne({
+    $or: [
+      { sender: userId, receiver: targetUserId },
+      { sender: targetUserId, receiver: userId },
+    ],
+    connectionStatus: "accepted",
+  }).select("_id");
+
+  if (!connection) {
+    throw AppError.forbidden({
+      message: "You can only chat with users you are connected with!",
+      code: "CONVERSATION ACCESS DENIED",
+    });
+  }
+};
+
 export const assertParticipant = async (conversationId, userId) => {
   if (!isValidObjectId(conversationId)) {
     throw AppError.unprocessable({
@@ -73,6 +126,8 @@ export const assertParticipant = async (conversationId, userId) => {
       details: { conversation },
     });
   }
+
+  await assertDirectConversationConnected(conversation, userId);
 
   return conversation;
 };

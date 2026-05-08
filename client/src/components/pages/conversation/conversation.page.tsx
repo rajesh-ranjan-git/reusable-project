@@ -7,6 +7,7 @@ import {
   DirectConversationResponseType,
 } from "@/types/types/response.types";
 import { useAppStore } from "@/store/store";
+import { useNetworkActions } from "@/hooks/useNetworkActions";
 import { getConversationDisplay } from "@/helpers/conversation.helpers";
 import { fetchDirectConversation } from "@/lib/actions/conversation.action";
 import { conversationRoutes } from "@/lib/routes/routes";
@@ -22,6 +23,7 @@ const ConversationPage = ({ userName }: ConversationPageProps) => {
   const setConversationListPagination = useAppStore(
     (state) => state.setConversationListPagination,
   );
+  const networkActions = useNetworkActions();
 
   const upsertConversationListItem = useCallback(
     (conversation: ConversationResponseType) => {
@@ -64,6 +66,11 @@ const ConversationPage = ({ userName }: ConversationPageProps) => {
     [setConversationList, setConversationListPagination],
   );
 
+  const clearSelectedConversation = useCallback(() => {
+    window.history.pushState({}, "", conversationRoutes.conversation);
+    setSelectedConversation(null);
+  }, []);
+
   const getDirectConversation = useCallback(
     async (userName: string) => {
       const directConversationResponse =
@@ -78,15 +85,12 @@ const ConversationPage = ({ userName }: ConversationPageProps) => {
 
         setSelectedConversation(data.conversation);
         upsertConversationListItem(data.conversation);
+      } else {
+        clearSelectedConversation();
       }
     },
-    [upsertConversationListItem],
+    [clearSelectedConversation, upsertConversationListItem],
   );
-
-  const clearSelectedConversation = () => {
-    window.history.pushState({}, "", conversationRoutes.conversation);
-    setSelectedConversation(null);
-  };
 
   const syncConversationFromPath = useCallback(() => {
     const pathParts = window.location.pathname.split("/").filter(Boolean);
@@ -114,6 +118,31 @@ const ConversationPage = ({ userName }: ConversationPageProps) => {
       window.removeEventListener("popstate", syncConversationFromPath);
     };
   }, [syncConversationFromPath]);
+
+  useEffect(() => {
+    if (!selectedConversation || selectedConversation.type !== "direct") return;
+
+    const targetUser = selectedConversation.participants.find(
+      (participant) =>
+        participant.user.userId !== useAppStore.getState().loggedInUser?.userId,
+    )?.user;
+
+    if (!targetUser?.userId) return;
+
+    const relationshipOverride =
+      networkActions?.relationshipOverrides[targetUser.userId];
+
+    if (
+      relationshipOverride?.connectionStatus &&
+      relationshipOverride.connectionStatus !== "accepted"
+    ) {
+      clearSelectedConversation();
+    }
+  }, [
+    clearSelectedConversation,
+    networkActions?.relationshipOverrides,
+    selectedConversation,
+  ]);
 
   return (
     <>

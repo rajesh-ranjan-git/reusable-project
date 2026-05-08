@@ -1,5 +1,6 @@
 import mongoose, { isValidObjectId } from "mongoose";
 import User from "../../models/user/auth/user.model.js";
+import Connection from "../../models/connection/connection.model.js";
 import Conversation from "../../models/conversation/conversation.model.js";
 import Message from "../../models/conversation/message.model.js";
 import { httpStatusConfig } from "../../config/http.config.js";
@@ -9,7 +10,11 @@ import {
   MAX_PAGE_SIZE,
 } from "../../constants/common.constants.js";
 import { asyncHandler } from "../../utils/common.utils.js";
-import { normalizeConversation } from "../../utils/conversation.utils.js";
+import {
+  assertDirectConversationConnected,
+  getAcceptedConnectionUserIds,
+  normalizeConversation,
+} from "../../utils/conversation.utils.js";
 import { sanitizeMongoData } from "../../db/db.utils.js";
 import { stringPropertiesValidator } from "../../validators/common.validator.js";
 import { userNameValidator } from "../../validators/auth.validator.js";
@@ -589,15 +594,39 @@ export const updateMemberRole = asyncHandler(async (req, res) => {
 export const listConversations = asyncHandler(async (req, res) => {
   const currentUserId = req.data.userId;
   const { page = 1, limit = DEFAULT_PAGE_SIZE } = req.data.query;
+  const connectedUserIds = await getAcceptedConnectionUserIds(currentUserId);
 
   const pageNum = Math.max(1, parseInt(page));
   const limitNum = Math.min(MAX_PAGE_SIZE, Math.max(1, parseInt(limit)));
   const skip = (pageNum - 1) * limitNum;
 
+  const activeParticipantFilter = {
+    participants: {
+      $elemMatch: {
+        user: currentUserId,
+        leftAt: null,
+      },
+    },
+  };
+
   const filter = {
-    "participants.user": currentUserId,
-    "participants.leftAt": null,
     deletedAt: null,
+    $or: [
+      {
+        type: "group",
+        ...activeParticipantFilter,
+      },
+      {
+        type: "direct",
+        ...activeParticipantFilter,
+        participants: {
+          $all: [
+            { $elemMatch: { user: currentUserId, leftAt: null } },
+            { $elemMatch: { user: { $in: connectedUserIds }, leftAt: null } },
+          ],
+        },
+      },
+    ],
   };
 
   const [conversations, total] = await Promise.all([
@@ -659,7 +688,12 @@ export const getConversation = asyncHandler(async (req, res) => {
 
   const conversation = await Conversation.findOne({
     _id: conversationId,
-    "participants.user": currentUserId,
+    participants: {
+      $elemMatch: {
+        user: currentUserId,
+        leftAt: null,
+      },
+    },
     deletedAt: null,
   })
     .populate({
@@ -692,8 +726,10 @@ export const getConversation = asyncHandler(async (req, res) => {
     });
   }
 
+  await assertDirectConversationConnected(conversation, currentUserId);
+
   const normalizedConversation = normalizeConversation(
-    sanitizeMongoData(updated),
+    sanitizeMongoData(conversation),
   );
 
   return responseService.successResponseHandler(req, res, {

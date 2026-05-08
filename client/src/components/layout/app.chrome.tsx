@@ -233,6 +233,20 @@ const AppChrome = ({ children }: ReactNodeProps) => {
     async (profile: UserProfileType, status: ConnectionStatusType) => {
       const previousOverride = relationshipOverrides[profile.userId];
       const wasConnected = connections.some((c) => c.userId === profile.userId);
+      const shouldRemoveDirectConversation = [
+        "rejected",
+        "not-interested",
+        "blocked",
+      ].includes(status);
+      const removedConversations = shouldRemoveDirectConversation
+        ? conversationList.filter(
+            (conversation) =>
+              conversation.conversation.type === "direct" &&
+              conversation.otherParticipants.some(
+                (participant) => participant.user.userId === profile.userId,
+              ),
+          )
+        : [];
       const nextOverride: RelationshipOverrideType = {
         connectionStatus: status,
         connectionDirection: status === "interested" ? "outgoing" : null,
@@ -249,6 +263,32 @@ const AppChrome = ({ children }: ReactNodeProps) => {
         );
         setConnectionsPagination((prev) =>
           prev ? { ...prev, total: Math.max(0, prev.total - 1) } : prev,
+        );
+      }
+
+      if (removedConversations.length > 0) {
+        setConversationList((prev) =>
+          prev.filter((conversation) => {
+            return !removedConversations.some(
+              (removedConversation) => removedConversation.id === conversation.id,
+            );
+          }),
+        );
+
+        setConversationListPagination((prev) =>
+          prev
+            ? {
+                ...prev,
+                total: Math.max(0, prev.total - removedConversations.length),
+                totalPages: Math.max(
+                  1,
+                  Math.ceil(
+                    Math.max(0, prev.total - removedConversations.length) /
+                      prev.limit,
+                  ),
+                ),
+              }
+            : prev,
         );
       }
 
@@ -276,6 +316,23 @@ const AppChrome = ({ children }: ReactNodeProps) => {
           );
         }
 
+        if (removedConversations.length > 0) {
+          setConversationList((prev) =>
+            mergeUniqueUsersByKey(removedConversations, prev, "id"),
+          );
+          setConversationListPagination((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  total: prev.total + removedConversations.length,
+                  totalPages: Math.ceil(
+                    (prev.total + removedConversations.length) / prev.limit,
+                  ),
+                }
+              : prev,
+          );
+        }
+
         showToast({
           title: toTitleCase(response.code),
           message: response.message ?? "",
@@ -287,7 +344,14 @@ const AppChrome = ({ children }: ReactNodeProps) => {
 
       return true;
     },
-    [connections, relationshipOverrides, showToast],
+    [
+      connections,
+      conversationList,
+      relationshipOverrides,
+      setConversationList,
+      setConversationListPagination,
+      showToast,
+    ],
   );
 
   useEffect(() => {
