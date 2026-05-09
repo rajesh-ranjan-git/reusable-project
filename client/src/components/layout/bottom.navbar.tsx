@@ -9,6 +9,7 @@ import { useAppStore } from "@/store/store";
 
 const BottomNavbar = ({ activeTab = "chats", hidden = false }) => {
   const router = useRouter();
+
   const totalUnreadMessages = useAppStore((state) =>
     state.conversationList.reduce(
       (total, conversation) => total + conversation.unreadCount,

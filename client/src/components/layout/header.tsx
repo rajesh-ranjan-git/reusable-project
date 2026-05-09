@@ -11,7 +11,7 @@ import { HeaderProps } from "@/types/props/common.props.types";
 import { useAppStore } from "@/store/store";
 import { toTitleCase } from "@/utils/common.utils";
 import { adminRoutes, authRoutes, defaultRoutes } from "@/lib/routes/routes";
-import HeaderLogo from "@/components/logo/logo";
+import Logo from "@/components/logo/logo";
 import ThemeToggle from "@/components/theme/theme.toggle";
 import AppSidebar from "@/components/layout/app.sidebar";
 import HeaderNotificationMenu from "@/components/shared/header.notification.menu";
@@ -127,7 +127,7 @@ const Header = ({
               </h1>
             </Link>
           ) : (
-            <HeaderLogo type={type} />
+            <Logo type={type} />
           )}
         </div>
 

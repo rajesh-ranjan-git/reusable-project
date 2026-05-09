@@ -55,6 +55,7 @@ const AppChrome = ({ children }: ReactNodeProps) => {
     useState<ResponsePaginationType | null>(null);
 
   const pathname = usePathname();
+
   const loggedInUser = useAppStore((state) => state.loggedInUser);
   const accessToken = useAppStore((state) => state.accessToken);
   const conversationList = useAppStore((state) => state.conversationList);
@@ -72,7 +73,6 @@ const AppChrome = ({ children }: ReactNodeProps) => {
     pathname.startsWith("/profile") ||
     pathname === "/conversation";
   const isConversationRoute = pathname.startsWith("/conversation");
-
   const activeTab = pathname.startsWith("/profile")
     ? "profile"
     : pathname.startsWith("/conversation")

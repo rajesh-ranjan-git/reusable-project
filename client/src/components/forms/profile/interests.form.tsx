@@ -154,7 +154,7 @@ const InterestsForm = ({
             <FormField error={interestInput.error}>
               <FormInput
                 ref={inputRef}
-                placeholder="e.g. Taekwondo, Coding, Travel…"
+                placeholder="e.g. Sports, Coding, Travel…"
                 autoComplete="off"
                 value={interestInput.raw}
                 onChange={(e) =>

@@ -23,6 +23,7 @@ const ConversationPage = ({ userName }: ConversationPageProps) => {
   const setConversationListPagination = useAppStore(
     (state) => state.setConversationListPagination,
   );
+
   const networkActions = useNetworkActions();
 
   const upsertConversationListItem = useCallback(

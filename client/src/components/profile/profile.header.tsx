@@ -37,12 +37,16 @@ const ProfileHeader = ({ userProfile, isOwnProfile }: ProfileHeaderProps) => {
   const [localCover, setLocalCover] = useState(userProfile?.cover);
   const [isImageUploading, setIsImageUploading] = useState(false);
   const [previousImage, setPreviousImage] = useState<string | null>(null);
-
-  const router = useRouter();
+  const [pendingRelationshipAction, setPendingRelationshipAction] = useState<
+    string | null
+  >(null);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  const router = useRouter();
+
   const { showToast } = useToast();
+
   const networkActions = useNetworkActions();
 
   const loggedInUser = useAppStore((state) => state.loggedInUser);
@@ -209,10 +213,6 @@ const ProfileHeader = ({ userProfile, isOwnProfile }: ProfileHeaderProps) => {
 
     return imageUrl;
   };
-
-  const [pendingRelationshipAction, setPendingRelationshipAction] = useState<
-    string | null
-  >(null);
 
   useEffect(() => {
     setLocalAvatar(userProfile?.avatar);

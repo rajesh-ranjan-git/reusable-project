@@ -25,6 +25,7 @@ const AppSidebar = ({
   const router = useRouter();
 
   const connectionRequestsSheet = useSheet({ type: "connectionRequests" });
+
   const getRequestExit = (
     userId: string,
     directions: typeof exitDirection = exitDirection,

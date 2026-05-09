@@ -1,5 +1,5 @@
 import { LuGithub, LuLinkedin, LuTwitter } from "react-icons/lu";
-import HeaderLogo from "@/components/logo/logo";
+import Logo from "@/components/logo/logo";
 
 const Footer = () => {
   return (
@@ -7,7 +7,7 @@ const Footer = () => {
       <div className="mx-auto px-6 max-w-7xl">
         <div className="gap-12 grid grid-cols-1 md:grid-cols-4 mb-16">
           <div className="md:col-span-1">
-            <HeaderLogo />
+            <Logo />
 
             <p className="my-6 text-sm leading-relaxed">
               Building the future of developer networking. Connect, pair

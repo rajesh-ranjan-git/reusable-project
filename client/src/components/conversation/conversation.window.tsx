@@ -401,18 +401,6 @@ const ConversationWindow = ({
     );
   }, [messages, loggedInUser]);
 
-  useLayoutEffect(() => {
-    const snapshot = olderMessagesScrollSnapshotRef.current;
-    const el = messagesContainerRef.current;
-
-    if (!snapshot || !el) return;
-
-    olderMessagesScrollSnapshotRef.current = null;
-    shouldAutoScrollRef.current = false;
-    el.scrollTop =
-      el.scrollHeight - snapshot.scrollHeight + snapshot.scrollTop;
-  }, [displayMessages.length]);
-
   useEffect(() => {
     if (!conversation?.id || !socketRef.current) return;
 
@@ -522,6 +510,17 @@ const ConversationWindow = ({
       });
     };
   }, [accessToken, conversation?.id, conversation?.type, targetUserId]);
+
+  useLayoutEffect(() => {
+    const snapshot = olderMessagesScrollSnapshotRef.current;
+    const el = messagesContainerRef.current;
+
+    if (!snapshot || !el) return;
+
+    olderMessagesScrollSnapshotRef.current = null;
+    shouldAutoScrollRef.current = false;
+    el.scrollTop = el.scrollHeight - snapshot.scrollHeight + snapshot.scrollTop;
+  }, [displayMessages.length]);
 
   if (!conversation) {
     return <EmptyConversation />;
