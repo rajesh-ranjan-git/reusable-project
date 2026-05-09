@@ -11,7 +11,7 @@ import { authService } from "../services/auth/auth.service.js";
 
 const MAX_USERS = 500;
 
-const firstNames = [
+const maleFirstNames = [
   "James",
   "John",
   "Robert",
@@ -22,16 +22,6 @@ const firstNames = [
   "Joseph",
   "Thomas",
   "Charles",
-  "Mary",
-  "Patricia",
-  "Jennifer",
-  "Linda",
-  "Elizabeth",
-  "Barbara",
-  "Susan",
-  "Jessica",
-  "Sarah",
-  "Karen",
   "Christopher",
   "Daniel",
   "Paul",
@@ -42,16 +32,6 @@ const firstNames = [
   "Steven",
   "Edward",
   "Brian",
-  "Nancy",
-  "Lisa",
-  "Betty",
-  "Margaret",
-  "Sandra",
-  "Ashley",
-  "Kimberly",
-  "Emily",
-  "Donna",
-  "Michelle",
   "Kevin",
   "Jason",
   "Matthew",
@@ -62,6 +42,29 @@ const firstNames = [
   "Jeffrey",
   "Frank",
   "Scott",
+];
+
+const femaleFirstNames = [
+  "Mary",
+  "Patricia",
+  "Jennifer",
+  "Linda",
+  "Elizabeth",
+  "Barbara",
+  "Susan",
+  "Jessica",
+  "Sarah",
+  "Karen",
+  "Nancy",
+  "Lisa",
+  "Betty",
+  "Margaret",
+  "Sandra",
+  "Ashley",
+  "Kimberly",
+  "Emily",
+  "Donna",
+  "Michelle",
   "Carol",
   "Amanda",
   "Melissa",
@@ -73,6 +76,8 @@ const firstNames = [
   "Cynthia",
   "Kathleen",
 ];
+
+const otherFirstNames = [...maleFirstNames, ...femaleFirstNames];
 
 const lastNames = [
   "Smith",
@@ -325,13 +330,21 @@ const seedUsers = async () => {
     logger.info("📢 [ USERS ] Initial users seeding started!");
 
     for (let i = 1; i <= MAX_USERS; i++) {
+      const gender = genders[Math.floor(Math.random() * genders.length)];
+
       const firstName =
-        firstNames[Math.floor(Math.random() * firstNames.length)];
+        gender === "male"
+          ? maleFirstNames[Math.floor(Math.random() * maleFirstNames.length)]
+          : gender === "female"
+            ? femaleFirstNames[
+                Math.floor(Math.random() * femaleFirstNames.length)
+              ]
+            : otherFirstNames[
+                Math.floor(Math.random() * otherFirstNames.length)
+              ];
       const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
 
-      const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${i}@server.com`;
-
-      const gender = genders[Math.floor(Math.random() * genders.length)];
+      const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${i}@devmatch.com`;
 
       const randomAvatarId =
         gender === "male"
