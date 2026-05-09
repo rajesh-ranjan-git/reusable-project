@@ -11,12 +11,13 @@
   "author": "Rajesh Ranjan",
   "main": "src/server.js",
   "scripts": {
-    "build": "tsc",
     "dev": "cross-env NODE_ENV=development nodemon src/server.js",
     "start": "cross-env NODE_ENV=production node src/server.js",
     "seed": "node seed/rbac.seed.js",
     "seed-users": "node seed/users.seed.js",
-    "seed-connect": "node seed/connect.seed.js"
+    "seed-connect": "node seed/connect.seed.js",
+    "check": "node --check src/server.js",
+    "build": "npm run check"
   },
   "dependencies": {
     "@react-email/render": "^2.0.8",
