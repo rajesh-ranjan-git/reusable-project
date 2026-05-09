@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Socket } from "socket.io-client";
 import { ConversationWindowProps } from "@/types/props/conversation.props";
 import {
@@ -11,7 +11,6 @@ import {
   MessageDeliveryStatusType,
   MessageResponseType,
 } from "@/types/types/message.types";
-import { ConversationDisplayType } from "@/types/types/conversation.types";
 import { useAppStore } from "@/store/store";
 import { createSocketConnection } from "@/socket/socket";
 import { getConversationDisplay } from "@/helpers/conversation.helpers";
@@ -34,8 +33,6 @@ const ConversationWindow = ({
   onBack,
 }: ConversationWindowProps) => {
   const [targetUserId, setTargetUserId] = useState<string | null>(null);
-  const [conversationDisplay, setConversationDisplay] =
-    useState<ConversationDisplayType | null>(null);
   const [displayMessages, setDisplayMessages] = useState<MessageDisplayType[]>(
     [],
   );
@@ -68,6 +65,7 @@ const ConversationWindow = ({
   const loggedInUser = useAppStore((state) => state.loggedInUser);
   const loggedInUserRef = useRef(loggedInUser);
   const accessToken = useAppStore((state) => state.accessToken);
+  const onlineUserIds = useAppStore((state) => state.onlineUserIds);
   const updateConversationWithMessage = useAppStore(
     (state) => state.updateConversationWithMessage,
   );
@@ -80,6 +78,14 @@ const ConversationWindow = ({
 
   const getMessageId = (message: MessageResponseType) =>
     message.messageId ?? message.id;
+
+  const conversationDisplay = useMemo(
+    () =>
+      conversation
+        ? getConversationDisplay(conversation, loggedInUser, onlineUserIds)
+        : null,
+    [conversation, loggedInUser, onlineUserIds],
+  );
 
   const upsertMessage = (message: MessageResponseType) => {
     const incomingId = getMessageId(message);
@@ -384,10 +390,6 @@ const ConversationWindow = ({
       conversation?.participants.find(
         (participant) => participant.user.userId !== loggedInUser?.userId,
       )?.user.userId ?? null,
-    );
-
-    setConversationDisplay(
-      conversation ? getConversationDisplay(conversation, loggedInUser) : null,
     );
 
     if (conversation) {

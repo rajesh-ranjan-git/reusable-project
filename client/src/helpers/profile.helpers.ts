@@ -30,7 +30,7 @@ import {
   UserProfileType,
 } from "@/types/types/profile.types";
 import { toTitleCase } from "@/utils/common.utils";
-import { formatLocalDate } from "@/utils/date.utils";
+import { formatLocalDate, formatTime } from "@/utils/date.utils";
 import { RelationshipType } from "@/types/types/connection.types";
 import { FiMoreHorizontal } from "react-icons/fi";
 
@@ -47,6 +47,29 @@ export const getFullName = (user?: UserProfileType | LoggedInUserType) => {
   if (email) return email;
 
   return "John Doe";
+};
+
+export const isUserOnline = (
+  user?: Pick<UserProfileType, "userId" | "lastSeen" | "status"> | null,
+  onlineUserIds?: string[] | null,
+) => {
+  if (!user || user.status === "deleted" || user.status === "suspended") {
+    return false;
+  }
+
+  if (onlineUserIds) return onlineUserIds.includes(user.userId);
+
+  return user.lastSeen == null;
+};
+
+export const getPresenceLabel = (
+  user?: Pick<UserProfileType, "userId" | "lastSeen" | "status"> | null,
+  onlineUserIds?: string[] | null,
+) => {
+  if (isUserOnline(user, onlineUserIds)) return "Online";
+  if (!user?.lastSeen) return "Offline";
+
+  return `Last seen ${formatTime(user.lastSeen)}`;
 };
 
 export const getCurrentJobRole = (experiences?: ExperienceType[]) => {

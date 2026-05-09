@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
+import { Socket } from "socket.io-client";
 import {
   AppSidebarProps,
   ReactNodeProps,
@@ -18,6 +19,7 @@ import {
 } from "@/types/types/response.types";
 import { useAppStore } from "@/store/store";
 import { useToast } from "@/hooks/toast";
+import { createSocketConnection } from "@/socket/socket";
 import {
   NetworkActionsProvider,
   RelationshipOverrideType,
@@ -60,6 +62,8 @@ const AppChrome = ({ children }: ReactNodeProps) => {
   const accessToken = useAppStore((state) => state.accessToken);
   const conversationList = useAppStore((state) => state.conversationList);
   const setConversationList = useAppStore((state) => state.setConversationList);
+  const onlineUserIds = useAppStore((state) => state.onlineUserIds);
+  const setOnlineUserIds = useAppStore((state) => state.setOnlineUserIds);
   const setConversationListPagination = useAppStore(
     (state) => state.setConversationListPagination,
   );
@@ -126,12 +130,17 @@ const AppChrome = ({ children }: ReactNodeProps) => {
 
       setConversationList(
         data.conversations.map((conversation) =>
-          getConversationDisplay(conversation, loggedInUser),
+          getConversationDisplay(conversation, loggedInUser, onlineUserIds),
         ),
       );
       setConversationListPagination(data.pagination);
     }
-  }, [loggedInUser, setConversationList, setConversationListPagination]);
+  }, [
+    loggedInUser,
+    onlineUserIds,
+    setConversationList,
+    setConversationListPagination,
+  ]);
 
   const handleRequestAction = useCallback(
     async (userId: string, direction: RequestDirectionType) => {
@@ -380,6 +389,25 @@ const AppChrome = ({ children }: ReactNodeProps) => {
     isConversationRoute,
     loggedInUser,
   ]);
+
+  useEffect(() => {
+    if (!accessToken || !loggedInUser?.userId) {
+      setOnlineUserIds(null);
+      return;
+    }
+
+    const socket: Socket = createSocketConnection({ token: accessToken });
+
+    socket.on("online-users", (userIds: string[]) => {
+      setOnlineUserIds(userIds.map(String));
+    });
+
+    return () => {
+      socket.off("online-users");
+      socket.disconnect();
+      setOnlineUserIds(null);
+    };
+  }, [accessToken, loggedInUser?.userId, setOnlineUserIds]);
 
   useEffect(() => {
     setIsSidebarOpen(false);

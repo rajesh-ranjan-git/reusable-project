@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 import { themeConfig } from "@/config/common.config";
 import { AppStateType } from "@/types/types/store.types";
 import { normalizeConversationList } from "@/helpers/store.helpers";
+import { applyPresenceToConversationDisplay } from "@/helpers/conversation.helpers";
 
 export const useAppStore = create<AppStateType>()(
   persist(
@@ -67,6 +68,25 @@ export const useAppStore = create<AppStateType>()(
                 )
               : conversationListPaginationUpdater,
         })),
+      onlineUserIds: null,
+      setOnlineUserIds: (onlineUserIdsUpdater) =>
+        set((state) => {
+          const onlineUserIds =
+            typeof onlineUserIdsUpdater === "function"
+              ? onlineUserIdsUpdater(state.onlineUserIds)
+              : onlineUserIdsUpdater;
+
+          return {
+            onlineUserIds,
+            conversationList: state.conversationList.map((conversation) =>
+              applyPresenceToConversationDisplay(
+                conversation,
+                state.loggedInUser?.userId,
+                onlineUserIds,
+              ),
+            ),
+          };
+        }),
       resetConversationUnread: (conversationId) =>
         set((state) => ({
           conversationList: state.conversationList.map((conversation) =>

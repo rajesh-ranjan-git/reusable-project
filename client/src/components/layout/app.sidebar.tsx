@@ -6,7 +6,8 @@ import { LuMessageCircle, LuSearch, LuUserPlus } from "react-icons/lu";
 import { staticImagesConfig } from "@/config/common.config";
 import { AppSidebarProps } from "@/types/props/common.props.types";
 import useSheet from "@/hooks/useSheet";
-import { getFullName } from "@/helpers/profile.helpers";
+import { getFullName, isUserOnline } from "@/helpers/profile.helpers";
+import { useAppStore } from "@/store/store";
 import { conversationRoutes, defaultRoutes } from "@/lib/routes/routes";
 import FormInput from "@/components/forms/shared/form.input";
 import Sheet from "@/components/ui/sheet/sheet";
@@ -25,6 +26,7 @@ const AppSidebar = ({
   const router = useRouter();
 
   const connectionRequestsSheet = useSheet({ type: "connectionRequests" });
+  const onlineUserIds = useAppStore((state) => state.onlineUserIds);
 
   const getRequestExit = (
     userId: string,
@@ -305,7 +307,7 @@ const AppSidebar = ({
                         className="shadow-glass rounded-full w-10 h-10 object-cover"
                       />
                       <div
-                        className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border border-bg ${connection?.lastSeen ? "bg-green-500" : "bg-gray-500"}`}
+                        className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border border-bg ${isUserOnline(connection, onlineUserIds) ? "bg-green-500" : "bg-gray-500"}`}
                       ></div>
                     </div>
                     <div className="flex-1 min-w-0">

@@ -3,7 +3,11 @@ import { ConversationDisplayType } from "@/types/types/conversation.types";
 import { LoggedInUserType } from "@/types/types/auth.types";
 import { ConversationResponseType } from "@/types/types/response.types";
 import { formatTime } from "@/utils/date.utils";
-import { getFullName } from "@/helpers/profile.helpers";
+import {
+  getFullName,
+  getPresenceLabel,
+  isUserOnline,
+} from "@/helpers/profile.helpers";
 
 const getInitials = (value: string) =>
   value
@@ -17,6 +21,7 @@ const getInitials = (value: string) =>
 export const getConversationDisplay = (
   conversation: ConversationResponseType,
   loggedInUser: LoggedInUserType,
+  onlineUserIds?: string[] | null,
 ): ConversationDisplayType => {
   const currentUserId = loggedInUser?.userId;
   const otherParticipants = conversation.participants.filter(
@@ -45,7 +50,7 @@ export const getConversationDisplay = (
 
   const isOnline = isGroup
     ? conversation.activeParticipantCount > 1
-    : fallbackParticipant?.user.status === "active";
+    : isUserOnline(fallbackParticipant?.user, onlineUserIds);
 
   return {
     conversation,
@@ -64,11 +69,61 @@ export const getConversationDisplay = (
     unreadCount: currentParticipant?.unreadCount ?? 0,
     participantsLabel: isGroup
       ? `${conversation.activeParticipantCount} members`
-      : isOnline
-        ? "Online"
-        : "Offline",
+      : getPresenceLabel(fallbackParticipant?.user, onlineUserIds),
     otherParticipants,
   };
 };
 
 export const getAvatarFallback = (title: string) => getInitials(title) || "U";
+
+export const applyPresenceToConversationDisplay = (
+  conversationDisplay: ConversationDisplayType,
+  currentUserId?: string,
+  onlineUserIds?: string[] | null,
+): ConversationDisplayType => {
+  if (conversationDisplay.conversation.type !== "direct") {
+    return conversationDisplay;
+  }
+
+  const fallbackParticipant =
+    conversationDisplay.otherParticipants[0] ??
+    conversationDisplay.conversation.participants.find(
+      (participant) => participant.user.userId !== currentUserId,
+    ) ??
+    null;
+  const isOnline = isUserOnline(fallbackParticipant?.user, onlineUserIds);
+  const lastSeen = isOnline ? null : (fallbackParticipant?.user.lastSeen ?? "");
+
+  return {
+    ...conversationDisplay,
+    isOnline,
+    participantsLabel: getPresenceLabel(fallbackParticipant?.user, onlineUserIds),
+    otherParticipants: conversationDisplay.otherParticipants.map(
+      (participant) =>
+        participant.user.userId === fallbackParticipant?.user.userId
+          ? {
+              ...participant,
+              user: {
+                ...participant.user,
+                lastSeen,
+              },
+            }
+          : participant,
+    ),
+    conversation: {
+      ...conversationDisplay.conversation,
+      participants: conversationDisplay.conversation.participants.map(
+        (participant) =>
+          participant.user.userId === fallbackParticipant?.user.userId
+            ? {
+                ...participant,
+                user: {
+                  ...participant.user,
+                  lastSeen,
+                },
+              }
+            : participant,
+      ),
+    },
+  };
+};

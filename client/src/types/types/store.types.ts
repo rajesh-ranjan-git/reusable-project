@@ -23,6 +23,8 @@ export type AppStateType = {
   setConversationListPagination: Dispatch<
     SetStateAction<ResponsePaginationType | null>
   >;
+  onlineUserIds: string[] | null;
+  setOnlineUserIds: Dispatch<SetStateAction<string[] | null>>;
   resetConversationUnread: (conversationId: string) => void;
   updateConversationWithMessage: (
     message: MessageResponseType,

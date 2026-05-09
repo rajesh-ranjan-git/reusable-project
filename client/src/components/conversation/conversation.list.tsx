@@ -33,6 +33,7 @@ const ConversationList = ({
     (state) => state.resetConversationUnread,
   );
   const accessToken = useAppStore((state) => state.accessToken);
+  const onlineUserIds = useAppStore((state) => state.onlineUserIds);
   const updateConversationWithMessage = useAppStore(
     (state) => state.updateConversationWithMessage,
   );
@@ -71,7 +72,7 @@ const ConversationList = ({
         const data =
           fetchConversationsListResponse?.data as ConversationListResponseType;
         const nextConversations = data.conversations.map((conversation) =>
-          getConversationDisplay(conversation, loggedInUser),
+          getConversationDisplay(conversation, loggedInUser, onlineUserIds),
         );
 
         setConversationPagination(data.pagination);
@@ -99,7 +100,7 @@ const ConversationList = ({
         isFetchingConversationsRef.current = false;
       }, 0);
     },
-    [setConversationList, setConversationPagination],
+    [onlineUserIds, setConversationList, setConversationPagination],
   );
 
   const handleConversationListScroll = (e: UIEvent<HTMLDivElement>) => {

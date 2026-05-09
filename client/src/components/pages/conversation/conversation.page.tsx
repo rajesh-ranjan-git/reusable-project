@@ -23,6 +23,7 @@ const ConversationPage = ({ userName }: ConversationPageProps) => {
   const setConversationListPagination = useAppStore(
     (state) => state.setConversationListPagination,
   );
+  const onlineUserIds = useAppStore((state) => state.onlineUserIds);
 
   const networkActions = useNetworkActions();
 
@@ -35,6 +36,7 @@ const ConversationPage = ({ userName }: ConversationPageProps) => {
       const conversationDisplay = getConversationDisplay(
         conversation,
         loggedInUser,
+        onlineUserIds,
       );
 
       setConversationList((prev) => {
@@ -64,7 +66,7 @@ const ConversationPage = ({ userName }: ConversationPageProps) => {
         );
       }
     },
-    [setConversationList, setConversationListPagination],
+    [onlineUserIds, setConversationList, setConversationListPagination],
   );
 
   const clearSelectedConversation = useCallback(() => {

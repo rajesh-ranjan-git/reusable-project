@@ -184,7 +184,7 @@ class AuthService {
       await account.resetLoginAttempts();
     }
 
-    await User.findByIdAndUpdate(user.id, { lastSeen: new Date() });
+    await User.findByIdAndUpdate(user.id, { lastSeen: null });
 
     const userRoles = await rbacService.getUserRoles(user.id);
     const userPermissionsSet = await rbacService.getUserPermissions(user.id);
@@ -243,6 +243,7 @@ class AuthService {
 
   logout = async (userId, refreshToken, ipAddress) => {
     await sessionService.revokeSession(refreshToken);
+    await User.findByIdAndUpdate(userId, { lastSeen: new Date() });
     await activityService.logActivity({
       userId: userId,
       action: "user_logout",
@@ -559,7 +560,7 @@ class AuthService {
       tokens.refreshToken,
       tokens.refreshTokenExpiry,
     );
-    await User.findByIdAndUpdate(payload.userId, { lastSeen: new Date() });
+    await User.findByIdAndUpdate(payload.userId, { lastSeen: null });
 
     return tokens;
   };

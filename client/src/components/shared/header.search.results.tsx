@@ -26,7 +26,8 @@ import { useOutsideClick } from "@/hooks/useOutsideClick";
 import { useNetworkActions } from "@/hooks/useNetworkActions";
 import { useToast } from "@/hooks/toast";
 import { toTitleCase } from "@/utils/common.utils";
-import { getFullName } from "@/helpers/profile.helpers";
+import { getFullName, isUserOnline } from "@/helpers/profile.helpers";
+import { useAppStore } from "@/store/store";
 import { conversationRoutes } from "@/lib/routes/routes";
 import { connect } from "@/lib/actions/connection.actions";
 import { fetchProfiles } from "@/lib/actions/discover.actions";
@@ -59,6 +60,7 @@ const HeaderSearchResults = ({
   const router = useRouter();
   const { showToast } = useToast();
   const networkActions = useNetworkActions();
+  const onlineUserIds = useAppStore((state) => state.onlineUserIds);
 
   useOutsideClick({
     ref: searchResultsRef,
@@ -373,7 +375,7 @@ const HeaderSearchResults = ({
 
                             {relationship === "connected" && (
                               <div
-                                className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border border-bg ${profile?.lastSeen ? "bg-green-500" : "bg-gray-500"}`}
+                                className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border border-bg ${isUserOnline(profile, onlineUserIds) ? "bg-green-500" : "bg-gray-500"}`}
                               />
                             )}
                           </div>

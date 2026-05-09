@@ -3,7 +3,8 @@ import { LuCamera } from "react-icons/lu";
 import { TbLoader3 } from "react-icons/tb";
 import { staticImagesConfig } from "@/config/common.config";
 import { AvatarProps } from "@/types/props/profile.props.types";
-import { getFullName } from "@/helpers/profile.helpers";
+import { useAppStore } from "@/store/store";
+import { getFullName, isUserOnline } from "@/helpers/profile.helpers";
 import ImageUploadMenu from "@/components/shared/image.upload.menu";
 
 const Avatar = ({
@@ -18,6 +19,10 @@ const Avatar = ({
   handleUploadClick,
   handleCameraClick,
 }: AvatarProps) => {
+  const onlineUserIds = useAppStore((state) => state.onlineUserIds);
+
+  const isOnline = isUserOnline(user, onlineUserIds);
+
   return (
     <div className="group inline-block relative self-start md:self-auto pointer-events-auto">
       <Image
@@ -43,9 +48,11 @@ const Avatar = ({
         </div>
       )}
 
-      <div
-        className={`absolute bottom-1 right-1 w-4 h-4 rounded-full border-2 border-bg z-(--z-raised) ${user ? "bg-green-500" : "bg-gray-500"}`}
-      ></div>
+      {!isOwnProfile && (
+        <div
+          className={`absolute bottom-1 right-1 w-4 h-4 rounded-full border-2 border-bg z-(--z-raised) ${isOnline ? "bg-green-500" : "bg-gray-500"}`}
+        ></div>
+      )}
 
       {isOwnProfile && (
         <div className="-top-2 -right-2 z-30 absolute">

@@ -186,7 +186,7 @@ export const oauthCallback = asyncHandler(async (req, res) => {
     expiresAt: tokens.refreshTokenExpiry,
   });
 
-  await User.findByIdAndUpdate(userId, { lastSeen: new Date() });
+  await User.findByIdAndUpdate(userId, { lastSeen: null });
 
   const profile = await Profile.findOne({
     user: userId,
