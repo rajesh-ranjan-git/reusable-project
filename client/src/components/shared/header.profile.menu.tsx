@@ -80,10 +80,9 @@ const HeaderProfileMenu = ({
   const pathname = usePathname();
   const router = useRouter();
 
-  const setAccessToken = useAppStore((state) => state.setAccessToken);
   const loggedInUser = useAppStore((state) => state.loggedInUser);
-  const setLoggedInUser = useAppStore((state) => state.setLoggedInUser);
   const setIsLoggingOut = useAppStore((state) => state.setIsLoggingOut);
+  const clearSessionState = useAppStore((state) => state.clearSessionState);
 
   useOutsideClick({
     ref: menuRef,
@@ -102,8 +101,7 @@ const HeaderProfileMenu = ({
 
     await logoutAction();
 
-    setAccessToken(null);
-    setLoggedInUser(null);
+    clearSessionState();
 
     router.push(defaultRoutes.landing);
     onClose();

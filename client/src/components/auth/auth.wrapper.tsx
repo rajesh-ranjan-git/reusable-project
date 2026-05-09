@@ -27,6 +27,7 @@ const AuthWrapper = ({ children }: ReactNodeProps) => {
   const accessToken = useAppStore((state) => state.accessToken);
   const setAccessToken = useAppStore((state) => state.setAccessToken);
   const isLoggingOut = useAppStore((state) => state.isLoggingOut);
+  const clearSessionState = useAppStore((state) => state.clearSessionState);
 
   useEffect(() => {
     if (isLoggingOut) return;
@@ -37,8 +38,7 @@ const AuthWrapper = ({ children }: ReactNodeProps) => {
       const refreshToken = await getCookies("refreshToken");
 
       if (!refreshToken) {
-        setAccessToken(null);
-        setLoggedInUser(null);
+        clearSessionState();
 
         if (isMounted) setIsChecking(false);
         return;
@@ -68,8 +68,7 @@ const AuthWrapper = ({ children }: ReactNodeProps) => {
 
           await logoutAction();
 
-          setAccessToken(null);
-          setLoggedInUser(null);
+          clearSessionState();
 
           router.push(authRoutes.login);
 
@@ -85,8 +84,7 @@ const AuthWrapper = ({ children }: ReactNodeProps) => {
 
         setLoggedInUser(data.user);
       } else {
-        setAccessToken(null);
-        setLoggedInUser(null);
+        clearSessionState();
 
         await logoutAction();
 

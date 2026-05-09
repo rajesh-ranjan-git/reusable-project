@@ -89,7 +89,11 @@ const AppChrome = ({ children }: ReactNodeProps) => {
     : "bg-bg-page";
 
   const getConnectionRequests = useCallback(async (page: number = 1) => {
+    const currentUserId = useAppStore.getState().loggedInUser?.userId;
+    if (!currentUserId) return;
+
     const connectionRequestsResponse = await fetchConnectionRequests(page);
+    if (useAppStore.getState().loggedInUser?.userId !== currentUserId) return;
 
     if (connectionRequestsResponse?.success) {
       const data = connectionRequestsResponse.data as ProfilesResponseType;
@@ -103,7 +107,11 @@ const AppChrome = ({ children }: ReactNodeProps) => {
   }, []);
 
   const getConnections = useCallback(async (page: number = 1) => {
+    const currentUserId = useAppStore.getState().loggedInUser?.userId;
+    if (!currentUserId) return;
+
     const connectionsResponse = await fetchConnections(page);
+    if (useAppStore.getState().loggedInUser?.userId !== currentUserId) return;
 
     if (connectionsResponse?.success) {
       const data = connectionsResponse.data as ProfilesResponseType;
@@ -119,7 +127,9 @@ const AppChrome = ({ children }: ReactNodeProps) => {
   const getConversationList = useCallback(async () => {
     if (!loggedInUser) return;
 
+    const currentUserId = loggedInUser.userId;
     const fetchConversationsListResponse = await fetchConversationsList();
+    if (useAppStore.getState().loggedInUser?.userId !== currentUserId) return;
 
     if (
       fetchConversationsListResponse.success &&
@@ -365,6 +375,13 @@ const AppChrome = ({ children }: ReactNodeProps) => {
   );
 
   useEffect(() => {
+    setConnectionRequests([]);
+    setConnections([]);
+    setRelationshipOverrides({});
+    setExitDirection({});
+    setConnectionRequestsPagination(null);
+    setConnectionsPagination(null);
+
     if (loggedInUser?.userId) {
       getConnectionRequests();
       getConnections();

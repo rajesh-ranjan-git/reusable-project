@@ -33,4 +33,5 @@ export type AppStateType = {
       incrementUnread?: boolean;
     },
   ) => void;
+  clearSessionState: () => void;
 };

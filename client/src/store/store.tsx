@@ -180,6 +180,15 @@ export const useAppStore = create<AppStateType>()(
               }),
           };
         }),
+      clearSessionState: () =>
+        set({
+          accessToken: null,
+          loggedInUser: null,
+          currentProfileForm: null,
+          conversationList: [],
+          conversationListPagination: null,
+          onlineUserIds: null,
+        }),
     }),
     {
       name: "app-storage",

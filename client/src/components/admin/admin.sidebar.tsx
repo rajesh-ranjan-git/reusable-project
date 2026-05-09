@@ -27,9 +27,8 @@ const AdminSidebar = ({
   const pathname = usePathname();
   const router = useRouter();
 
-  const setAccessToken = useAppStore((state) => state.setAccessToken);
-  const setLoggedInUser = useAppStore((state) => state.setLoggedInUser);
   const setIsLoggingOut = useAppStore((state) => state.setIsLoggingOut);
+  const clearSessionState = useAppStore((state) => state.clearSessionState);
 
   const navItems = [
     { label: "Dashboard", icon: FaHome, path: adminRoutes.dashboard },
@@ -44,8 +43,7 @@ const AdminSidebar = ({
 
     await logoutAction();
 
-    setAccessToken(null);
-    setLoggedInUser(null);
+    clearSessionState();
 
     router.push(defaultRoutes.landing);
 
