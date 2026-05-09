@@ -180,7 +180,7 @@ export const passwordResetEmail = ({ appName, resetUrl }) => {
   );
 };
 
-export const welcomeEmail = ({ appName, dashboardUrl, userName }) => {
+export const welcomeEmail = ({ appName, profileUrl, userName }) => {
   return e(
     emailLayout,
     {
@@ -201,8 +201,8 @@ export const welcomeEmail = ({ appName, dashboardUrl, userName }) => {
       "Your account is all set up and ready to go.",
     ),
     e(actionLink, {
-      href: dashboardUrl,
-      label: "Go to dashboard",
+      href: profileUrl,
+      label: "Go to your profile",
       variant: "success",
     }),
     e(

@@ -130,7 +130,7 @@ class EmailService {
         subject: `Welcome to ${appConfig.name}!`,
         template: welcomeEmail({
           appName: appConfig.name,
-          dashboardUrl: `${CLIENT_URL}/dashboard`,
+          profileUrl: `${CLIENT_URL}/profile`,
           userName,
         }),
       });

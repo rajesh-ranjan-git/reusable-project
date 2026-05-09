@@ -197,32 +197,53 @@ const roles = [
   "DevOps Engineer",
 ];
 
-const avatarIds = [
+const maleAvatarIds = [
   "1535713875002-d1d0cf377fde",
   "1527980965255-d3b416303d12",
-  "1494790108377-be9c29b29330",
-  "1580489944761-15a19d654956",
-  "1438761681033-6461ffad8d80",
   "1472099645785-5658abf4ff4e",
   "1507003211169-0a1dd7228f2d",
   "1500648767791-00dcc994a43e",
-  "1544005313-94ddf0286df2",
   "1552058544-f2b08422138a",
-  "1502685104226-ee32379fefbe",
   "1504593811423-6dd665756598",
-  "1546961329-78bef0414d7c",
-  "1541534401786-2077eed87a72",
-  "1542204625-de293a2f8ff0",
   "1547425260-76bcadfb4f2c",
   "1506794778202-cad84cf45f1d",
-  "1508214751196-bcfd4ca60f91",
   "1521119989659-a83eee488004",
   "1545167622-3a6ac756afa4",
+  "1519085360753-af0119f7cbe7",
+  "1566492031773-4f4e44671857",
+  "1504257432389-52343af06ae3",
+  "1506277886164-e25aa3f4ef7f",
+  "1507591064344-4c6ce005b128",
+  "1519345182560-3f2917c472ef",
+  "1542178243-bc20204b769f",
+  "1628157588553-5eeea00af15c",
+  "1624561172888-ac93c696e10c",
+];
+
+const femaleAvatarIds = [
+  "1494790108377-be9c29b29330",
+  "1580489944761-15a19d654956",
+  "1438761681033-6461ffad8d80",
+  "1544005313-94ddf0286df2",
+  "1502685104226-ee32379fefbe",
+  "1546961329-78bef0414d7c",
+  "1508214751196-bcfd4ca60f91",
+  "1517841905240-472988babdf9",
+  "1508216310976-c518daae0cdc",
+  "1487412720507-e7ab37603c6f",
+  "1488716820095-cbe80883c496",
+  "1524504388940-b1c1722653e1",
+  "1517365830460-955ce3ccd263",
+  "1525134479668-1bee5c7c6845",
+  "1529626455594-4ff0802cfb7e",
+  "1512316609839-ce289d3eba0a",
+  "1520813792240-56fc4a3765a7",
+  "1506863530036-1efeddceb993",
+  "1488426862026-3ee34a7d66df",
+  "1515372039744-b8f02a3ae446",
 ];
 
 const coverIds = [
-  "1506744626772-83b5b6966275",
-  "1470071131808-1284b3e51381",
   "1449844908441-8829872d2607",
   "1469474968028-56623f02e42e",
   "1472214103451-9374bd1c798e",
@@ -237,10 +258,17 @@ const coverIds = [
   "1503264116251-35a269479413",
   "1504384308090-c894fdcc538d",
   "1500048993953-d23a436266cf",
-  "1494526585095-c41746248156",
   "1505761671935-60b3a7427bad",
-  "1502082553048-f009c37129b9",
   "1496307042754-b4aa456c4a2d",
+  "1441974231531-c6227db76b6e",
+  "1502082553048-f009c37129b9",
+  "1500375592092-40eb2168fd21",
+  "1507608616759-54f48f0af0ee",
+  "1505144808419-1957a94ca61e",
+  "1501594907352-04cda38ebc29",
+  "1500534623283-312aade485b7",
+  "1502086223501-7ea6ecd79368",
+  "1470770841072-f978cf4d019e",
 ];
 
 const cities = [
@@ -300,15 +328,25 @@ const seedUsers = async () => {
       const firstName =
         firstNames[Math.floor(Math.random() * firstNames.length)];
       const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
-      const randomAvatarId =
-        avatarIds[Math.floor(Math.random() * avatarIds.length)];
-      const randomCoverId =
-        coverIds[Math.floor(Math.random() * coverIds.length)];
+
       const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${i}@server.com`;
 
       const gender = genders[Math.floor(Math.random() * genders.length)];
+
+      const randomAvatarId =
+        gender === "male"
+          ? maleAvatarIds[Math.floor(Math.random() * maleAvatarIds.length)]
+          : gender === "female"
+            ? femaleAvatarIds[
+                Math.floor(Math.random() * femaleAvatarIds.length)
+              ]
+            : coverIds[Math.floor(Math.random() * coverIds.length)];
+      const randomCoverId =
+        coverIds[Math.floor(Math.random() * coverIds.length)];
+
       const maritalStatus =
         maritalStatuses[Math.floor(Math.random() * maritalStatuses.length)];
+
       const phone = Math.floor(1000000000 + Math.random() * 9000000000);
       const dob = new Date(
         Date.now() - (18 + Math.random() * 32) * 365 * 24 * 60 * 60 * 1000,
