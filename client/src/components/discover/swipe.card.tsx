@@ -61,14 +61,14 @@ const SwipeCard = ({ profile, onSwipe, active }: SwipeCardProps) => {
               e.stopPropagation();
               router.push(`/profile/${profile?.userName}`);
             }}
-            className="inline-flex items-center gap-2 drop-shadow-md mb-1 font-alkatra font-bold tracking-wide active:scale-95 origin-left text-accent-blue-light cursor-pointer"
+            className="inline-flex flex-wrap items-center gap-2 drop-shadow-md mb-1 font-alkatra font-bold tracking-wide active:scale-95 origin-left text-accent-blue-light cursor-pointer"
           >
             <span className="text-shadow-glass-bg text-shadow-lg hover:text-shadow-accent-purple-dark transition-all ease-in-out">
               {getFullName(profile)}
             </span>
             {profile?.age && (
               <span className="font-normal text-2xl text-accent-blue-light">
-                , {profile.age}
+                {profile.age}
               </span>
             )}
           </h2>

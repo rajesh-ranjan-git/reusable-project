@@ -1,14 +1,16 @@
 import mongoose from "mongoose";
 
+import { MODE } from "../constants/env.constants.js";
 import { DB_URL } from "./db.config.js";
+import { toTitleCase } from "../utils/common.utils.js";
 
 const connectDB = async () => {
   try {
     if (DB_URL.includes("srv")) {
-      logger.info("⌛ Connecting production database...");
+      logger.info(`⌛ Connecting ${MODE} database...`);
     } else {
       logger.info(
-        "⌛ Production database is not available, connecting local database...",
+        `⌛ ${toTitleCase(MODE)} database is not available, connecting local database...`,
       );
     }
 

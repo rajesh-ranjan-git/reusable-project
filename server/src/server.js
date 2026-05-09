@@ -85,8 +85,8 @@ const server = http.createServer(app);
 initializeSocket(server);
 
 server.listen(HOST_PORT, async () => {
+  setDbAdapter(async (entry) => await Log.create(entry));
   await connectDB();
-  setDbAdapter(async (entry) => Log.create(entry));
   logger.info(`📢  Server is running at ${HOST_URL}`);
   await bannerService.showBanner(HOST_PORT);
 });

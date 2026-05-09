@@ -1,21 +1,12 @@
 import Link from "next/link";
 import { LuArrowRight, LuCheck } from "react-icons/lu";
-
-type PricingPlan = {
-  name: string;
-  monthlyPrice: number;
-  yearlyPrice: number;
-  description: string;
-  highlighted: boolean;
-  ctaText: string;
-  features: string[];
-};
+import { PricingPlanType } from "@/types/types/subscription.types";
 
 const PricingCard = ({
   plan,
   isYearly,
 }: {
-  plan: PricingPlan;
+  plan: PricingPlanType;
   isYearly: boolean;
 }) => {
   const {
