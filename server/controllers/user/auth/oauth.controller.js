@@ -12,12 +12,14 @@ import {
   omitObjectProperties,
 } from "../../../utils/common.utils.js";
 import { sanitizeMongoData } from "../../../db/db.utils.js";
+import { getFullName } from "../../../utils/profile.utils.js";
 import { emailValidator } from "../../../validators/auth.validator.js";
 import { sessionService } from "../../../services/auth/session.service.js";
 import { activityService } from "../../../services/activity/activity.service.js";
 import { rbacService } from "../../../services/rbac/rbac.service.js";
 import { tokenService } from "../../../services/auth/token.service.js";
 import { authService } from "../../../services/auth/auth.service.js";
+import { emailService } from "../../../services/email/email.service.js";
 import { responseService } from "../../../services/response/response.service.js";
 import AppError from "../../../services/error/error.service.js";
 
@@ -133,6 +135,16 @@ export const oauthCallback = asyncHandler(async (req, res) => {
       });
 
       await SocialLink.create({ user: userId });
+
+      await emailService.sendWelcomeEmail(
+        email,
+        getFullName({
+          firstName,
+          lastName,
+          userName: uniqueUsername,
+          email,
+        }),
+      );
     }
   }
 

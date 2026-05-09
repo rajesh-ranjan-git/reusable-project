@@ -91,6 +91,7 @@ class AuthService {
           email,
         }),
       );
+
       await emailService.sendVerificationEmail(email, verificationToken);
     }
 
