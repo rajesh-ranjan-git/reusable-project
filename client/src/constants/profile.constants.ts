@@ -8,7 +8,7 @@ export const INTEREST_SUGGESTIONS = [
   "Music",
   "Hiking",
   "Reading",
-  "Taekwondo",
+  "Sports",
   "Travel",
   "Cooking",
   "Fitness",
