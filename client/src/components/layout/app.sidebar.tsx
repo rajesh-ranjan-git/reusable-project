@@ -193,9 +193,10 @@ const AppSidebar = ({
                     >
                       <div
                         className="group flex justify-between items-center hover:bg-glass-bg-hover p-2 rounded-md overflow-hidden cursor-pointer"
-                        onClick={() =>
-                          router.push(`/profile/${request.userName}`)
-                        }
+                        onClick={() => {
+                          connectionRequestsSheet.close();
+                          router.push(`/profile/${request.userName}`);
+                        }}
                       >
                         <div className="flex items-center gap-2 pr-1 min-w-0">
                           <Image

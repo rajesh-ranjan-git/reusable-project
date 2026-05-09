@@ -117,7 +117,7 @@ async function main() {
         continue;
       }
 
-      await connectUser(userAccessToken, "69fced067b8c9c876320e566");
+      await connectUser(userAccessToken, "69fee2482525cd26f8198232");
     }
 
     console.log("\nDone.");
