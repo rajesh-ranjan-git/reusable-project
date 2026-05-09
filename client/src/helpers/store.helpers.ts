@@ -1,5 +1,12 @@
 import { ConversationDisplayType } from "@/types/types/conversation.types";
 
+const getConversationActivityTime = (conversation: ConversationDisplayType) =>
+  new Date(
+    conversation.conversation.lastActivityAt ??
+      conversation.conversation.lastMessage?.sentAt ??
+      conversation.conversation.createdAt,
+  ).getTime();
+
 export const getConversationUniqueKey = (
   conversation: ConversationDisplayType,
   currentUserId?: string,
@@ -31,14 +38,8 @@ export const normalizeConversationList = (
       return;
     }
 
-    const existingTime = new Date(
-      existingConversation.conversation.lastMessage?.sentAt ??
-        existingConversation.conversation.updatedAt,
-    ).getTime();
-    const nextTime = new Date(
-      conversation.conversation.lastMessage?.sentAt ??
-        conversation.conversation.updatedAt,
-    ).getTime();
+    const existingTime = getConversationActivityTime(existingConversation);
+    const nextTime = getConversationActivityTime(conversation);
 
     if (nextTime >= existingTime) {
       conversationMap.set(key, conversation);

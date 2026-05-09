@@ -76,6 +76,8 @@ const conversationSchema = new mongoose.Schema(
 
     lastMessage: { type: lastMessageSchema, default: null },
 
+    lastActivityAt: { type: Date, default: Date.now, index: true },
+
     pinnedMessages: [{ type: mongoose.Schema.Types.ObjectId, ref: "Message" }],
 
     deletedAt: { type: Date, default: null },
@@ -103,7 +105,7 @@ const conversationSchema = new mongoose.Schema(
   },
 );
 
-conversationSchema.index({ "participants.user": 1, updatedAt: -1 });
+conversationSchema.index({ "participants.user": 1, lastActivityAt: -1 });
 
 conversationSchema.index(
   { type: 1, "participants.user": 1 },

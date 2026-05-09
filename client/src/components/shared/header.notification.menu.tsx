@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
-import { LuHeart, LuMessageSquare, LuUserPlus } from "react-icons/lu";
+import { LuHeart, LuMessageCircle, LuUserPlus } from "react-icons/lu";
 import { HeaderNotificationMenuProps } from "@/types/props/common.props.types";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
 import { conversationRoutes, profileRoutes } from "@/lib/routes/routes";
@@ -41,7 +41,7 @@ const HeaderNotificationMenu = ({
       type: "message",
       text: "Marcus sent you a message",
       time: "1h ago",
-      icon: LuMessageSquare,
+      icon: LuMessageCircle,
       color: "text-blue-400",
       path: conversationRoutes.conversation,
     },
@@ -106,7 +106,7 @@ const HeaderNotificationMenu = ({
             onClick={onClose}
             className="flex justify-center items-center gap-2 hover:bg-glass-bg-subtle mt-1 px-4 py-2 border-accent-purple-dark/30 border-t w-full text-text-secondary hover:text-text-primary text-xs cursor-pointer"
           >
-              Mark all as read
+            Mark all as read
           </button>
         </motion.div>
       )}

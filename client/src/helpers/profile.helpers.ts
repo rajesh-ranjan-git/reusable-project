@@ -1,6 +1,7 @@
 import { MdEmail, MdHeartBroken } from "react-icons/md";
 import {
   LuAtSign,
+  LuBadgeInfo,
   LuCheck,
   LuClock,
   LuMessageCircle,
@@ -12,8 +13,10 @@ import {
 } from "react-icons/lu";
 import {
   FaBirthdayCake,
+  FaBriefcase,
   FaFemale,
   FaHeart,
+  FaLaptopCode,
   FaMale,
   FaPeopleArrows,
   FaPhone,
@@ -21,6 +24,8 @@ import {
   FaTransgender,
   FaUser,
 } from "react-icons/fa";
+import { FiMoreHorizontal } from "react-icons/fi";
+import { IoGameController } from "react-icons/io5";
 import { LoggedInUserType } from "@/types/types/auth.types";
 import {
   CurrentFormType,
@@ -32,7 +37,6 @@ import {
 import { toTitleCase } from "@/utils/common.utils";
 import { formatLocalDate, formatTime } from "@/utils/date.utils";
 import { RelationshipType } from "@/types/types/connection.types";
-import { FiMoreHorizontal } from "react-icons/fi";
 
 export const getFullName = (user?: UserProfileType | LoggedInUserType) => {
   if (!user) return "John Doe";
@@ -391,25 +395,25 @@ export const getEditProfileSections = (userProfile: UserProfileType | null) => {
     },
     {
       id: "bio" as CurrentFormType,
-      icon: FaBirthdayCake,
+      icon: LuBadgeInfo,
       title: "About Me",
       description: "Snapshot of background, personality and more",
     },
     {
       id: "experience" as CurrentFormType,
-      icon: FaBirthdayCake,
+      icon: FaBriefcase,
       title: "Work Experience",
       description: "Professional journey, roles and more",
     },
     {
       id: "skills" as CurrentFormType,
-      icon: FaBirthdayCake,
+      icon: FaLaptopCode,
       title: "Tech Stack & Expertise",
       description: "Core technologies, tools, and expertise",
     },
     {
       id: "interests" as CurrentFormType,
-      icon: FaBirthdayCake,
+      icon: IoGameController,
       title: "Interests & Hobbies",
       description: "Passions, hobbies and more",
     },

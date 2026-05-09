@@ -593,6 +593,7 @@ export const updateMemberRole = asyncHandler(async (req, res) => {
 
 export const listConversations = asyncHandler(async (req, res) => {
   const currentUserId = req.data.userId;
+  const currentUserObjectId = new mongoose.Types.ObjectId(currentUserId);
   const { page = 1, limit = DEFAULT_PAGE_SIZE } = req.data.query;
   const connectedUserIds = await getAcceptedConnectionUserIds(currentUserId);
 
@@ -603,7 +604,7 @@ export const listConversations = asyncHandler(async (req, res) => {
   const activeParticipantFilter = {
     participants: {
       $elemMatch: {
-        user: currentUserId,
+        user: currentUserObjectId,
         leftAt: null,
       },
     },
@@ -621,7 +622,7 @@ export const listConversations = asyncHandler(async (req, res) => {
         ...activeParticipantFilter,
         participants: {
           $all: [
-            { $elemMatch: { user: currentUserId, leftAt: null } },
+            { $elemMatch: { user: currentUserObjectId, leftAt: null } },
             { $elemMatch: { user: { $in: connectedUserIds }, leftAt: null } },
           ],
         },
@@ -630,29 +631,60 @@ export const listConversations = asyncHandler(async (req, res) => {
   };
 
   const [conversations, total] = await Promise.all([
-    Conversation.find(filter)
-      .sort({ updatedAt: -1 })
-      .skip(skip)
-      .limit(limitNum)
-      .populate({
-        path: "participants.user",
-        select: "status lastSeen",
-        populate: [
-          {
-            path: "account",
-            select: "email",
+    Conversation.aggregate([
+      { $match: filter },
+      {
+        $addFields: {
+          activeParticipantCount: {
+            $size: {
+              $filter: {
+                input: "$participants",
+                as: "participant",
+                cond: { $eq: ["$$participant.leftAt", null] },
+              },
+            },
           },
-          {
-            path: "profile",
-            select: "userName firstName lastName fullName avatar experiences",
+          sortActivityAt: {
+            $ifNull: [
+              "$lastActivityAt",
+              { $ifNull: ["$lastMessage.sentAt", "$createdAt"] },
+            ],
           },
-        ],
-      })
-      .populate({
-        path: "lastMessage.messageId",
-        select: "content contentType createdAt sender",
-      }),
+          lastActivityAt: {
+            $ifNull: [
+              "$lastActivityAt",
+              { $ifNull: ["$lastMessage.sentAt", "$createdAt"] },
+            ],
+          },
+        },
+      },
+      { $sort: { sortActivityAt: -1, _id: -1 } },
+      { $skip: skip },
+      { $limit: limitNum },
+      { $project: { sortActivityAt: 0 } },
+    ]),
     Conversation.countDocuments(filter),
+  ]);
+
+  await Conversation.populate(conversations, [
+    {
+      path: "participants.user",
+      select: "status lastSeen",
+      populate: [
+        {
+          path: "account",
+          select: "email",
+        },
+        {
+          path: "profile",
+          select: "userName firstName lastName fullName avatar experiences",
+        },
+      ],
+    },
+    {
+      path: "lastMessage.messageId",
+      select: "content contentType createdAt sender",
+    },
   ]);
 
   const normalizedConversations = sanitizeMongoData(conversations).map(

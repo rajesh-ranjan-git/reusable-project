@@ -159,6 +159,7 @@ export const updateConversationAfterSend = async (
           sentBy: sender,
           sentAt: message.createdAt,
         },
+        lastActivityAt: message.createdAt,
       },
 
       $inc: { "participants.$[other].unreadCount": 1 },

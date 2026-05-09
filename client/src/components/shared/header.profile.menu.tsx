@@ -8,7 +8,7 @@ import {
   LuCreditCard,
   LuLayoutDashboard,
   LuLogOut,
-  LuMessageSquare,
+  LuMessageCircle,
   LuSettings,
   LuUser,
 } from "react-icons/lu";
@@ -48,7 +48,7 @@ const profileMenuItems = {
   chats: {
     title: "Chats",
     url: conversationRoutes.conversation,
-    icon: <LuMessageSquare size={16} className="text-text-secondary" />,
+    icon: <LuMessageCircle size={16} className="text-text-secondary" />,
   },
   subscription: {
     title: "Subscription",

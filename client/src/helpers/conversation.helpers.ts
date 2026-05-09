@@ -64,7 +64,9 @@ export const getConversationDisplay = (
       staticImagesConfig.avatarPlaceholder.src,
     isOnline,
     lastActivity: formatTime(
-      conversation.lastMessage?.sentAt ?? conversation.updatedAt,
+      conversation.lastActivityAt ??
+        conversation.lastMessage?.sentAt ??
+        conversation.createdAt,
     ),
     unreadCount: currentParticipant?.unreadCount ?? 0,
     participantsLabel: isGroup

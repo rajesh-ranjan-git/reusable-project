@@ -47,6 +47,7 @@ export interface ConversationResponseType {
   type: ConversationType;
   participants: ConversationParticipantType[];
   lastMessage: ConversationLastMessageType | null;
+  lastActivityAt: string;
   pinnedMessages: string[];
   deletedAt: string | null;
   groupSettings: GroupSettingsType | null;

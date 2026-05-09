@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FaArrowRight, FaStar } from "react-icons/fa6";
-import { LuChevronRight, LuMessageSquare } from "react-icons/lu";
+import { LuChevronRight, LuMessageCircle } from "react-icons/lu";
 import { conversationRoutes, defaultRoutes } from "@/lib/routes/routes";
 
 const HeroSection = () => {
@@ -36,7 +36,7 @@ const HeroSection = () => {
           href={conversationRoutes.conversation}
           className="px-6 py-3 text-lg btn btn-secondary"
         >
-          <LuMessageSquare size={18} />
+          <LuMessageCircle size={18} />
           Go To Chats
         </Link>
       </div>

@@ -1,5 +1,6 @@
 import { UIEvent, useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Socket } from "socket.io-client";
 import { LuSearch } from "react-icons/lu";
 import { ConversationListProps } from "@/types/props/conversation.props";
@@ -38,10 +39,13 @@ const ConversationList = ({
     (state) => state.updateConversationWithMessage,
   );
 
+  const router = useRouter();
+
   const [isLoadingMoreConversations, setIsLoadingMoreConversations] =
     useState(false);
   const socketRef = useRef<Socket | null>(null);
   const isFetchingConversationsRef = useRef(false);
+  const hasLoadedInitialConversationsRef = useRef(false);
   const conversationPaginationRef = useRef(conversationPagination);
 
   const conversationRoomKey = conversationList
@@ -132,10 +136,11 @@ const ConversationList = ({
   };
 
   useEffect(() => {
-    if (loggedInUser && conversationList.length === 0) {
+    if (loggedInUser && !hasLoadedInitialConversationsRef.current) {
+      hasLoadedInitialConversationsRef.current = true;
       getConversationList(loggedInUser);
     }
-  }, [conversationList.length, getConversationList, loggedInUser]);
+  }, [getConversationList, loggedInUser]);
 
   useEffect(() => {
     if (!accessToken || conversationList.length === 0) return;
@@ -234,11 +239,7 @@ const ConversationList = ({
               <button
                 key={conversation.id}
                 onClick={() => {
-                  window.history.pushState(
-                    {},
-                    "",
-                    getConversationPath(conversation),
-                  );
+                  router.push(getConversationPath(conversation));
                   onSelectConversation(conversation.conversation);
                   resetConversationUnread(conversation.id);
                 }}

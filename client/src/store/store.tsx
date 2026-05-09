@@ -5,6 +5,15 @@ import { AppStateType } from "@/types/types/store.types";
 import { normalizeConversationList } from "@/helpers/store.helpers";
 import { applyPresenceToConversationDisplay } from "@/helpers/conversation.helpers";
 
+const getConversationActivityTime = (
+  conversation: AppStateType["conversationList"][number],
+) =>
+  new Date(
+    conversation.conversation.lastActivityAt ??
+      conversation.conversation.lastMessage?.sentAt ??
+      conversation.conversation.createdAt,
+  ).getTime();
+
 export const useAppStore = create<AppStateType>()(
   persist(
     (set) => ({
@@ -145,6 +154,7 @@ export const useAppStore = create<AppStateType>()(
                   unreadCount,
                   conversation: {
                     ...conversation.conversation,
+                    lastActivityAt: message.createdAt,
                     lastMessage: {
                       messageId: message.messageId ?? message.id ?? "",
                       content: message.content,
@@ -163,14 +173,8 @@ export const useAppStore = create<AppStateType>()(
                 };
               })
               .sort((a, b) => {
-                const aTime = new Date(
-                  a.conversation.lastMessage?.sentAt ??
-                    a.conversation.updatedAt,
-                ).getTime();
-                const bTime = new Date(
-                  b.conversation.lastMessage?.sentAt ??
-                    b.conversation.updatedAt,
-                ).getTime();
+                const aTime = getConversationActivityTime(a);
+                const bTime = getConversationActivityTime(b);
 
                 return bTime - aTime;
               }),

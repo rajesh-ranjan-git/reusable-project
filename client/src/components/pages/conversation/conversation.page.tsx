@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { ConversationPageProps } from "@/types/props/conversation.props";
 import {
   ConversationResponseType,
@@ -18,6 +19,8 @@ import ConversationWindow from "@/components/conversation/conversation.window";
 const ConversationPage = ({ userName }: ConversationPageProps) => {
   const [selectedConversation, setSelectedConversation] =
     useState<ConversationResponseType | null>(null);
+
+  const router = useRouter();
 
   const setConversationList = useAppStore((state) => state.setConversationList);
   const setConversationListPagination = useAppStore(
@@ -40,18 +43,19 @@ const ConversationPage = ({ userName }: ConversationPageProps) => {
       );
 
       setConversationList((prev) => {
-        isNewConversation = !prev.some(
+        const existingConversationIndex = prev.findIndex(
           (currentConversation) =>
             currentConversation.id === conversationDisplay.id,
         );
+        isNewConversation = existingConversationIndex === -1;
 
-        return [
-          conversationDisplay,
-          ...prev.filter(
-            (currentConversation) =>
-              currentConversation.id !== conversationDisplay.id,
-          ),
-        ];
+        if (isNewConversation) return [conversationDisplay, ...prev];
+
+        return prev.map((currentConversation, index) =>
+          index === existingConversationIndex
+            ? conversationDisplay
+            : currentConversation,
+        );
       });
 
       if (isNewConversation) {
@@ -70,9 +74,9 @@ const ConversationPage = ({ userName }: ConversationPageProps) => {
   );
 
   const clearSelectedConversation = useCallback(() => {
-    window.history.pushState({}, "", conversationRoutes.conversation);
+    router.push(conversationRoutes.conversation);
     setSelectedConversation(null);
-  }, []);
+  }, [router]);
 
   const getDirectConversation = useCallback(
     async (userName: string) => {

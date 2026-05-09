@@ -3,7 +3,7 @@ import {
   LuUsers,
   LuZap,
   LuSearch,
-  LuMessageSquare,
+  LuMessageCircle,
   LuShieldCheck,
 } from "react-icons/lu";
 
@@ -52,7 +52,7 @@ export const features = [
       "Showcase your real skills by integrating directly with GitHub and GitLab. Let your commits do the talking.",
   },
   {
-    icon: LuMessageSquare,
+    icon: LuMessageCircle,
     title: "Developer-Optimized Chat",
     description:
       "Built-in code snippet sharing, syntax highlighting, and seamless real-time communication tools.",
