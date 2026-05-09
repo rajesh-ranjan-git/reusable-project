@@ -81,7 +81,7 @@ class AuthService {
         "email_verification",
       );
 
-      await emailService.sendWelcomeEmail(email, verificationToken);
+      await emailService.sendWelcomeEmail(email, generatedUserName);
       await emailService.sendVerificationEmail(email, verificationToken);
     }
 
