@@ -1,3 +1,5 @@
+import { toTitleCase } from "./common.utils.js";
+
 export const getFullName = (user) => {
   if (!user) return "John Doe";
 
