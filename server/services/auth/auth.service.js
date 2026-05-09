@@ -16,6 +16,7 @@ import VerificationToken from "../../models/user/auth/verification.token.model.j
 import { getRemainingTime } from "../../utils/date.utils.js";
 import { sanitizeMongoData } from "../../db/db.utils.js";
 import { omitObjectProperties } from "../../utils/common.utils.js";
+import { getFullName } from "../../utils/profile.utils.js";
 import { rbacService } from "../rbac/rbac.service.js";
 import { tokenService } from "../auth/token.service.js";
 import { sessionService } from "../auth/session.service.js";
@@ -81,7 +82,15 @@ class AuthService {
         "email_verification",
       );
 
-      await emailService.sendWelcomeEmail(email, generatedUserName);
+      await emailService.sendWelcomeEmail(
+        email,
+        getFullName({
+          firstName,
+          lastName,
+          userName: generatedUserName,
+          email,
+        }),
+      );
       await emailService.sendVerificationEmail(email, verificationToken);
     }
 
