@@ -21,6 +21,9 @@ export const HOST_URL = process.env.HOST_URL;
 export const CLIENT_PORT = process.env.CLIENT_PORT;
 export const CLIENT_URL = process.env.CLIENT_URL;
 
+export const LOG_LEVEL = process.env.LOG_LEVEL;
+export const LOG_TARGET = process.env.LOG_TARGET;
+
 export const EMAIL_FROM_ADDRESS = process.env.RESEND_FROM;
 export const EMAIL_TO_ADDRESS = process.env.RESEND_TO;
 export const RESEND_API_KEY = process.env.RESEND_API_KEY;

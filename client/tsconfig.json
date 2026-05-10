@@ -29,7 +29,8 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts",
-    "public/serviceWorker/serviceWorker.js"
+    "public/serviceWorker/serviceWorker.js",
+    ".next/dev/dev/types/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }

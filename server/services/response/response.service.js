@@ -68,6 +68,19 @@ class ResponseService {
   errorResponseHandler(err, req, res, next) {
     let response;
 
+    const errMessage = err?.message ?? "";
+
+    const logMetadata = {
+      path: err?.metadata?.path || req.originalUrl || req.url,
+      requestId: err?.requestId || req.headers["x-request-id"],
+      isOperational:
+        errMessage.startsWith("Unexpected token") ||
+        errMessage.startsWith("Expected")
+          ? true
+          : err?.isOperational || false,
+      method: req.method,
+    };
+
     if (err instanceof AppError) {
       response = {
         success: false,
@@ -88,7 +101,10 @@ class ResponseService {
             : null,
       };
 
-      logger.logAppError(err, response);
+      logger.logAppError(err, {
+        ...response,
+        metadata: logMetadata,
+      });
 
       return res.status(err.statusCode).json(response);
     }
@@ -100,25 +116,13 @@ class ResponseService {
       statusCode:
         err.statusCode || httpStatusConfig.internalServerError.statusCode,
       message:
-        err.message.startsWith("Unexpected token") ||
-        err.message.startsWith("Expected")
+        errMessage.startsWith("Unexpected token") ||
+        errMessage.startsWith("Expected")
           ? "Please provide a valid input!"
-          : err.message || "An unexpected error has occurred!",
+          : errMessage || "An unexpected error has occurred!",
       details: null,
       timestamp: getDateToStore(new Date()),
-      metadata:
-        MODE === "development"
-          ? {
-              path: err?.metadata?.path || req.originalUrl || req.url,
-              requestId: err?.requestId || req.headers["x-request-id"],
-              isOperational:
-                err.message.startsWith("Unexpected token") ||
-                err.message.startsWith("Expected")
-                  ? true
-                  : err?.isOperational || false,
-              method: req.method,
-            }
-          : null,
+      metadata: MODE === "development" ? logMetadata : null,
     };
 
     logger.error({ err, extra: response });

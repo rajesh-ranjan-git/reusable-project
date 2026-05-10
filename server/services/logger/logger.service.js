@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { MODE } from "../../constants/env.constants.js";
+import { MODE, LOG_LEVEL, LOG_TARGET } from "../../constants/env.constants.js";
 import { ansiConfig } from "../../config/logger.config.js";
 import { getDateToShow, getDateToStore } from "../../utils/date.utils.js";
 
@@ -12,10 +12,10 @@ const mode = MODE.toLowerCase();
 const LOG_DIR = path.resolve(
   process.env.LOG_DIR ?? path.join(__dirname, "../../logs"),
 );
-const LOG_LEVEL = (process.env.LOG_LEVEL ?? "info").toLowerCase();
+const LOGGING_LEVEL = (LOG_LEVEL ?? "info").toLowerCase();
 
 const resolveTargets = () => {
-  const explicit = (process.env.LOG_TARGET ?? "").toLowerCase();
+  const explicit = (LOG_TARGET ?? "").toLowerCase();
 
   if (explicit === "file") return { file: true, db: false };
   if (explicit === "db") return { file: false, db: true };
@@ -31,7 +31,7 @@ const TARGETS = resolveTargets();
 const LEVELS = { error: 0, warn: 1, info: 2, debug: 3 };
 
 const shouldLog = (level) => {
-  return (LEVELS[level] ?? 99) <= (LEVELS[LOG_LEVEL] ?? 2);
+  return (LEVELS[level] ?? 99) <= (LEVELS[LOGGING_LEVEL] ?? 2);
 };
 
 if (TARGETS.file) {
@@ -66,7 +66,7 @@ const writeToDB = async (entry) => {
   if (!TARGETS.db) return;
   if (!_dbAdapter) {
     process.stderr.write(
-      "[logger] DB target enabled but no adapter registered. " +
+      "[Logger Service] DB target enabled but no adapter registered. " +
         "Call setDbAdapter(fn) to register one.\n",
     );
     return;
@@ -327,7 +327,7 @@ const logger = {
     this[level]({ appError, metadata });
   },
 
-  config: Object.freeze({ mode, TARGETS, LOG_DIR, LOG_LEVEL }),
+  config: Object.freeze({ mode, TARGETS, LOG_DIR, LOGGING_LEVEL }),
 };
 
 if (!globalThis.logger) {

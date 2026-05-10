@@ -12,8 +12,8 @@ import { authService } from "../services/auth/auth.service.js";
 
 const seedRBAC = async () => {
   try {
+    setDbAdapter(async (entry) => await Log.create(entry));
     await connectDB();
-    setDbAdapter(async (entry) => Log.create(entry));
 
     logger.info("📢 [ RBAC ] Initial roles and permissions seeding started!");
 

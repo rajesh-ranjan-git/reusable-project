@@ -1,5 +1,5 @@
-import "../services/logger/logger.service.js";
 import { setDbAdapter } from "../services/logger/logger.service.js";
+import "../services/logger/logger.service.js";
 import connectDB from "../db/db.connect.js";
 import Log from "../models/log/log.model.js";
 import Account from "../models/user/auth/account.model.js";
@@ -324,8 +324,8 @@ const socialPlatforms = [
 
 const seedUsers = async () => {
   try {
-    await connectDB();
     setDbAdapter(async (entry) => Log.create(entry));
+    await connectDB();
 
     logger.info("📢 [ USERS ] Initial users seeding started!");
 
