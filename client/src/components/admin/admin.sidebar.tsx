@@ -17,6 +17,7 @@ import { AdminSidebarProps } from "@/types/props/admin.props.types";
 import { useAppStore } from "@/store/store";
 import { adminRoutes, defaultRoutes } from "@/lib/routes/routes";
 import { logoutAction } from "@/lib/actions/auth.actions";
+import { clearCookies } from "@/lib/api/cookiesHandler";
 
 const AdminSidebar = ({
   isSidebarOpen,
@@ -42,6 +43,8 @@ const AdminSidebar = ({
     setIsLoggingOut(true);
 
     await logoutAction();
+
+    await clearCookies("isAuthenticated");
 
     clearSessionState();
 

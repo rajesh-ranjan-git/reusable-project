@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { defaultRoutes } from "@/lib/routes/routes";
 
-export const setCookies = async (cookiesData: string[]) => {
+export const setCookies = async (cookiesData: string | string[]) => {
   const cookieStore = await cookies();
   const cookieList = Array.isArray(cookiesData) ? cookiesData : [cookiesData];
 

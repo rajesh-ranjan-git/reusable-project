@@ -29,6 +29,8 @@ import { responseService } from "../services/response/response.service.js";
 
 const app = express();
 
+app.set("trust proxy", 1);
+
 const allowedOrigins = [HOST_URL, CLIENT_URL]
   .flatMap((url) => (url ? url.split(",") : []))
   .map((url) => url.trim())

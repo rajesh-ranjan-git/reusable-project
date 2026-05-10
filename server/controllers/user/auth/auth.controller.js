@@ -82,7 +82,13 @@ export const logout = asyncHandler(async (req, res) => {
     await authService.logout(req.data.userId, refreshToken, req.ip);
   }
 
-  res.clearCookie("refreshToken", { path: "/" });
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+  });
+
   return responseService.successResponseHandler(req, res, {
     status: "LOGOUT SUCCESS",
     message: "Logged out successfully!",

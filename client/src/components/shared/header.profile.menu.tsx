@@ -26,6 +26,7 @@ import {
   subscriptionRoutes,
 } from "@/lib/routes/routes";
 import { logoutAction } from "@/lib/actions/auth.actions";
+import { clearCookies } from "@/lib/api/cookiesHandler";
 import ProfileMenuItem from "@/components/shared/profile.menu.item";
 import { getFullName } from "@/helpers/profile.helpers";
 
@@ -100,6 +101,8 @@ const HeaderProfileMenu = ({
     setIsLoggingOut(true);
 
     await logoutAction();
+
+    await clearCookies("isAuthenticated");
 
     clearSessionState();
 

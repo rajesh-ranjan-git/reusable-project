@@ -12,7 +12,7 @@ import { toTitleCase } from "@/utils/common.utils";
 import { useToast } from "@/hooks/toast";
 import { fetchMe, refreshTokens } from "@/lib/actions/common.actions";
 import { logoutAction } from "@/lib/actions/auth.actions";
-import { getCookies } from "@/lib/api/cookiesHandler";
+import { clearCookies, getCookies } from "@/lib/api/cookiesHandler";
 import { authRoutes } from "@/lib/routes/routes";
 
 const AuthWrapper = ({ children }: ReactNodeProps) => {
@@ -35,9 +35,9 @@ const AuthWrapper = ({ children }: ReactNodeProps) => {
     let isMounted = true;
 
     const validateUser = async () => {
-      const refreshToken = await getCookies("refreshToken");
+      const isAuthenticated = await getCookies("isAuthenticated");
 
-      if (!refreshToken) {
+      if (isAuthenticated !== "true") {
         clearSessionState();
 
         if (isMounted) setIsChecking(false);
@@ -68,6 +68,8 @@ const AuthWrapper = ({ children }: ReactNodeProps) => {
 
           await logoutAction();
 
+          await clearCookies("isAuthenticated");
+
           clearSessionState();
 
           router.push(authRoutes.login);
@@ -87,6 +89,8 @@ const AuthWrapper = ({ children }: ReactNodeProps) => {
         clearSessionState();
 
         await logoutAction();
+
+        await clearCookies("isAuthenticated");
 
         if (Number(response?.statusCode) >= 500) {
           showToast({

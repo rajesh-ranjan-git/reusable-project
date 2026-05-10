@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { CLIENT_URL } from "@/constants/env.constants";
 import { OAuthPayloadType, OptionsType } from "@/types/types/oauth.types";
 import { useAppStore } from "@/store/store";
+import { setCookies } from "@/lib/api/cookiesHandler";
 import { defaultRoutes } from "@/lib/routes/routes";
 
 export const useOAuthListener = (options?: OptionsType) => {
@@ -12,7 +13,7 @@ export const useOAuthListener = (options?: OptionsType) => {
   const setLoggedInUser = useAppStore((state) => state.setLoggedInUser);
 
   useEffect(() => {
-    const handler = (event: MessageEvent) => {
+    const handler = async (event: MessageEvent) => {
       try {
         if (CLIENT_URL && event.origin !== CLIENT_URL) {
           return;
@@ -25,6 +26,7 @@ export const useOAuthListener = (options?: OptionsType) => {
         const { accessToken, user } = payload.data;
         setAccessToken(accessToken);
         setLoggedInUser(user);
+        await setCookies("isAuthenticated=true; Path=/; SameSite=Lax");
 
         options?.onSuccess?.(payload);
 

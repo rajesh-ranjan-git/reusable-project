@@ -20,6 +20,7 @@ import { getFormVariants } from "@/helpers/auth.helpers";
 import { authRoutes, defaultRoutes } from "@/lib/routes/routes";
 import { loginAction, registerAction } from "@/lib/actions/auth.actions";
 import { loginWithProvider, providerLogin } from "@/lib/actions/oauth.actions";
+import { setCookies } from "@/lib/api/cookiesHandler";
 import RegisterForm from "@/components/forms/auth/register.form";
 import AuthBanner from "@/components/auth/auth.banner";
 import LoginForm from "@/components/forms/auth/login.form";
@@ -136,6 +137,7 @@ const AuthPage = () => {
 
         setAccessToken(providerLoginData.accessToken);
         setLoggedInUser(providerLoginData.user);
+        await setCookies("isAuthenticated=true; Path=/; SameSite=Lax");
 
         router.push(defaultRoutes.landing);
       }
@@ -152,9 +154,6 @@ const AuthPage = () => {
         variant: "error",
       });
     } else {
-      setAccessToken(state.data.accessToken);
-      setLoggedInUser(state.data.user);
-
       showToast({
         title: state.status,
         message: state.message!,
@@ -164,7 +163,15 @@ const AuthPage = () => {
       if (pathname === authRoutes.register) {
         handleToggleMode();
       } else {
-        router.push(defaultRoutes.landing);
+        const completeLogin = async () => {
+          setAccessToken(state.data.accessToken);
+          setLoggedInUser(state.data.user);
+          await setCookies("isAuthenticated=true; Path=/; SameSite=Lax");
+
+          router.push(defaultRoutes.landing);
+        };
+
+        void completeLogin();
       }
     }
   }, [state]);
