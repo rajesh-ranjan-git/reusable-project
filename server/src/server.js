@@ -29,14 +29,32 @@ import { responseService } from "../services/response/response.service.js";
 
 const app = express();
 
-app.use(express.json());
+const allowedOrigins = [HOST_URL, CLIENT_URL]
+  .flatMap((url) => (url ? url.split(",") : []))
+  .map((url) => url.trim())
+  .filter(Boolean);
+
 app.use(
   cors({
-    origin: [HOST_URL, CLIENT_URL],
+    origin(origin, callback) {
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
+
+app.options(/.*/, cors());
+
+app.use(express.json());
+
 app.use(cookieParser());
 
 app.use("/api/v1/auth", authRouter);

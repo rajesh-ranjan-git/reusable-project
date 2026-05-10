@@ -14,10 +14,10 @@ export const createSocketConnection = ({ token }: SocketConfigType): Socket => {
     typeof window !== "undefined" && window.location.hostname === "localhost";
 
   const socket = io(HOST_URL, {
-    withCredentials: false,
+    withCredentials: true,
     transports: ["websocket", "polling"],
     auth: { token: accessToken },
-    ...(!isLocal && { path: "/api/v1/socket.io" }),
+    ...(!isLocal && { path: "/socket.io" }),
     reconnection: true,
     reconnectionAttempts: 10,
     reconnectionDelay: 1_000,
