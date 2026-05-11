@@ -16,6 +16,7 @@ if (existsSync(envFilePath)) {
 }
 
 const nextConfig: NextConfig = {
+  reactStrictMode: true,
   images: {
     remotePatterns: [
       {

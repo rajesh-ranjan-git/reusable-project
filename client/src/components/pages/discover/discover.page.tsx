@@ -11,13 +11,14 @@ import { fetchProfiles } from "@/lib/actions/discover.actions";
 import { connect } from "@/lib/actions/connection.actions";
 import ActionBar from "@/components/discover/action.bar";
 import SwipeCard from "@/components/discover/swipe.card";
+import DiscoverShimmer from "@/components/ui/shimmers/discover.shimmer";
 
 const DiscoverPage = () => {
+  const [loadingProfiles, setLoadingProfiles] = useState(false);
   const [visibleProfiles, setVisibleProfiles] = useState<UserProfileType[]>([]);
   const [bufferProfiles, setBufferProfiles] = useState<UserProfileType[]>([]);
 
   const pageRef = useRef(1);
-  const isFetchingRef = useRef(false);
 
   const { showToast } = useToast();
 
@@ -59,8 +60,8 @@ const DiscoverPage = () => {
   };
 
   const loadProfiles = async () => {
-    if (isFetchingRef.current) return;
-    isFetchingRef.current = true;
+    if (loadingProfiles) return;
+    setLoadingProfiles(true);
 
     try {
       const response = await fetchProfiles(pageRef.current);
@@ -73,7 +74,7 @@ const DiscoverPage = () => {
         }
       }
     } finally {
-      isFetchingRef.current = false;
+      setLoadingProfiles(false);
     }
   };
 
@@ -102,7 +103,9 @@ const DiscoverPage = () => {
   return (
     <div className="relative flex flex-col flex-1 justify-center items-center p-4 pb-20 md:pb-6 overflow-hidden">
       <div className="relative flex justify-center items-center w-full max-w-90 md:max-w-md h-137.5 md:h-150">
-        {visibleProfiles.length === 0 ? (
+        {loadingProfiles ? (
+          <DiscoverShimmer />
+        ) : visibleProfiles.length === 0 ? (
           <div className="p-8 border w-full text-center glass">
             <div className="flex justify-center items-center mx-auto mb-4 border border-glass-border-accent rounded-full w-20 h-20 r">
               <span className="text-3xl">🚀</span>
@@ -127,7 +130,7 @@ const DiscoverPage = () => {
         )}
       </div>
 
-      {visibleProfiles.length > 0 && <ActionBar onSwipe={handleSwipe} />}
+      <ActionBar onSwipe={handleSwipe} loadingProfiles={loadingProfiles} />
     </div>
   );
 };
