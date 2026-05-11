@@ -154,7 +154,10 @@ const AppSidebar = ({
 
           {connectionRequests?.length > 2 && (
             <button
-              onClick={() => connectionRequestsSheet.toggle()}
+              onClick={() => {
+                setIsSidebarOpen?.((prev) => !prev);
+                connectionRequestsSheet.toggle();
+              }}
               className="my-2 w-full btn btn-secondary"
             >
               Show all requests
