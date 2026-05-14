@@ -11,8 +11,8 @@ const __dirname = path.dirname(__filename);
 
 const envFile =
   MODE === "production"
-    ? path.join(__dirname, "../env/.env-production")
-    : path.join(__dirname, "../env/.env-development");
+    ? path.join(__dirname, "../env/.env.production")
+    : path.join(__dirname, "../env/.env.development");
 
 dotenv.config({ path: envFile });
 

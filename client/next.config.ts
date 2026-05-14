@@ -6,7 +6,7 @@ import { nodeLogger } from "./src/services/logger/node.logger";
 const mode =
   process.env.NODE_ENV === "production" ? "production" : "development";
 
-const envFilePath = `./env/.env-${mode}`;
+const envFilePath = `./env/.env.${mode}`;
 
 if (existsSync(envFilePath)) {
   loadEnv({ path: envFilePath });
