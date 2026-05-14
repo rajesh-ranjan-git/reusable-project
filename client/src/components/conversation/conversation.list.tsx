@@ -205,7 +205,6 @@ const ConversationList = ({
     return () => {
       socket.off("received-message", handleLiveMessage);
       socket.off("received-group-message", handleLiveMessage);
-      socket.disconnect();
       socketRef.current = null;
     };
   }, [

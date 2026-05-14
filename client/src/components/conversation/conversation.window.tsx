@@ -488,7 +488,6 @@ const ConversationWindow = ({
       socket.off("group-message-delivered");
       socket.off("message-seen");
       socket.off("group-message-seen");
-      socket.disconnect();
       socketRef.current = null;
     };
   }, [accessToken]);

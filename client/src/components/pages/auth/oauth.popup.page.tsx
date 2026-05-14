@@ -17,9 +17,6 @@ const OAuthPopupPage = () => {
 
       const data = JSON.parse(decodeURIComponent(rawData));
 
-      logger.info("CLIENT_URL from oauth popup page:", CLIENT_URL);
-      logger.info("oAuth data from oauth popup page:", data);
-
       window.opener?.postMessage(data, CLIENT_URL);
 
       window.close();

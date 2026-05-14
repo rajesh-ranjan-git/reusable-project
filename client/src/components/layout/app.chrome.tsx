@@ -19,7 +19,10 @@ import {
 } from "@/types/types/response.types";
 import { useAppStore } from "@/store/store";
 import { useToast } from "@/hooks/toast";
-import { createSocketConnection } from "@/socket/socket";
+import {
+  createSocketConnection,
+  disconnectSocketConnection,
+} from "@/socket/socket";
 import {
   NetworkActionsProvider,
   RelationshipOverrideType,
@@ -421,7 +424,7 @@ const AppChrome = ({ children }: ReactNodeProps) => {
 
     return () => {
       socket.off("online-users");
-      socket.disconnect();
+      disconnectSocketConnection();
       setOnlineUserIds(null);
     };
   }, [accessToken, loggedInUser?.userId, setOnlineUserIds]);
