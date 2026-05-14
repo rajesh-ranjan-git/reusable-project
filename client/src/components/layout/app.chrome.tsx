@@ -28,9 +28,9 @@ import { toTitleCase } from "@/utils/common.utils";
 import { getConversationDisplay } from "@/helpers/conversation.helpers";
 import { mergeUniqueUsersByKey } from "@/helpers/profile.helpers";
 import {
-  connect,
   fetchConnectionRequests,
   fetchConnections,
+  legacyConnect,
 } from "@/lib/actions/connection.actions";
 import { fetchConversationsList } from "@/lib/actions/conversation.action";
 import Header from "@/components/layout/header";
@@ -194,7 +194,7 @@ const AppChrome = ({ children }: ReactNodeProps) => {
         },
       }));
 
-      const response = await connect(userId, status);
+      const response = await legacyConnect(userId, status);
 
       if (!response.success) {
         setRelationshipOverrides((prev) => {
@@ -312,7 +312,7 @@ const AppChrome = ({ children }: ReactNodeProps) => {
         );
       }
 
-      const response = await connect(profile.userId, status);
+      const response = await legacyConnect(profile.userId, status);
 
       if (!response.success) {
         setRelationshipOverrides((prev) => {

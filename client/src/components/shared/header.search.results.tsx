@@ -29,7 +29,7 @@ import { toTitleCase } from "@/utils/common.utils";
 import { getFullName, isUserOnline } from "@/helpers/profile.helpers";
 import { useAppStore } from "@/store/store";
 import { conversationRoutes } from "@/lib/routes/routes";
-import { connect } from "@/lib/actions/connection.actions";
+import { legacyConnect } from "@/lib/actions/connection.actions";
 import { fetchProfiles } from "@/lib/actions/discover.actions";
 
 const HeaderSearchResults = ({
@@ -209,7 +209,10 @@ const HeaderSearchResults = ({
 
       if (isActionSuccessful === false) return;
     } else {
-      const connectResponse = await connect(targetProfile.userId, "interested");
+      const connectResponse = await legacyConnect(
+        targetProfile.userId,
+        "interested",
+      );
 
       if (!connectResponse.success) {
         showToast({
@@ -243,7 +246,10 @@ const HeaderSearchResults = ({
 
       if (isActionSuccessful === false) return;
     } else {
-      const connectResponse = await connect(targetProfile.userId, "rejected");
+      const connectResponse = await legacyConnect(
+        targetProfile.userId,
+        "rejected",
+      );
 
       if (!connectResponse.success) {
         showToast({
@@ -277,7 +283,7 @@ const HeaderSearchResults = ({
 
       if (isActionSuccessful === false) return;
     } else {
-      const connectResponse = await connect(
+      const connectResponse = await legacyConnect(
         targetProfile.userId,
         "not-interested",
       );
