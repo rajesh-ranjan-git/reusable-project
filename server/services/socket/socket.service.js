@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import { HOST_URL, CLIENT_URL } from "../../constants/env.constants.js";
+import { HOST_URL, CLIENT_URL, MODE } from "../../constants/env.constants.js";
 import User from "../../models/user/auth/user.model.js";
 import Connection from "../../models/connection/connection.model.js";
 import { tokenService } from "../auth/token.service.js";
@@ -52,6 +52,7 @@ export const isConnectedSocket = async (socket, targetUserId) => {
 
 export const initializeSocket = (server) => {
   const io = new Server(server, {
+    path: MODE === "production" ? "/brainbox/socket.io" : "/socket.io",
     cors: {
       origin: [HOST_URL, CLIENT_URL],
       credentials: true,

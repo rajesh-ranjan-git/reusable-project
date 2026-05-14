@@ -17,7 +17,7 @@ export const createSocketConnection = ({ token }: SocketConfigType): Socket => {
     withCredentials: true,
     transports: ["websocket", "polling"],
     auth: { token: accessToken },
-    ...(!isLocal && { path: "/socket.io" }),
+    path: isLocal ? "/socket.io" : "/brainbox/socket.io",
     reconnection: true,
     reconnectionAttempts: 10,
     reconnectionDelay: 1_000,
