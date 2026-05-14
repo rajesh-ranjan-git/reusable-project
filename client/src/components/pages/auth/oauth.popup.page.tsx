@@ -6,12 +6,26 @@ import { CLIENT_URL } from "@/constants/env.constants";
 
 const OAuthPopupPage = () => {
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const data = JSON.parse(decodeURIComponent(params.get("data") as string));
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const rawData = params.get("data");
 
-    window.opener?.postMessage(data, CLIENT_URL);
+      if (!rawData) {
+        logger.error("❌ No OAuth data received");
+        return;
+      }
 
-    window.close();
+      const data = JSON.parse(decodeURIComponent(rawData));
+
+      logger.info("CLIENT_URL from oauth popup page:", CLIENT_URL);
+      logger.info("oAuth data from oauth popup page:", data);
+
+      window.opener?.postMessage(data, CLIENT_URL);
+
+      window.close();
+    } catch (error) {
+      logger.error("❌ OAuth popup error:", error);
+    }
   }, []);
 
   return (

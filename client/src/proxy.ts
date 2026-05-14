@@ -24,8 +24,7 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const isAuthenticated =
-    request.cookies.get("isAuthenticated")?.value === "true";
+  const token = request.cookies.get("refreshToken")?.value ?? null;
 
   const isAuthRoute = Object.values(authRoutes).some((route) =>
     pathname.startsWith(route),
@@ -33,11 +32,11 @@ export function proxy(request: NextRequest) {
 
   const isProtected = !isAuthRoute && pathname !== defaultRoutes.landing;
 
-  if (isAuthRoute && isAuthenticated) {
+  if (isAuthRoute && token) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  if (isProtected && !isAuthenticated) {
+  if (isProtected && !token) {
     const loginUrl = new URL(authRoutes.login, request.url);
     return NextResponse.redirect(loginUrl);
   }

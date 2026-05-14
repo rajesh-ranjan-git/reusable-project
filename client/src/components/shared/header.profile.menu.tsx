@@ -17,6 +17,7 @@ import { staticImagesConfig } from "@/config/common.config";
 import { HeaderProfileMenuProps } from "@/types/props/common.props.types";
 import { useAppStore } from "@/store/store";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
+import { getFullName } from "@/helpers/profile.helpers";
 import { toTitleCase } from "@/utils/common.utils";
 import {
   adminRoutes,
@@ -26,9 +27,7 @@ import {
   subscriptionRoutes,
 } from "@/lib/routes/routes";
 import { logoutAction } from "@/lib/actions/auth.actions";
-import { clearCookies } from "@/lib/api/cookiesHandler";
 import ProfileMenuItem from "@/components/shared/profile.menu.item";
-import { getFullName } from "@/helpers/profile.helpers";
 
 const profileMenuItems = {
   profile: {
@@ -101,8 +100,6 @@ const HeaderProfileMenu = ({
     setIsLoggingOut(true);
 
     await logoutAction();
-
-    await clearCookies("isAuthenticated");
 
     clearSessionState();
 

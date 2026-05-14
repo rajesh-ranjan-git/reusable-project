@@ -1,88 +1,82 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { BATCH_SIZE, PREFETCH_AT } from "@/constants/common.constants";
-import { SwipeDirectionType } from "@/types/types/discover.types";
-import { ProfilesResponseType } from "@/types/types/response.types";
+import {
+  ConnectMutationType,
+  SwipeDirectionType,
+} from "@/types/types/discover.types";
 import { UserProfileType } from "@/types/types/profile.types";
 import { useToast } from "@/hooks/toast";
 import { toTitleCase } from "@/utils/common.utils";
-import { fetchProfiles } from "@/lib/actions/discover.actions";
 import { connect } from "@/lib/actions/connection.actions";
+import useDiscoverProfiles from "@/lib/queries/discover.query";
+import { ApiError } from "@/lib/api/apiHandler";
 import ActionBar from "@/components/discover/action.bar";
 import SwipeCard from "@/components/discover/swipe.card";
 import DiscoverShimmer from "@/components/ui/shimmers/discover.shimmer";
+import DiscoverEmpty from "@/components/ui/empty/discover.empty";
+import DiscoverError from "@/components/ui/errors/discover.error";
 
 const DiscoverPage = () => {
-  const [loadingProfiles, setLoadingProfiles] = useState(false);
   const [visibleProfiles, setVisibleProfiles] = useState<UserProfileType[]>([]);
   const [bufferProfiles, setBufferProfiles] = useState<UserProfileType[]>([]);
 
-  const pageRef = useRef(1);
-
   const { showToast } = useToast();
 
-  const handleSwipe = async (
-    direction: SwipeDirectionType,
-    userId?: string,
-  ) => {
-    const targetId =
-      userId ??
-      (visibleProfiles.length > 0
-        ? visibleProfiles[visibleProfiles.length - 1]?.userId
-        : null);
+  const { data, isLoading, fetchNextPage, isFetchingNextPage, isError, error } =
+    useDiscoverProfiles();
 
-    if (targetId) {
-      setVisibleProfiles((prev) => prev.filter((p) => p?.userId !== targetId));
-    }
+  const allProfiles = useMemo(() => {
+    return data?.pages.flatMap((page) => page.data.users) ?? [];
+  }, [data]);
 
-    if (direction === "left") {
-      const notInterestedResponse = await connect(targetId!, "not-interested");
+  const connectMutation = useMutation({
+    mutationFn: async ({ targetId, direction }: ConnectMutationType) => {
+      return await connect(
+        targetId,
+        direction === "left" ? "not-interested" : "interested",
+      );
+    },
 
-      if (!notInterestedResponse.success) {
-        showToast({
-          title: toTitleCase(notInterestedResponse.code),
-          message: notInterestedResponse.message ?? "",
-          variant: "error",
-        });
+    onMutate: async ({ targetId }) => {
+      const removedProfile = visibleProfiles.find((p) => p.userId === targetId);
+
+      setVisibleProfiles((prev) => prev.filter((p) => p.userId !== targetId));
+
+      return { removedProfile };
+    },
+
+    onError: (error, _, context) => {
+      if (context?.removedProfile) {
+        setVisibleProfiles((prev) => [...prev, context.removedProfile!]);
       }
-    } else {
-      const interestedResponse = await connect(targetId!, "interested");
 
-      if (!interestedResponse.success) {
-        showToast({
-          title: toTitleCase(interestedResponse.code),
-          message: interestedResponse.message ?? "",
-          variant: "error",
-        });
-      }
-    }
-  };
-
-  const loadProfiles = async () => {
-    if (loadingProfiles) return;
-    setLoadingProfiles(true);
-
-    try {
-      const response = await fetchProfiles(pageRef.current);
-
-      if (response.success && response?.data) {
-        const data = response?.data as ProfilesResponseType;
-        if (bufferProfiles.length <= BATCH_SIZE) {
-          setBufferProfiles((prev) => [...prev, ...data.users]);
-          pageRef.current += 1;
-        }
-      }
-    } finally {
-      setLoadingProfiles(false);
-    }
-  };
+      showToast({
+        title: toTitleCase(
+          error instanceof ApiError ? error.code : "Connection Request Failed",
+        ),
+        message:
+          error instanceof Error
+            ? error.message
+            : "Something went wrong while sending the request!",
+        variant: "error",
+      });
+    },
+  });
 
   useEffect(() => {
-    if (bufferProfiles.length <= BATCH_SIZE) {
-      loadProfiles();
-    }
-  }, [bufferProfiles]);
+    if (!allProfiles.length) return;
+
+    setBufferProfiles((prev) => {
+      const existingIds = new Set(prev.map((p) => p.userId));
+
+      const newProfiles = allProfiles.filter((p) => !existingIds.has(p.userId));
+
+      return [...prev, ...newProfiles];
+    });
+  }, [allProfiles]);
 
   useEffect(() => {
     if (
@@ -92,45 +86,61 @@ const DiscoverPage = () => {
       const nextChunk = bufferProfiles.slice(0, BATCH_SIZE);
 
       setVisibleProfiles((prev) => [...nextChunk, ...prev]);
+
       setBufferProfiles((prev) => prev.slice(BATCH_SIZE));
     }
   }, [visibleProfiles, bufferProfiles]);
 
   useEffect(() => {
-    loadProfiles();
-  }, []);
+    if (bufferProfiles.length <= BATCH_SIZE && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [bufferProfiles, fetchNextPage, isFetchingNextPage]);
+
+  const handleSwipe = (direction: SwipeDirectionType, userId?: string) => {
+    const targetId =
+      userId ?? visibleProfiles[visibleProfiles.length - 1]?.userId;
+
+    if (!targetId) return;
+
+    connectMutation.mutate({
+      targetId,
+      direction,
+    });
+  };
+
+  const renderDiscoverContent = () => {
+    if (isLoading) {
+      return <DiscoverShimmer />;
+    }
+
+    if (isError || error) {
+      return <DiscoverError error={error} />;
+    }
+
+    if (visibleProfiles.length === 0) {
+      return <DiscoverEmpty />;
+    }
+
+    return visibleProfiles.map((profile, index) => (
+      <SwipeCard
+        key={profile.userId}
+        profile={profile}
+        active={index === visibleProfiles.length - 1}
+        onSwipe={handleSwipe}
+      />
+    ));
+  };
 
   return (
     <div className="relative flex flex-col flex-1 justify-center items-center p-4 pb-20 md:pb-6 overflow-hidden">
       <div className="relative flex justify-center items-center w-full max-w-90 md:max-w-md h-137.5 md:h-150">
-        {loadingProfiles ? (
-          <DiscoverShimmer />
-        ) : visibleProfiles.length === 0 ? (
-          <div className="p-8 border w-full text-center glass">
-            <div className="flex justify-center items-center mx-auto mb-4 border border-glass-border-accent rounded-full w-20 h-20 r">
-              <span className="text-3xl">🚀</span>
-            </div>
-            <h3 className="mb-2 font-bold text-text-primary text-xl">
-              You&apos;re all caught up!
-            </h3>
-            <p className="text-text-secondary text-sm">
-              We&apos;re looking for more developers in your area. Check back
-              later or expand your search distance.
-            </p>
-          </div>
-        ) : (
-          visibleProfiles.map((profile, index) => (
-            <SwipeCard
-              key={profile?.userId}
-              profile={profile}
-              active={index === visibleProfiles.length - 1}
-              onSwipe={handleSwipe}
-            />
-          ))
-        )}
+        {renderDiscoverContent()}
       </div>
 
-      <ActionBar onSwipe={handleSwipe} loadingProfiles={loadingProfiles} />
+      {!error && (
+        <ActionBar onSwipe={handleSwipe} loadingProfiles={isLoading} />
+      )}
     </div>
   );
 };

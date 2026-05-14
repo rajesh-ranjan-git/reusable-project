@@ -1,12 +1,12 @@
 const DiscoverShimmer = () => {
   return (
     <div className="w-full h-full overflow-hidden pointer-events-none glass-heavy">
-      <div className="bottom-0 left-0 absolute p-6 w-full pointer-events-auto">
+      <div className="bottom-0 left-0 absolute p-6 w-full">
         <div className="skeleton"></div>
 
         <div className="mb-2 rounded-lg w-52 h-10 skeleton"></div>
 
-        <div className="mb-3 rounded-md w-40 h-5 shimmer"></div>
+        <div className="mb-3 rounded-md w-40 h-5 skeleton"></div>
 
         <div className="space-y-2 mb-4">
           <div className="rounded-md w-full h-4 skeleton"></div>

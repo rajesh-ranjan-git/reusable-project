@@ -27,7 +27,7 @@ const Sheet = ({ open, onClose, children }: SheetProps) => {
       />
 
       <div
-        className={`top-0 right-0 z-(--z-modal) fixed bg-glass-bg backdrop-blur-sm p-2 border border-glass-border rounded-l-md min-w-96 h-screen overflow-hidden font-semibold text-glass-text-primary text-2xl transition-transform duration-500 ease-in-out ${
+        className={`top-0 right-0 z-(--z-modal) fixed bg-glass-bg backdrop-blur-sm p-2 border border-glass-border md:rounded-l-md h-screen overflow-hidden font-semibold text-glass-text-primary text-2xl transition-transform duration-500 ease-in-out w-72 sm:w-80 ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
         role="dialog"

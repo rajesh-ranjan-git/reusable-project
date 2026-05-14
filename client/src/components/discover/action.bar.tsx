@@ -15,7 +15,7 @@ const ActionBar = ({ onSwipe, loadingProfiles }: ActionBarProps) => {
       <button
         onClick={() => onSwipe("super")}
         disabled={loadingProfiles}
-        className="flex justify-center items-center disabled:opacity-50 p-0 rounded-full w-12 h-12 hover:scale-110 active:scale-95 transition-all disabled:cursor-not-allowed alert alert-info"
+        className="flex justify-center items-center disabled:opacity-50 p-0 rounded-full w-12 h-12 hover:scale-110 active:scale-95 transition-all disabled:cursor-not-allowed disabled:pointer-events-none alert alert-info"
       >
         <LuStar size={24} fill="currentColor" strokeWidth={0} />
       </button>
@@ -23,7 +23,7 @@ const ActionBar = ({ onSwipe, loadingProfiles }: ActionBarProps) => {
       <button
         onClick={() => onSwipe("right")}
         disabled={loadingProfiles}
-        className="flex justify-center items-center disabled:opacity-50 rounded-full w-16 h-16 hover:scale-110 active:scale-95 transition-all disabled:cursor-not-allowed alert alert-success"
+        className="flex justify-center items-center disabled:opacity-50 rounded-full w-16 h-16 hover:scale-110 active:scale-95 transition-all disabled:cursor-not-allowed disabled:pointer-events-none alert alert-success"
       >
         <LuHeart size={32} fill="currentColor" strokeWidth={0} />
       </button>

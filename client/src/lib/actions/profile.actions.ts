@@ -10,7 +10,11 @@ import {
   SkillErrorType,
   SkillType,
 } from "@/types/types/profile.types";
-import { ApiErrorResponseType, ApiResponseType } from "@/types/types/api.types";
+import {
+  ApiErrorResponseType,
+  ApiResponseType,
+  ApiSuccessResponseType,
+} from "@/types/types/api.types";
 import {
   datePropertyValidator,
   listPropertiesValidator,
@@ -26,6 +30,7 @@ import {
   userNameValidator,
 } from "@/validators/auth.validators";
 import { PHONE_REGEX } from "@/constants/regex.constants";
+import { ProfileResponseType } from "@/types/types/response.types";
 
 export const uploadImage = async (
   image: File,
@@ -47,15 +52,11 @@ export const uploadImage = async (
 
 export const fetchProfile = async (
   userName?: string,
-): Promise<ApiResponseType> => {
-  try {
-    return await api.get(
-      `${userName ? `${apiUrls.profile.actionProfile}/${userName}` : apiUrls.profile.actionProfile}`,
-      { requireAuth: true },
-    );
-  } catch (error) {
-    return error as ApiErrorResponseType;
-  }
+): Promise<ApiSuccessResponseType<ProfileResponseType>> => {
+  return await api.get(
+    `${userName ? `${apiUrls.profile.actionProfile}/${userName}` : apiUrls.profile.actionProfile}`,
+    { requireAuth: true },
+  );
 };
 
 export const updateProfile = async (

@@ -1,5 +1,9 @@
 import { FormStateType } from "@/types/types/actions.types";
-import { ApiErrorResponseType, ApiResponseType } from "@/types/types/api.types";
+import {
+  ApiErrorResponseType,
+  ApiResponseType,
+  ApiSuccessResponseType,
+} from "@/types/types/api.types";
 import {
   emailValidator,
   nameValidator,
@@ -10,6 +14,7 @@ import { api } from "@/lib/api/apiHandler";
 import { apiUrls } from "@/lib/api/apiUtils";
 import { stringPropertiesValidator } from "@/validators/common.validators";
 import { propertyConstraintsConfig } from "@/config/profile.config";
+import { VerifyEmailResponseType } from "@/types/types/response.types";
 
 export const registerAction = async (
   prevState: FormStateType,
@@ -323,14 +328,12 @@ export const resendVerificationEmail = async (
   }
 };
 
-export const verifyEmail = async (token: string): Promise<ApiResponseType> => {
-  try {
-    return await api.post(
-      apiUrls.auth.verifyEmail,
-      { token },
-      { requireAuth: true },
-    );
-  } catch (error) {
-    return error as ApiErrorResponseType;
-  }
+export const verifyEmail = async (
+  token: string,
+): Promise<ApiSuccessResponseType<VerifyEmailResponseType>> => {
+  return await api.post(
+    apiUrls.auth.verifyEmail,
+    { token },
+    { requireAuth: true },
+  );
 };
