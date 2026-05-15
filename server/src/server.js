@@ -4,7 +4,12 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import "../services/logger/logger.service.js";
 import { setDbAdapter } from "../services/logger/logger.service.js";
-import { HOST_PORT, HOST_URL, CLIENT_URL } from "../constants/env.constants.js";
+import {
+  CLIENT_URL,
+  HOST_PORT,
+  HOST_URL,
+  MODE,
+} from "../constants/env.constants.js";
 import { httpStatusConfig } from "../config/http.config.js";
 import connectDB from "../db/db.connect.js";
 import authRouter from "../routes/user/auth/auth.routes.js";
@@ -26,6 +31,7 @@ import { initializeSocket } from "../services/socket/socket.service.js";
 import { bannerService } from "../services/banner/banner.service.js";
 import AppError from "../services/error/error.service.js";
 import { responseService } from "../services/response/response.service.js";
+import { defaultResponse } from "../lib/templates/default.response.js";
 
 const app = express();
 
@@ -80,21 +86,25 @@ app.use("/api/v1/conversation", messageRouter);
 
 app.use("/api/v1/push-notifications", pushNotificationRouter);
 
-app.get("/health", (req, res) => {
-  responseService.successResponseHandler(req, res, {
-    statusCode: httpStatusConfig.noContent.statusCode,
-    message: "",
-    data: { uptime: process.uptime(), timestamp: Date.now() },
-  });
-});
-
-app.get("/", (req, res) => {
-  responseService.successResponseHandler(req, res, {
-    statusCode: httpStatusConfig.noContent.statusCode,
-    message: "DevMatch server is running!",
-    data: { uptime: process.uptime(), timestamp: Date.now() },
-  });
-});
+app.get(
+  ["/", "/api", "/api/v1", "/health", "/api/health", "/api/v1/health"],
+  (req, res) => {
+    res
+      .status(httpStatusConfig.success.statusCode)
+      .type("html")
+      .send(
+        defaultResponse({
+          apiBaseUrl: `${HOST_URL}/api/v1`,
+          clientUrl: CLIENT_URL,
+          healthPath: `${HOST_URL}/health`,
+          hostUrl: HOST_URL,
+          mode: MODE,
+          requestPath: req.originalUrl,
+          socketPath: "/brainbox/socket.io",
+        }),
+      );
+  },
+);
 
 app.get("/favicon.ico", (req, res) =>
   responseService.successResponseHandler(req, res, {
