@@ -68,7 +68,7 @@ const seedRBAC = async () => {
     }
 
     const { userId: superAdminUserId } = await authService.register({
-      email: "super.admin@server.com",
+      email: "super.admin@devmatch.rajeshranjan.dev",
       password: "SuperAdmin@0",
       userName: "super_admin",
     });
@@ -81,7 +81,7 @@ const seedRBAC = async () => {
     );
 
     const { userId: adminUserId } = await authService.register({
-      email: "admin@server.com",
+      email: "admin@devmatch.rajeshranjan.dev",
       password: "Admin@01",
       userName: "admin",
     });
@@ -94,7 +94,7 @@ const seedRBAC = async () => {
     );
 
     await authService.register({
-      email: "rajesh@server.com",
+      email: "rajesh@devmatch.rajeshranjan.dev",
       password: "Rajesh@0",
     });
 

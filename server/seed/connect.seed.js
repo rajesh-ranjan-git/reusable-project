@@ -11,6 +11,27 @@ const rl = readline.createInterface({
 const askQuestion = (question) =>
   new Promise((resolve) => rl.question(question, resolve));
 
+const askRequiredQuestion = async (question) => {
+  const answer = (await askQuestion(question)).trim();
+
+  if (!answer) {
+    throw new Error("This value is required.");
+  }
+
+  return answer;
+};
+
+const askPage = async () => {
+  const page = await askRequiredQuestion("Enter user list page: ");
+  const parsedPage = Number(page);
+
+  if (!Number.isInteger(parsedPage) || parsedPage < 1) {
+    throw new Error("Page must be a positive number.");
+  }
+
+  return parsedPage;
+};
+
 async function login(email, password) {
   try {
     const res = await fetch(`${BASE_URL}/auth/login`, {
@@ -39,9 +60,9 @@ async function login(email, password) {
   }
 }
 
-async function getUsers(accessToken) {
+async function getUsers(accessToken, page) {
   try {
-    const res = await fetch(`${BASE_URL}/admin/user/list?page=1`, {
+    const res = await fetch(`${BASE_URL}/admin/user/list?page=${page}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -89,19 +110,23 @@ async function connectUser(accessToken, userId) {
 
 async function main() {
   try {
+    const page = await askPage();
+    const targetUserId = await askRequiredQuestion("Enter target user id: ");
+
     console.log("\nLogging in admin...");
     const adminAccessToken = await login(
-      "super.admin@server.com",
+      "super.admin@devmatch.rajeshranjan.dev",
       "SuperAdmin@0",
     );
 
     if (!adminAccessToken) {
       console.log("Admin login failed.");
-      process.exit(1);
+      process.exitCode = 1;
+      return;
     }
 
-    console.log("Fetching users...");
-    const users = await getUsers(adminAccessToken);
+    console.log(`Fetching users from page ${page}...`);
+    const users = await getUsers(adminAccessToken, page);
 
     const emails = users.map((user) => user.accounts[0].email).filter(Boolean);
 
@@ -117,14 +142,15 @@ async function main() {
         continue;
       }
 
-      await connectUser(userAccessToken, "69fee2482525cd26f8198232");
+      await connectUser(userAccessToken, targetUserId);
     }
 
     console.log("\nDone.");
-    process.exit(0);
   } catch (error) {
-    console.error(error);
-    process.exit(1);
+    console.error(error.message || error);
+    process.exitCode = 1;
+  } finally {
+    rl.close();
   }
 }
 

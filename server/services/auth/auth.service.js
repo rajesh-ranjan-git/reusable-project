@@ -49,7 +49,7 @@ class AuthService {
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
 
     const user = await User.create({
-      emailVerified: email.endsWith("@server.com"),
+      emailVerified: email.endsWith("@devmatch.rajeshranjan.dev"),
       status: "active",
     });
 
@@ -76,7 +76,7 @@ class AuthService {
 
     await SocialLink.create({ user: user.id });
 
-    if (!email.endsWith("@server.com")) {
+    if (!email.endsWith("@devmatch.rajeshranjan.dev")) {
       const verificationToken = await this._createVerificationToken(
         user.id,
         "email_verification",
@@ -445,6 +445,7 @@ class AuthService {
 
     await sessionService.revokeAllUserSessions(record.user);
     await record.deleteOne();
+    await emailService.sendPasswordResetConfirmationEmail(account.email);
 
     await activityService.logActivity({
       userId: record.user,

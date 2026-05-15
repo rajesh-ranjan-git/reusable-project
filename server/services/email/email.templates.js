@@ -180,6 +180,47 @@ export const passwordResetEmail = ({ appName, resetUrl }) => {
   );
 };
 
+export const passwordResetConfirmationEmail = ({
+  appName,
+  resetPasswordUrl,
+}) => {
+  return e(
+    emailLayout,
+    {
+      appName,
+      preview: `Your ${appName} password was reset`,
+    },
+    e("h1", { style: styles.heading }, "Your password has been reset"),
+    e(
+      "p",
+      { style: styles.paragraph },
+      "The password for your ",
+      e("strong", null, appName),
+      " account was changed successfully.",
+    ),
+    e(
+      "p",
+      { style: styles.paragraph },
+      "If this was you, no further action is needed. You can sign in with your new password.",
+    ),
+    e(
+      "p",
+      { style: styles.muted },
+      "If you did not reset your password, secure your account right away by requesting a new password reset link.",
+    ),
+    e(actionLink, {
+      href: resetPasswordUrl,
+      label: "Secure my account",
+      variant: "danger",
+    }),
+    e(
+      "p",
+      { style: styles.muted },
+      "For your security, all active sessions were signed out when your password changed.",
+    ),
+  );
+};
+
 export const welcomeEmail = ({ appName, profileUrl, userName }) => {
   return e(
     emailLayout,

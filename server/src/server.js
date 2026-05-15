@@ -80,6 +80,22 @@ app.use("/api/v1/conversation", messageRouter);
 
 app.use("/api/v1/push-notifications", pushNotificationRouter);
 
+app.get("/health", (req, res) => {
+  responseService.successResponseHandler(req, res, {
+    statusCode: httpStatusConfig.noContent.statusCode,
+    message: "",
+    data: { uptime: process.uptime(), timestamp: Date.now() },
+  });
+});
+
+app.get("/", (req, res) => {
+  responseService.successResponseHandler(req, res, {
+    statusCode: httpStatusConfig.noContent.statusCode,
+    message: "DevMatch server is running!",
+    data: { uptime: process.uptime(), timestamp: Date.now() },
+  });
+});
+
 app.get("/favicon.ico", (req, res) =>
   responseService.successResponseHandler(req, res, {
     statusCode: httpStatusConfig.noContent.statusCode,

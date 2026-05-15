@@ -344,7 +344,7 @@ const seedUsers = async () => {
               ];
       const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
 
-      const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${i}@devmatch.com`;
+      const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${i}@devmatch.rajeshranjan.dev`;
 
       const randomAvatarId =
         gender === "male"

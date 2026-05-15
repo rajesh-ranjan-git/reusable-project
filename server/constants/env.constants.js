@@ -24,9 +24,12 @@ export const CLIENT_URL = process.env.CLIENT_URL;
 export const LOG_LEVEL = process.env.LOG_LEVEL;
 export const LOG_TARGET = process.env.LOG_TARGET;
 
-export const EMAIL_FROM_ADDRESS = process.env.RESEND_FROM;
-export const EMAIL_TO_ADDRESS = process.env.RESEND_TO;
-export const RESEND_API_KEY = process.env.RESEND_API_KEY;
+export const AWS_SES_REGION = process.env.AWS_SES_REGION;
+export const AWS_EMAIL_FROM = process.env.AWS_EMAIL_FROM;
+export const AWS_EMAIL_TO = process.env.AWS_EMAIL_TO;
+export const AWS_DEV_EMAIL_OVERRIDE = process.env.AWS_DEV_EMAIL_OVERRIDE;
+export const AWS_SES_ACCESS_KEY_ID = process.env.AWS_SES_ACCESS_KEY_ID;
+export const AWS_SES_SECRET_ACCESS_KEY = process.env.AWS_SES_SECRET_ACCESS_KEY;
 
 export const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
 export const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
