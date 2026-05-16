@@ -46,7 +46,7 @@ const ProfileBio = ({ bio, isOwnProfile }: ProfileBioProps) => {
           </button>
         ) : (
           <button
-            className="top-2 right-2 absolute flex items-center gap-2 pl-3 text-sm btn btn-secondary"
+            className="top-2 right-2 absolute flex items-center gap-2 p-2 md:pr-3 text-sm btn btn-secondary"
             onClick={() => setCurrentForm("bio")}
           >
             <IoMdAdd size={20} />
