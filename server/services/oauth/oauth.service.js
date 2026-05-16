@@ -1,9 +1,10 @@
 import { OAuth2Client } from "google-auth-library";
 import {
+  MODE,
+  HOST_URL,
+  GOOGLE_OAUTH_CLIENT_ID,
   GITHUB_OAUTH_CLIENT_ID,
   GITHUB_OAUTH_CLIENT_SECRET,
-  GOOGLE_OAUTH_CLIENT_ID,
-  HOST_URL,
   LINKEDIN_OAUTH_CLIENT_ID,
   LINKEDIN_OAUTH_CLIENT_SECRET,
 } from "../../constants/env.constants.js";
@@ -36,10 +37,15 @@ class OAuthService {
   };
 
   getLinkedinAccessToken = async (code) => {
+    const redirect_uri =
+      MODE === "production"
+        ? `${HOST_URL}/brainbox/api/v1/oauth/provider/linkedin`
+        : `${HOST_URL}/api/v1/oauth/provider/linkedin`;
+
     const params = new URLSearchParams({
       grant_type: "authorization_code",
       code,
-      redirect_uri: `${HOST_URL}/api/v1/oauth/provider/linkedin`,
+      redirect_uri: redirect_uri,
       client_id: LINKEDIN_OAUTH_CLIENT_ID,
       client_secret: LINKEDIN_OAUTH_CLIENT_SECRET,
     });
