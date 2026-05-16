@@ -44,7 +44,7 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
           ref={ref}
           {...props}
           onChange={handleChange}
-          className={`bg-glass-bg-subtle focus:bg-glass-bg disabled:opacity-50 focus:shadow-focus-ring focus:border-glass-border-accent backdrop-blur-glass-blur-light px-4 py-2.5 border rounded-md outline-none w-full text-text-primary placeholder:text-text-muted text-sm transition-all duration-150 disabled:cursor-not-allowed ${startIcon ? "pl-10" : ""} ${endIcon ? "pr-10" : ""} ${error ? "border-status-error-border" : ""} ${className}`}
+          className={`bg-glass-bg-subtle focus:bg-glass-bg disabled:opacity-50 focus:shadow-focus-ring focus:border-glass-border-accent backdrop-blur-glass-blur-light px-4 py-2.5 border rounded-md outline-none w-full text-text-primary placeholder:text-text-muted text-base transition-all duration-150 disabled:cursor-not-allowed ${startIcon ? "pl-10" : ""} ${endIcon ? "pr-10" : ""} ${error ? "border-status-error-border" : ""} ${className}`}
         />
 
         {endIcon && (

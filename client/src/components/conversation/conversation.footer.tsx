@@ -121,7 +121,7 @@ const ConversationFooter = ({
           onKeyDown={handleKeyDown}
           placeholder="Type a message..."
           disabled={isSending}
-          className="[&::-webkit-scrollbar]:hidden mt-1 pl-4 h-auto [-ms-overflow-style:none] overflow-y-auto resize-none [scrollbar-width:none]"
+          className="[&::-webkit-scrollbar]:hidden mt-1 pl-4 h-auto [-ms-overflow-style:none] overflow-y-auto resize-none scrollbar-none"
         />
       </div>
 

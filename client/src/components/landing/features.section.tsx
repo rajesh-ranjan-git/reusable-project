@@ -62,7 +62,7 @@ const FeaturesSection = () => {
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          className="[&::-webkit-scrollbar]:hidden flex items-stretch gap-6 lg:grid lg:grid-cols-3 -mx-6 md:-mx-8 lg:mx-auto px-6 md:px-8 pt-4 pb-8 [-ms-overflow-style:none] overflow-x-auto scroll-smooth snap-mandatory snap-x [scrollbar-width:none]"
+          className="[&::-webkit-scrollbar]:hidden flex items-stretch gap-6 lg:grid lg:grid-cols-3 -mx-6 md:-mx-8 lg:mx-auto px-6 md:px-8 pt-4 pb-8 [-ms-overflow-style:none] overflow-x-auto scroll-smooth snap-mandatory snap-x scrollbar-none"
         >
           {features.map((feature, idx) => {
             const Icon = feature.icon;

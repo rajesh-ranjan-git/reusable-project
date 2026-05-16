@@ -94,7 +94,7 @@ const SubscriptionPage = ({ hideHeader }: SubscriptionPageProps) => {
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          className="[&::-webkit-scrollbar]:hidden flex items-center gap-6 lg:gap-8 lg:grid lg:grid-cols-3 -mx-6 md:-mx-8 lg:mx-auto px-6 md:px-8 py-8 max-w-6xl [-ms-overflow-style:none] overflow-x-auto scroll-smooth snap-mandatory snap-x [scrollbar-width:none]"
+          className="[&::-webkit-scrollbar]:hidden flex items-center gap-6 lg:gap-8 lg:grid lg:grid-cols-3 -mx-6 md:-mx-8 lg:mx-auto px-6 md:px-8 py-8 max-w-6xl [-ms-overflow-style:none] overflow-x-auto scroll-smooth snap-mandatory snap-x scrollbar-none"
         >
           {pricingPlans.map((plan) => (
             <div

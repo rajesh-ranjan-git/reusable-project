@@ -13,14 +13,30 @@ declare global {
 
 export const loadGoogleScript = () => {
   try {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
+      const existingScript = document.querySelector(
+        'script[src="https://accounts.google.com/gsi/client"]',
+      );
+
+      if (existingScript) {
+        resolve(true);
+        return;
+      }
+
       const script = document.createElement("script");
+
       script.src = "https://accounts.google.com/gsi/client";
-      script.onload = resolve;
+      script.async = true;
+      script.defer = true;
+
+      script.onload = () => resolve(true);
+
+      script.onerror = () => reject("Failed to load Google SDK");
+
       document.body.appendChild(script);
     });
   } catch (error) {
-    return error;
+    return Promise.reject(error);
   }
 };
 
@@ -34,19 +50,26 @@ export const handleGoogleLogin = () => {
 
       window.google.accounts.id.initialize({
         client_id: oAuthConfig.google.clientId,
+
         callback: (response: any) => {
+          if (!response?.credential) {
+            reject("Google login failed");
+            return;
+          }
+
           resolve(response.credential);
         },
+
+        use_fedcm_for_prompt: true,
+
+        auto_select: false,
+        cancel_on_tap_outside: true,
       });
 
-      window.google.accounts.id.prompt((notification: any) => {
-        if (notification.isNotDisplayed()) {
-          reject("Google login failed");
-        }
-      });
+      window.google.accounts.id.prompt();
     });
   } catch (error) {
-    return error;
+    return Promise.reject(error);
   }
 };
 
