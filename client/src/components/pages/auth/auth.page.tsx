@@ -137,7 +137,8 @@ const AuthPage = () => {
         setAccessToken(providerLoginData.accessToken);
         setLoggedInUser(providerLoginData.user);
 
-        router.push(defaultRoutes.landing);
+        router.replace(defaultRoutes.landing);
+        router.refresh();
       }
     }
   };
@@ -164,7 +165,8 @@ const AuthPage = () => {
       if (pathname === authRoutes.register) {
         handleToggleMode();
       } else {
-        router.push(defaultRoutes.landing);
+        router.replace(defaultRoutes.landing);
+        router.refresh();
       }
     }
   }, [state]);

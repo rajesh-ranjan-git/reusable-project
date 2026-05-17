@@ -27,6 +27,8 @@ const AdminSidebar = ({
   const pathname = usePathname();
   const router = useRouter();
 
+  const loggedInUser = useAppStore((state) => state.loggedInUser);
+  const isLoggingOut = useAppStore((state) => state.isLoggingOut);
   const setIsLoggingOut = useAppStore((state) => state.setIsLoggingOut);
   const clearSessionState = useAppStore((state) => state.clearSessionState);
 
@@ -39,15 +41,18 @@ const AdminSidebar = ({
   ];
 
   const handleLogout = async () => {
-    setIsLoggingOut(true);
+    try {
+      setIsLoggingOut(true);
 
-    await logoutAction();
+      await logoutAction();
 
-    clearSessionState();
+      clearSessionState();
 
-    router.push(defaultRoutes.landing);
-
-    setTimeout(() => setIsLoggingOut(false), 0);
+      router.replace(defaultRoutes.landing);
+      router.refresh();
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   return (

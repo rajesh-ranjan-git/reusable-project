@@ -97,16 +97,21 @@ const HeaderProfileMenu = ({
   };
 
   const handleLogout = async () => {
-    setIsLoggingOut(true);
+    try {
+      setIsLoggingOut(true);
 
-    await logoutAction();
+      await logoutAction();
 
-    clearSessionState();
+      clearSessionState();
 
-    router.push(defaultRoutes.landing);
-    onClose();
+      router.replace(defaultRoutes.landing);
 
-    setTimeout(() => setIsLoggingOut(false), 0);
+      onClose();
+
+      router.refresh();
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   return (
