@@ -356,10 +356,16 @@ const AppSidebar = ({
             </div>
           ) : (
             <p className="my-auto text-sm text-center">
-              <Link href={defaultRoutes.discover} className="text-text-primary">
+              <Link
+                onClick={
+                  setIsSidebarOpen ? () => setIsSidebarOpen(false) : undefined
+                }
+                href={defaultRoutes.discover}
+                className="text-text-primary"
+              >
                 Discover
-              </Link>{" "}
-              fellow developers to connect...
+              </Link>
+              &nbsp;fellow developers to connect...
             </p>
           )}
         </div>
