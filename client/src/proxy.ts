@@ -1,21 +1,9 @@
-import { authRoutes, defaultRoutes } from "@/lib/routes/routes";
-import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
+import { authRoutes, defaultRoutes } from "@/lib/routes/routes";
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-
-  if (
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/api") ||
-    pathname.startsWith("/static") ||
-    pathname.startsWith("/assets") ||
-    pathname === "/favicon.ico" ||
-    pathname === "/manifest.json" ||
-    pathname.match(/\.(.*)$/)
-  ) {
-    return NextResponse.next();
-  }
 
   if (
     pathname.startsWith(authRoutes.verifyEmail) ||
@@ -45,5 +33,7 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next|api|favicon.ico|manifest.json).*)"],
+  matcher: [
+    "/((?!api|_next|static|assets|favicon.ico|manifest.json|.*\\..*).*)",
+  ],
 };
