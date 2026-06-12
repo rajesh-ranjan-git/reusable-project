@@ -1,0 +1,304 @@
+import { httpStatusConfig } from "../../../config/http.config.js";
+import Account from "../../../models/user/auth/account.model.js";
+import Profile from "../../../models/user/profile/profile.model.js";
+import {
+  asyncHandler,
+  omitObjectProperties,
+} from "../../../utils/common.utils.js";
+import { sanitizeMongoData } from "../../../db/db.utils.js";
+import {
+  validateRegister,
+  validateLogin,
+  validateResetPassword,
+  validateUpdatePassword,
+  emailValidator,
+  passwordValidator,
+} from "../../../validators/auth.validator.js";
+import { authService } from "../../../services/auth/auth.service.js";
+import { rbacService } from "../../../services/rbac/rbac.service.js";
+import { responseService } from "../../../services/response/response.service.js";
+import AppError from "../../../services/error/error.service.js";
+import { stringPropertiesValidator } from "../../../validators/common.validator.js";
+import { propertyConstraints } from "../../../config/common.config.js";
+
+export const register = asyncHandler(async (req, res) => {
+  const value = validateRegister(req.data.body);
+
+  const result = await authService.register(value, req.ip);
+
+  if (!result) {
+    throw AppError.internal({
+      message: "Failed to register new user!",
+      code: "REGISTRATION FAILED",
+    });
+  }
+
+  return responseService.successResponseHandler(req, res, {
+    status: "REGISTRATION SUCCESS",
+    statusCode: httpStatusConfig.created.statusCode,
+    message: result.message,
+    data: { user: result.userId },
+  });
+});
+
+export const login = asyncHandler(async (req, res) => {
+  const value = validateLogin(req.data.body);
+
+  const { user, tokens } = await authService.login(value, {
+    ipAddress: req.ip,
+    device: req.headers["user-agent"],
+  });
+
+  if (!user || !tokens) {
+    throw AppError.internal({
+      message: "Failed to login!",
+      code: "LOGIN FAILED",
+    });
+  }
+
+  res.cookie("refreshToken", tokens.refreshToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    expires: tokens.refreshTokenExpiry,
+    path: "/",
+  });
+
+  return responseService.successResponseHandler(req, res, {
+    status: "LOGIN SUCCESS",
+    message: "Logged in successfully!",
+    data: {
+      user,
+      accessToken: tokens.accessToken,
+      expiresIn: tokens.accessTokenExpiresIn,
+    },
+  });
+});
+
+export const logout = asyncHandler(async (req, res) => {
+  const refreshToken = req.cookies?.refreshToken;
+
+  if (refreshToken) {
+    await authService.logout(req.data.userId, refreshToken, req.ip);
+  }
+
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+  });
+
+  return responseService.successResponseHandler(req, res, {
+    status: "LOGOUT SUCCESS",
+    message: "Logged out successfully!",
+  });
+});
+
+export const verifyEmail = asyncHandler(async (req, res) => {
+  const { token } = req.data.body;
+
+  if (!token) {
+    throw AppError.badRequest({
+      message: "Verification token is required!",
+      code: "TOKEN VALIDATION FAILED",
+      details: { token },
+    });
+  }
+
+  const result = await authService.verifyEmail(token);
+
+  if (!result) {
+    throw AppError.internal({
+      message: "Failed to verify email!",
+      code: "EMAIL VERIFICATION FAILED",
+    });
+  }
+
+  return responseService.successResponseHandler(req, res, {
+    status: "EMAIL VERIFICATION SUCCESS",
+    message: result.message,
+    data: { email: result.email },
+  });
+});
+
+export const resendVerification = asyncHandler(async (req, res) => {
+  const { email } = req.data.body;
+
+  const {
+    isEmailValid,
+    message: emailErrorMessage,
+    validatedEmail,
+  } = emailValidator(email);
+
+  if (!isEmailValid) {
+    throw AppError.badRequest({
+      message: emailErrorMessage,
+      code: "EMAIL VALIDATION FAILED",
+      details: { email },
+    });
+  }
+
+  const result = await authService.resendVerificationEmail(validatedEmail);
+
+  if (!result) {
+    throw AppError.internal({
+      message: "Failed to resend verification email!",
+      code: "EMAIL VERIFICATION FAILED",
+    });
+  }
+
+  return responseService.successResponseHandler(req, res, {
+    status: "EMAIL VERIFICATION SENT",
+    message: result.message,
+  });
+});
+
+export const forgotPassword = asyncHandler(async (req, res) => {
+  const { email } = req.data.body;
+
+  const {
+    isEmailValid,
+    message: emailErrorMessage,
+    validatedEmail,
+  } = emailValidator(email);
+
+  if (!isEmailValid) {
+    throw AppError.badRequest({
+      message: emailErrorMessage,
+      code: "EMAIL VALIDATION FAILED",
+      details: { email },
+    });
+  }
+
+  const result = await authService.forgotPassword(validatedEmail, req.ip);
+
+  if (!result) {
+    throw AppError.internal({
+      message: "Failed to send password reset link!",
+      code: "PASSWORD RESET LINK FAILED",
+    });
+  }
+
+  return responseService.successResponseHandler(req, res, {
+    status: "PASSWORD RESET LINK SENT",
+    message: result.message,
+  });
+});
+
+export const resetPassword = asyncHandler(async (req, res) => {
+  const { token, password } = validateResetPassword(req.data.body);
+
+  const result = await authService.resetPassword(token, password, req.ip);
+
+  if (!result) {
+    throw AppError.internal({
+      message: "Failed to reset password!",
+      code: "PASSWORD RESET FAILED",
+    });
+  }
+
+  return responseService.successResponseHandler(req, res, {
+    status: "PASSWORD RESET SUCCESS",
+    message: result.message,
+  });
+});
+
+export const updatePassword = asyncHandler(async (req, res) => {
+  const { currentPassword, newPassword } = validateUpdatePassword(
+    req.data.body,
+  );
+
+  const result = await authService.updatePassword(
+    req.data.userId,
+    currentPassword,
+    newPassword,
+    req.ip,
+  );
+
+  if (!result) {
+    throw AppError.internal({
+      message: "Failed to update password!",
+      code: "PASSWORD UPDATE FAILED",
+    });
+  }
+
+  return responseService.successResponseHandler(req, res, {
+    status: "PASSWORD UPDATE SUCCESS",
+    message: result.message,
+  });
+});
+
+export const refreshTokens = asyncHandler(async (req, res) => {
+  const refreshToken = req.cookies?.refreshToken;
+
+  if (!refreshToken) {
+    throw AppError.badRequest({
+      message: "Refresh token is required!",
+      code: "TOKEN VALIDATION FAILED",
+      details: { token: refreshToken },
+    });
+  }
+
+  const tokens = await authService.refreshTokens(refreshToken, req.ip);
+
+  if (!tokens) {
+    throw AppError.internal({
+      message: "Failed to refresh token!",
+      code: "TOKENS REFRESH FAILED",
+    });
+  }
+
+  res.cookie("refreshToken", tokens.refreshToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    expires: tokens.refreshTokenExpiry,
+    path: "/",
+  });
+
+  return responseService.successResponseHandler(req, res, {
+    status: "TOKENS REFRESH SUCCESS",
+    message: "Your tokens has been refreshed successfully!",
+    data: {
+      accessToken: tokens.accessToken,
+      expiresIn: tokens.accessTokenExpiresIn,
+    },
+  });
+});
+
+export const getMe = asyncHandler(async (req, res) => {
+  const user = req.data.user;
+  const userRoles = req.data.roles;
+
+  const profile = await Profile.findOne({
+    user: user.id,
+  }).select("-_id userName firstName lastName avatar cover");
+
+  const userRoleLevel = await rbacService.getHighestRoleLevel(userRoles);
+  const userRoleName = userRoles.reduce(
+    (acc, curr) => (curr.priority === userRoleLevel ? curr.name : acc),
+    null,
+  );
+
+  const userFields = {
+    userId: user.id,
+    status: user.status,
+    email: user.email,
+    role: userRoleName,
+    ...omitObjectProperties(sanitizeMongoData(profile), [
+      "id",
+      "cover",
+      "age",
+      "totalExperience",
+      "currentJobRole",
+      "topSkills",
+    ]),
+  };
+
+  return responseService.successResponseHandler(req, res, {
+    status: "FETCH USER SUCCESS",
+    message: "User details fetched successfully!",
+    data: { user: userFields },
+  });
+});

@@ -1,0 +1,13 @@
+export const NAME_REGEX = /^[A-Za-z]+$/;
+export const USERNAME_REGEX = /^[A-Za-z0-9!@#$%&_]{4,}$/;
+export const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+export const PASSWORD_REGEX =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%&_]).{6,}$/;
+export const UPPER_CASE_REGEX = /[A-Z]/;
+export const LOWER_CASE_REGEX = /[a-z]/;
+export const NUMBER_REGEX = /\d/;
+export const ALLOWED_SPECIAL_CHARACTERS_REGEX = /[@#$%&]/;
+export const PHONE_REGEX = /^\d{10}$/;
+export const COUNTRY_CODE_REGEX = /^\d{1,3}$/;
+export const PIN_CODE_REGEX = /^\d{6}$/;
+export const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;

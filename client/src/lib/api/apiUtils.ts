@@ -1,0 +1,62 @@
+export const apiUrls = {
+  auth: {
+    refresh: "/auth/refresh",
+    fetchMe: "/auth/me",
+    register: "/auth/register",
+    login: "/auth/login",
+    logout: "/auth/logout",
+    updatePassword: "/auth/password",
+    forgotPassword: "/auth/password/forgot",
+    resetPassword: "/auth/password/reset",
+    verifyEmail: "/auth/email/verify",
+    resendVerification: "/auth/email/verification/resend",
+  },
+  oAuth: {
+    login: "/oauth/provider",
+    unlinkProvider: "/oauth/provider/unlink",
+  },
+  admin: {
+    listUsers: "/admin/user/list",
+    actionUser: "/admin/user",
+    listRoles: "/admin/roles",
+    assignRole: "/admin/role/assign",
+    actionRole: "/admin/role/assign",
+    fetchActivityLogs: "/admin/activity",
+    fetchStats: "/admin/stats",
+  },
+  activity: {
+    fetchActivities: "/user/activity",
+    fetchActivityTypes: "/user/activity/types",
+    clearActivities: "/user/activity/clear",
+  },
+  session: {
+    fetchActiveSessions: "/user/session",
+    fetchSessionCount: "/user/session/count",
+    revokeSession: "/user/session/revoke",
+    revokeOtherSessions: "/user/session/revoke/other",
+  },
+  user: {
+    actionAccount: "/user/account",
+    dashboardSummary: "/user/dashboard/summary",
+    updateEmail: "/user/email",
+  },
+  profile: {
+    actionProfile: "/user/profile",
+    updateUserName: "/user/profile/userName",
+    updateGender: "/user/profile/gender",
+    updatePhone: "/user/profile/phone",
+    updateDob: "/user/profile/dob",
+    uploadImageToDrive: "/user/profile/drive/upload",
+    uploadImageToCloudinary: "/user/profile/cloudinary/upload",
+    updateSkills: "/user/profile/skills",
+    updateExperience: "/user/profile/experience",
+  },
+  social: {
+    actionSocialLinks: "/user/social",
+  },
+  address: {
+    actionAddress: "/user/address",
+    createAddress: "/user/address/create",
+    setDefaultAddress: "/user/address/default",
+  },
+};

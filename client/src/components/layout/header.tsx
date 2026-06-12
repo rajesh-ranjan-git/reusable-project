@@ -1,0 +1,289 @@
+"use client";
+
+import { MouseEvent, useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { LuBell, LuMenu, LuSearch, LuX } from "react-icons/lu";
+import { SEARCH_DEBOUNCE_MS } from "@/constants/common.constants";
+import { staticImagesConfig } from "@/config/common.config";
+import { HeaderProps } from "@/types/props/common.props.types";
+import { useAppStore } from "@/store/store";
+import { toTitleCase } from "@/utils/common.utils";
+import {
+  adminRoutes,
+  authRoutes,
+  defaultRoutes,
+  subscriptionRoutes,
+} from "@/lib/routes/routes";
+import Logo from "@/components/logo/logo";
+import ThemeToggle from "@/components/theme/theme.toggle";
+import AppSidebar from "@/components/layout/app.sidebar";
+import HeaderNotificationMenu from "@/components/shared/header.notification.menu";
+import HeaderProfileMenu from "@/components/shared/header.profile.menu";
+import FormInput from "@/components/forms/shared/form.input";
+import HeaderSearchResults from "@/components/shared/header.search.results";
+
+const Header = ({
+  type,
+  isSidebarOpen,
+  setIsSidebarOpen,
+  sidebarProps,
+}: HeaderProps) => {
+  const [isSearchResultsOpen, setIsSearchResultsOpen] = useState(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const [isNotificationMenuOpen, setIsNotificationMenuOpen] = useState(false);
+  const [searchInputValue, setSearchInputValue] = useState("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const pathname = usePathname();
+
+  const loggedInUser = useAppStore((state) => state.loggedInUser);
+  const currentAdminPath =
+    type === "admin" ? toTitleCase(pathname.split("/")[2] ?? "") : null;
+
+  const toggleSearchResultsBox = (e: MouseEvent) => {
+    e.stopPropagation();
+
+    if (isSidebarOpen && setIsSidebarOpen) {
+      setIsSidebarOpen(false);
+    }
+
+    setIsProfileMenuOpen(false);
+    setIsNotificationMenuOpen(false);
+
+    if (searchInputValue.trim()) {
+      setIsSearchResultsOpen(true);
+    }
+  };
+
+  const toggleProfileMenu = (e: MouseEvent) => {
+    e.stopPropagation();
+
+    if (isSidebarOpen && setIsSidebarOpen) {
+      setIsSidebarOpen(false);
+    }
+
+    setIsProfileMenuOpen(!isProfileMenuOpen);
+    setIsNotificationMenuOpen(false);
+  };
+
+  const toggleNotificationMenu = (e: MouseEvent) => {
+    e.stopPropagation();
+
+    if (isSidebarOpen && setIsSidebarOpen) {
+      setIsSidebarOpen(false);
+    }
+
+    setIsNotificationMenuOpen(!isNotificationMenuOpen);
+    setIsProfileMenuOpen(false);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchInputValue(value);
+
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+
+    if (!value.trim()) {
+      setDebouncedSearchQuery("");
+      setIsSearchResultsOpen(false);
+      return;
+    }
+
+    setIsSearchResultsOpen(true);
+
+    debounceRef.current = setTimeout(() => {
+      setDebouncedSearchQuery(value);
+    }, SEARCH_DEBOUNCE_MS);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, []);
+
+  return (
+    <>
+      <header
+        className={`top-0 right-0 left-0 z-(--z-sticky) flex justify-between items-center px-2 md:px-6 backdrop-blur-sm h-16 glass-nav ${type === "landing" ? "fixed px-4 md:px-16 md:h-20" : "sticky"}`}
+      >
+        <div className="flex items-center gap-2 md:gap-4">
+          {type !== "landing" && sidebarProps && (
+            <button
+              onClick={
+                setIsSidebarOpen ? () => setIsSidebarOpen(true) : () => {}
+              }
+              className="md:hidden px-0 py-1 text-text-secondary hover:text-text-primary transition-colors"
+            >
+              <LuMenu size={24} />
+            </button>
+          )}
+
+          {type === "admin" ? (
+            <Link
+              href={adminRoutes.dashboard}
+              className="group flex flex-1 items-center gap-2 w-54 overflow-hidden"
+            >
+              <h1 className="pt-1.5 font-alkatra md:text-4xl truncate tracking-wider">
+                {currentAdminPath}
+              </h1>
+            </Link>
+          ) : (
+            <Logo type={type} />
+          )}
+        </div>
+
+        {type === "landing" ? (
+          <nav className="hidden lg:flex items-center gap-4">
+            <Link
+              href="#features"
+              className="text-sm transition-colors ease-in-out btn btn-ghost"
+            >
+              Features
+            </Link>
+            <Link
+              href="#community"
+              className="text-sm transition-colors ease-in-out btn btn-ghost"
+            >
+              Community
+            </Link>
+            <Link
+              href={subscriptionRoutes.subscription}
+              className="text-sm transition-colors ease-in-out btn btn-ghost"
+            >
+              Subscription
+            </Link>
+          </nav>
+        ) : (
+          <div className="hidden md:block relative flex-1 mx-6 max-w-md">
+            <FormInput
+              value={searchInputValue}
+              placeholder={
+                type === "admin"
+                  ? "Search stats, users..."
+                  : "Search developers, skills..."
+              }
+              onChange={(e) => handleSearchChange(e.target.value)}
+              onClick={toggleSearchResultsBox}
+              startIcon={<LuSearch />}
+            />
+
+            <HeaderSearchResults
+              isOpen={isSearchResultsOpen}
+              onClose={() => setIsSearchResultsOpen(false)}
+              searchQuery={debouncedSearchQuery}
+            />
+          </div>
+        )}
+
+        {!loggedInUser ? (
+          <div className="flex items-center gap-2">
+            <span className="hidden md:flex shadow-md badge badge-blue">
+              v1.0
+            </span>
+
+            <ThemeToggle />
+
+            <Link href={authRoutes.login} className="text-sm btn btn-secondary">
+              Log in
+            </Link>
+
+            <Link
+              href={defaultRoutes.landing}
+              className="hidden md:block text-text-on-accent text-sm btn btn-primary"
+            >
+              Open App
+            </Link>
+          </div>
+        ) : (
+          <div className="flex items-center gap-1.5 md:gap-4">
+            <ThemeToggle />
+
+            <div className="relative">
+              <button
+                onClick={toggleNotificationMenu}
+                className={`hover:text-text-primary glass transition-colors relative p-1.5 rounded-lg ${isNotificationMenuOpen ? "text-text-primary" : "text-text-secondary"}`}
+              >
+                <LuBell size={20} />
+                <span className="top-1.5 right-1.5 absolute bg-red-500 border border-bg rounded-full w-2 h-2"></span>
+              </button>
+
+              <HeaderNotificationMenu
+                isOpen={isNotificationMenuOpen}
+                onClose={() => setIsNotificationMenuOpen(false)}
+              />
+            </div>
+
+            <div className="relative pt-1 md:pt-0">
+              <button
+                onClick={toggleProfileMenu}
+                className={`relative w-10 h-10 rounded-full glass overflow-hidden border transition-all shadow-md focus:outline-none focus:ring-1 focus:ring-accent-purple-dark z-(--z-raised) ${isProfileMenuOpen ? "border-accent-purple-dark" : "border-glass-border hover:border-glass-border-accent"}`}
+              >
+                <Image
+                  src={
+                    loggedInUser?.avatar
+                      ? loggedInUser?.avatar
+                      : staticImagesConfig.avatarPlaceholder.src
+                  }
+                  alt={staticImagesConfig.avatarPlaceholder.alt}
+                  fill
+                  sizes="2.5rem"
+                  className="shadow-glass-bg shadow-md rounded-full w-full h-full object-cover select-none"
+                />
+              </button>
+
+              <HeaderProfileMenu
+                isOpen={isProfileMenuOpen}
+                onClose={() => setIsProfileMenuOpen(false)}
+              />
+            </div>
+          </div>
+        )}
+      </header>
+
+      {type === "default" && sidebarProps && (
+        <>
+          <div
+            className={`fixed inset-0 z-(--z-dropdown) backdrop-blur-sm transition-opacity duration-300 md:hidden ${isSidebarOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
+            onClick={
+              setIsSidebarOpen ? () => setIsSidebarOpen(false) : () => {}
+            }
+          />
+
+          {isSidebarOpen && (
+            <div
+              className="md:hidden fixed inset-0 z-(--z-modal) backdrop-blur-sm"
+              onClick={
+                setIsSidebarOpen ? () => setIsSidebarOpen(false) : () => {}
+              }
+            />
+          )}
+
+          <div
+            className={`fixed top-0 left-0 h-dvh w-72 sm:w-80 bg-[#0B0F1A] md:hidden z-(--z-toast) transition-transform duration-300 shadow-2xl ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
+          >
+            <div className="top-2 right-2 z-(--z-toast) absolute">
+              <button
+                onClick={
+                  setIsSidebarOpen ? () => setIsSidebarOpen(false) : () => {}
+                }
+                className="bg-glass-bg-strong p-1 border border-glass-border hover:border-glass-border-accent rounded-lg text-text-secondary hover:text-text-primary transition-colors"
+              >
+                <LuX size={20} />
+              </button>
+            </div>
+
+            <div className="w-full h-full overflow-hidden">
+              <AppSidebar setIsSidebarOpen={setIsSidebarOpen} />
+            </div>
+          </div>
+        </>
+      )}
+    </>
+  );
+};
+
+export default Header;
