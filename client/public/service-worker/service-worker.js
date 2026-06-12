@@ -1,5 +1,9 @@
 const CACHE_NAME = "app-cache-v1";
-const STATIC_ASSETS = ["/", "/manifest/manifest.json", "/favicon.ico"];
+const STATIC_ASSETS = [
+  "/",
+  "/manifest/manifest.json",
+  "/assets/logo/favicon.ico",
+];
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
@@ -11,17 +15,19 @@ self.addEventListener("install", (event) => {
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(self.clients.claim());
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
-        }),
-      );
-    }),
+    Promise.all([
+      self.clients.claim(),
+      caches
+        .keys()
+        .then((cacheNames) =>
+          Promise.all(
+            cacheNames
+              .filter((name) => name !== CACHE_NAME)
+              .map((name) => caches.delete(name)),
+          ),
+        ),
+    ]),
   );
 });
 
@@ -37,10 +43,12 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       caches.match(request).then((cachedResponse) => {
         const networkFetch = fetch(request).then((response) => {
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(request, responseClone);
-          });
+          if (response.ok) {
+            const responseClone = response.clone();
+            caches
+              .open(CACHE_NAME)
+              .then((cache) => cache.put(request, responseClone));
+          }
           return response;
         });
         return cachedResponse || networkFetch;
@@ -52,10 +60,12 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(
     fetch(request)
       .then((response) => {
-        const responseClone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(request, responseClone);
-        });
+        if (response.ok) {
+          const responseClone = response.clone();
+          caches
+            .open(CACHE_NAME)
+            .then((cache) => cache.put(request, responseClone));
+        }
         return response;
       })
       .catch(() => {
@@ -69,8 +79,8 @@ self.addEventListener("push", (event) => {
 
   self.registration.showNotification(data.title || "New Notification", {
     body: data.body || "You have a message",
-    icon: "/assets/logo/app-log.webp",
-    badge: "/assets/logo/app-logo.webp",
+    icon: "/assets/favicon/favicon-96x96.png",
+    badge: "/assets/favicon/favicon-96x96.png",
     data: {
       url: data.url || "/",
     },

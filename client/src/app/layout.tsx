@@ -20,6 +20,38 @@ export const metadata: Metadata = {
     template: "%s | App",
   },
   description: "App's description.",
+  icons: [
+    {
+      src: "/assets/logo/android/app-logo-48x48.png",
+      sizes: "48x48",
+      type: "image/png",
+    },
+    {
+      src: "/assets/logo/android/app-logo-72x72.png",
+      sizes: "72x72",
+      type: "image/png",
+    },
+    {
+      src: "/assets/logo/android/app-logo-96x96.png",
+      sizes: "96x96",
+      type: "image/png",
+    },
+    {
+      src: "/assets/logo/android/app-logo-144x144.png",
+      sizes: "144x144",
+      type: "image/png",
+    },
+    {
+      src: "/assets/logo/android/app-logo-192x192.png",
+      sizes: "192x192",
+      type: "image/png",
+    },
+    {
+      src: "/assets/logo/android/app-logo-512x512.png",
+      sizes: "512x512",
+      type: "image/png",
+    },
+  ],
   manifest: "/manifest/manifest.json",
 };
 

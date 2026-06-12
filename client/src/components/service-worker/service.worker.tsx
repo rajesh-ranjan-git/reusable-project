@@ -6,7 +6,7 @@ const ServiceWorker = () => {
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
-        .register("/serviceWorker/serviceWorker.js")
+        .register("/service-worker/service-worker.js", { scope: "/" })
         .then(() => logger.info("Service Worker registered successfully!"))
         .catch((err) =>
           logger.error("Unable to register Service Worker:", err),

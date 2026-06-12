@@ -70,6 +70,20 @@ const nextConfig: NextConfig = {
     ],
   },
 
+  async headers() {
+    return [
+      {
+        source: "/service-worker/service-worker.js",
+        headers: [
+          {
+            key: "Service-Worker-Allowed",
+            value: "/",
+          },
+        ],
+      },
+    ];
+  },
+
   // Optional: Expose NEXT_PUBLIC_* values to the client
   env: {
     // All NEXT_PUBLIC_ vars will automatically pass through
